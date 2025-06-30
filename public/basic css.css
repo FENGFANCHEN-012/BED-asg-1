@@ -3,19 +3,35 @@
     display: flex;
     justify-content: start;
     width:100%;
-    height:100vh;
+    height:125vh;
+  
 
 }
-
+.big-background-after{
+  gap: 10%;
+    display: flex;
+    justify-content: start;
+    width:100%;
+    height:200vh;
+}
+.right-blue-after{
+   display:flex;
+    width:40%;    
+    background-color: #193C78;
+    justify-content: center;
+    height:100%;
+}
 .right-blue{
     display:flex;
     width:40%;    
     background-color: #193C78;
     justify-content: center;
+    height:100%;
 }
 .left-white{
     display: flex;
     flex-direction: column;
+    
     width:50%;
     height:100%;
     background-color: white;
@@ -23,11 +39,10 @@
     justify-content: center;
 }
 .blue-button{
-    
-    margin-bottom: 5%;
+    margin-bottom: 5vh;
     margin-left: 15%;
     width:80%;
-    height:10%;
+    height:10vh;
     border-radius: 20vw;
     background-color: #193C78;
     color:white;
@@ -36,18 +51,93 @@
 button {
   transition: transform 0.1s ease;
 }
-.blue-button :active {
+button :active {
     transform:scale(0.95);
 }
-.blue-button:hover{
+button:hover{
 transform: scale(1.05);
 }
 .question{
-    margin-top:30%;
+    margin-left:5%;
+    margin-top:20%;
     color: white;
     font-size: 3vw;
+    position: fixed;
 
 }
 .font{
     color:white;
+}
+
+#more-hobby{
+    width:49vw;
+   display:none;
+   height:48%;
+}
+#other-hobby{
+    
+     width:95%;
+     height:40vh;
+     border-radius: 2vw;
+      margin-left: 10%;
+      
+}
+#submit{
+    width:30%;
+    height:5vw;
+        background-color: #193C78;
+        font-size:5vh;
+        color:white;
+        margin-left: 45%;
+        margin-top:10%;
+        border-radius: 2vh;
+}
+
+
+#other{
+ margin-bottom: 5vh;
+    margin-left: 15%;
+    width:80%;
+    height:10vh;
+    border-radius: 20vw;
+    background-color: #193C78;
+    color:white;
+    font-size:2vw;
+}
+#show-more{
+     margin-bottom: 5vh;
+    margin-left: 15%;
+    width:80%;
+    height:10vh;
+    border-radius: 20vw;
+    background-color: #193C78;
+    color:white;
+    font-size:2vw;
+}
+.blue-background{
+    background-color: #193C78;
+    color: white;
+    font-size:1.5vw;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+   height:100vh;
+}
+.choose-yes-or-no{
+    margin-top:10vh;
+    width:100vw;
+    height:20%;
+    gap:40vw;
+    display: flex;
+    justify-content: center;
+}
+.yes-no{
+
+    width:20%;
+    border-radius: 2vw;
+    height:70%;
+    background-color: #7EADFF;
+    color:white;
+    font-size:2vw;
 }

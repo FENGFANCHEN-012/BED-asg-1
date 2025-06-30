@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create New Book</title>
+     <link rel="stylesheet" href="basic css.css">
+    <style>
+      h1{
+       
+    
+        text-align: center;
+      
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body class="blue-background">
+      <h1>Thank you!</h1>
+      <h1>Would you like to choose other hobby?</h1>
+      <div class="choose-yes-or-no">
+        <button class="yes-no" id="yes">Yes</button>
+        <button class="yes-no" id="no">No</button>
+      </div>
+
+    
+    
+    <script src=""></script>
+    <script>
+        document.getElementById("yes").addEventListener("click",function(){
+            window.location.href="hobby-selection.html"
+        })
+        document.getElementById("no").addEventListener("click",function(){
+            window.location.href="" // go to main page
+        })
+    </script>
+  </body>
+</html>
