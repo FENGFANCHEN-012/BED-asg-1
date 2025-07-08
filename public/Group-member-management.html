@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Friend List</title>
+  <link rel="stylesheet" href="basic css.css">
+  <style>
+  * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f0f0;
+  margin: 0;
+}
+
+.container {
+  width: 100%;
+  height: 100%;
+  max-width: 1000px; /* Further increased max-width for large screens */
+  background-color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+  padding: 40px;
+}
+
+.header {
+  background-color: #193c78;
+  color: white;
+  padding: 30px;
+  text-align: center;
+  font-size: 36px; /* Larger header font size */
+}
+
+.friend-list {
+  padding: 25px;
+}
+
+.friend {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px; /* Increased space between items */
+  padding: 20px;
+  background-color: #e4f2ff;
+  border-radius: 12px; /* Larger rounded corners */
+}
+
+.friend-info {
+  display: flex;
+  align-items: center;
+}
+
+.friend-photo {
+  width: 100px; /* Even larger profile photo */
+  height: 100px;
+  background-color: #7e9fe6;
+  border-radius: 50%;
+  margin-right: 20px;
+}
+
+.friend-details p {
+  margin: 0;
+  font-size: 24px; /* Even larger text for the friend's details */
+  line-height: 1.5;
+}
+
+.friend-actions {
+  display: flex;
+  gap: 20px; /* Increased space between buttons */
+}
+
+
+
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h2>Group Member</h2>
+    </div>
+    <div class="friend-list">
+    
+      <div class="friend">
+        <div class="friend-info">
+          <div class="friend-photo"></div>
+          <div class="friend-details">
+            <p>Mr Tan</p>
+            <p>Hobby: Reading</p>
+          </div>
+        </div>
+        <div class="friend-actions">
+          <button class="delete">Remove</button>
+          <button class="setting">Setting</button>
+        </div>
+      </div>
+     
+  </div>
+  <script>
+    const delete_button = document.getElementsByClassName("delete")
+    for(let i = 0;i<delete_button.length;i++){
+      delete_button[i].addEventListener("click",function(){
+        window.location.href='C:\Users\johny\Desktop\BED asg 1\public\delete-confirmation.html'
+      })
+    }
+  </script>
+</body>
+</html>

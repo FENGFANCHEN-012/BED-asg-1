@@ -1,4 +1,4 @@
-.big-background{
+.big-background{   
     gap: 10%;
     display: flex;
     justify-content: start;
@@ -21,14 +21,14 @@
     justify-content: center;
     height:100%;
 }
-.right-blue{
+.right-blue{  
     display:flex;
     width:40%;    
     background-color: #193C78;
     justify-content: center;
     height:100%;
 }
-.left-white{
+.left-white{   
     display: flex;
     flex-direction: column;
     
@@ -141,3 +141,22 @@ transform: scale(1.05);
     color:white;
     font-size:2vw;
 }
+.delete,
+.setting {
+  padding: 15px 25px; 
+  border: none;
+  cursor: pointer;
+  font-size: 22px; 
+  border-radius: 10px;
+}
+
+.delete {
+  background-color: #f44336;
+  color: white;
+}
+
+.setting {
+  background-color: #2196f3;
+  color: white;
+}
+

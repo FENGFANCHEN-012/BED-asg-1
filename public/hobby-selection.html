@@ -16,18 +16,17 @@
       <div class="left-white">
          <form id="collecting">
   
-        <button class="blue-button">Music</button>
-             <button class="blue-button">Instrument</button>
-        <button class="blue-button">Pet and animal</button>
-        <button class="blue-button">Instrument</button>
-         <button class="blue-button">Garden and planting</button>
-          <button class="blue-button">Chess</button>
+      <button type="button" class="blue-button" onclick="sethobby('music')">Music</button>
+<button type="button" class="blue-button"onclick="sethobby('pets and animal')">Pet and Animal</button>
+<button type="button" class="blue-button" onclick="sethobby('music instrument')">Instrument</button>
+<button type="button" class="blue-button" onclick="sethobby('garden and planning')" >Garden and Planting</button>
+<button type="button" class="blue-button"  onclick="sethobby('pets')" >Board Game</button>
           <div id="more-hobby">
-              <button class="blue-button">Learning & Reading</button>
-                <button class="blue-button">Digital</button>
-                  <button class="blue-button">Cooking</button>
-                  <button class="blue-button">Movie and Series</button>
-                  <button class="blue-button">Sports</button>
+              <button type="button" class="blue-button" onclick="window.location.href='public\knowledge.html'" id="learning" >Learning & Reading</button>
+<button type="button" class="blue-button" onclick="window.location.href='digital.html'" id="digital" >Digital</button>
+<button type="button" class="blue-button" onclick="window.location.href='cooking.html'" id="cooking" >Cooking</button>
+<button type="button" class="blue-button" onclick="window.location.href='movie.html'"id="movie"  >Movie and Series</button>
+<button type="button" class="blue-button" onclick="window.location.href='sports.html'"id="sport" >Sports</button>
                  
           </div>
           </form>
@@ -44,7 +43,12 @@
     
    
     <script>
-      
+      function sethobby(hobbyname){
+
+        localStorage.setItem("hobby",hobbyname)
+        setTimeout(()=>{window.location.href=hobbyname+'.html'},50)
+        
+      }
       const right_blue = document.getElementById("right-blue")
       const big_background = document.getElementById("big-background")
       const more_hobby = document.getElementById("more-hobby")
