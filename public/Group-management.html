@@ -91,28 +91,123 @@ body {
     </div>
     <div class="friend-list">
     
-      <div class="friend">
-        <div class="friend-info">
-          <div class="friend-photo"></div>
-          <div class="friend-details">
-            <p>Mr Tan</p>
-            <p>Hobby: Reading</p>
-          </div>
-        </div>
-        <div class="friend-actions">
-          <button class="delete">Delete</button>
-          <button class="setting">Setting</button>
-        </div>
-      </div>
+    
      
   </div>
   <script>
+    
     const delete_button = document.getElementsByClassName("delete")
     for(let i = 0;i<delete_button.length;i++){
       delete_button[i].addEventListener("click",function(){
-        window.location.href='C:\Users\johny\Desktop\BED asg 1\public\delete-confirmation.html'
+        window.location.href='delete-confirmation.html'
       })
     }
+      try {
+   
+    const response = await fetch(`${apiBaseUrl}/group`, {
+      method: "GET", // Specify the HTTP method
+      headers: {
+        "Content-Type": "application/json", 
+      },
+      
+      // Send the data as a JSON string in the request body
+    });
+    let group = await response.json
+   
+   }
+   catch(error){
+    console.log(error+"occur")
+   }
+
+   // get group information
+
+      function renderFriendsList(group) {
+      const container = document.getElementById('friendListContainer');
+      container.innerHTML = '';
+
+      friends.forEach(group => {
+        const groupElement = document.createElement('div');
+        groupElement.className = 'friend';
+        groupElement.innerHTML = `
+          <div class="friend-info">
+            <div class="friend-photo" style="background-color: ${group.photo}"></div>
+            <div class="friend-details">
+              <p>${group.name}</p>
+            </div>
+          </div>
+          <div class="friend-actions">
+            <button class="delete" data-id="${group.id}">Delete</button>
+            <button class="setting" data-id="${group.id}">Setting</button>
+          </div>
+        `;
+        container.appendChild(friendElement);
+      });}
+
+         document.querySelectorAll('.delete').forEach(button => {
+        button.addEventListener('click', function() {
+          const groupId = this.getAttribute('data-id');
+          deleteFriend(friendId);
+        });
+      });
+
+      document.querySelectorAll('.setting').forEach(button => {
+        button.addEventListener('click', function() {
+          const friendId = this.getAttribute('data-id');
+          
+          console.log(`Settings for friend ${friendId}`);
+        });
+      });
+    
+function async setting
+
+      // deleteFriend 
+  function  async deleteFriend(groupId){
+
+    try {
+    // Make a POST request to your API endpoint
+    const response = await fetch(`${apiBaseUrl}/group`, {
+      method: "GET", // Specify the HTTP method
+      headers: {
+        "Content-Type": "application/json", 
+      },
+      
+      // Send the data as a JSON string in the request body
+    });
+
+   let response2 = await response.json();
+
+    for(let i = 0; i < response2.length; i++) {
+      if (response2[i].id === groupId && response2[i].ownerId === userId) {
+        try {
+    // Make a POST request to your API endpoint
+    const response = await fetch(`${apiBaseUrl}/group`, {
+      method: "DELETE", // Specify the HTTP method
+      headers: {
+        "Content-Type": "application/json", 
+      },
+      
+      // Send the data as a JSON string in the request body
+    });
+  
+      }
+        catch(error){
+          console.log(error+"occur")
+        }
+        break;
+    }
+    else{
+    throw new Error("You are not the owner of this group.");
+    }
+   
+   }
+
+   
+
+  }
+  catch(error){
+    console.log(error+"occur")
+   }}
+    
   </script>
 </body>
 </html>

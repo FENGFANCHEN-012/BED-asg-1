@@ -98,19 +98,82 @@ body {
           </div>
         </div>
         <div class="friend-actions">
-          <button class="setting">Sign Up</button>
+          <button class="setting" id="signUp">Sign Up</button>
           
         </div>
     
     </div>
   </div>
    <script>
-    const delete_button = document.getElementsByClassName("delete")
-    for(let i = 0;i<delete_button.length;i++){
-      delete_button[i].addEventListener("click",function(){
-        window.location.href='C:\Users\johny\Desktop\BED asg 1\public\delete-confirmation.html'
-      })
-    }
+  document.getElementById('signUp').addEventListener('click', function(event) {
+    event.preventDefault(); 
+   fetchEvents();
+   
+  })
+
+
+
+
+     function renderEventList(event) {
+      const container = document.getElementById('friendListContainer');
+      container.innerHTML = '';
+
+      friends.forEach(event => {
+        const groupElement = document.createElement('div');
+        groupElement.className = 'friend';
+        groupElement.innerHTML = `
+          <div class="friend-info">
+            <div class="friend-photo" style="background-color: ${event.photo}"></div>  
+            <div class="friend-details">
+              <p>${event.name}</p>
+                <p>${event.fee}</p>
+            </div>
+          </div>
+          <div class="friend-actions">
+            <button class="delete" data-id="${group.id}">Sign Up</button>
+           
+          </div>
+        `;
+        container.appendChild(friendElement); // change configuration 
+      });}
+   
+
+
+
+
+     async function fetchEvents() {
+        try {
+          const response = await fetch(`${apiBaseUrl}/events`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
+          if (!response.ok) {
+            throw new Error("Failed to fetch events.");
+          }
+          const events = await response.json();
+          renderEventList(events);
+          localStorage.setItem("event_name", JSON.stringify(events.name));
+          localStorage.setItem("event_fee", JSON.stringify(events.fee));
+          localStorage.setItem("event_photo", JSON.stringify(events.photo));
+          localStorage.setItem("event_id", JSON.stringify(events.id));
+          localStorage.setItem("event_date", JSON.stringify(events.date));
+          localStorage.setItem("event_time", JSON.stringify(events.time));
+          localStorage.setItem("event_location", JSON.stringify(events.location));
+          localStorage.setItem("event_description", JSON.stringify(events.description));
+          localStorage.setItem("event_organizer", JSON.stringify(events.organizer));
+
+        } catch (error) {
+          console.error("Error fetching events:", error);
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        fetchEvents();
+        window.location.href = "Event-interface.html"; 
+      }); 
+      
   </script>
 </body>
 </html>

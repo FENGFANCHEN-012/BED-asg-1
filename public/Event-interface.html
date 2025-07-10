@@ -18,23 +18,22 @@
   <div class="left-white">
     <div style="margin-left: 10%; width: 80%; display: flex; flex-direction: column; gap: 4vh;">
       
-      <h1 style="font-size: 3vw; color: #193C78;">🎵 Guitar Choir Audition</h1>
+      <h1 style="font-size: 3vw; color: #193C78;" id="event_name">🎵 </h1>
 
       <div style="font-size: 2vw;">
-        <strong>📍 Location:</strong> Music Room A, Block C
+        <strong id="event_location">📍 Location:</strong> 
       </div>
 
       <div style="font-size: 2vw;">
-        <strong>🕒 Time:</strong> Friday, 12 July 2025, 3:00 PM – 5:00 PM
+        <strong id="event_time">🕒 Time:</strong> 
       </div>
 
       <div style="font-size: 1.5vw; margin-top: 2vh;">
-        <strong>📝 Description:</strong><br/>
-        Come and showcase your musical talent! Whether you're a beginner or an experienced guitarist,
-        we welcome you to join our vibrant choir community. Instruments will be provided if needed.
+        <strong id="event_description">📝 Description:</strong><br/>
+        
       </div>
       <div style="display:flex;margin:3vw;justify-content:start">
-      <button class="blue-button" style="margin-top: 4vh;">Sign Up</button>
+      <button class="blue-button" style="margin-top: 4vh;" onclick=signUp(eventId)>Sign Up</button>
        <button class="blue-button" style="margin-top: 4vh;">Share</button>
       </div>
     </div>
@@ -43,9 +42,49 @@
   <!-- Right section: decorative or complementary content -->
   <div class="right-blue">
     
-    <img>
+    <img id="event_image" src="https://via.placeholder.com/300" alt="Event Image" style="width: 100%; height: auto; border-radius: 20px; margin-top: 2vh;">
   </div>
 </div>
+<script>
+  const eventId = localStorage.getItem("eventId");
+
+document.getElementById("event_name").innerText = localStorage.getItem("event_name");
+document.getElementById("event_location").innerText = localStorage.getItem("event_location");
+document.getElementById("event_time").innerText = localStorage.getItem("event_time");
+document.getElementById("event_description").innerText = localStorage.getItem("event_description"); 
+document.getElementById("event_image").src = localStorage.getItem("event_image") || "https://via.placeholder.com/300";
+
+
+
+  async function  signUp(eventId) {
+        event.preventDefault();
+        try {
+          const response = await fetch(`${apiBaseUrl}/user_event`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              eventId: eventId,
+              userId: localStorage.getItem("userId") ,
+              status: "signed_up"
+             }) 
+          });
+          if (!response.ok) {
+            throw new Error("Failed to sign up for the event.");
+          }
+          else{
+            window.location.href = "Event-interface.html";
+          }
+          const result = await response.json();
+          console.log("Successfully signed up for the event:", result);
+        } catch (error) {
+          console.error("Error signing up for the event:", error);
+        }
+       
+      }
+</script>
 
 </body>
 </html>
+ 

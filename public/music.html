@@ -31,5 +31,29 @@
     </div>
     
     <script src=""></script>
+        <script>
+const messageDiv = document.getElementById("message");
+const apiBaseUrl = "http://localhost:3000";
+const createHobby = document.getElementsByClassName("blue-button");
+
+
+for(let i=0;i<createHobby.length;i++){
+  createHobby[i].addEventListener("click",function(){
+
+     const hobbyName = this.innerHTML;
+    localStorage.setItem("detail",hobbyName)
+    setTimeout(()=>{   window.location.href="hobby-description.html"},2000)
+  
+  })
+}
+
+;
+
+
+
+
+
+
+    </script>
   </body>
 </html>

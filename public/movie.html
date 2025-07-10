@@ -27,5 +27,24 @@
     </div>
     
     <script src=""></script>
+        <script>
+const messageDiv = document.getElementById("message");
+const apiBaseUrl = "http://localhost:3000";
+const createHobby = document.getElementsByClassName("blue-button");
+
+
+for(i=0;i<createHobby.length;i++){
+  createHobby[i].addEventListener("click",function(){
+
+    hobbyname = createHobby[i].innerHTML
+    localStorage.setItem("detail",createHobby[i].innerHTML)
+  })
+}
+
+;
+
+
+
+    </script>
   </body>
 </html>

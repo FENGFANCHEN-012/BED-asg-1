@@ -25,7 +25,8 @@ app.use(express.static(path.join(__dirname, 'public'))); //
 
 
 
-app.get("/students", validateStudent,studentController.getAllStudents);
+app.get("/interest", );
+app.post("/interest",);
 app.get("/students/:id", validateStudentId,studentController.getStudentById); // Use validateBookId middleware
 app.post("/students", validateStudent, studentController.createStudent); // Use validateBook middleware
 // Add routes for PUT/DELETE if implemented, applying appropriate middleware
