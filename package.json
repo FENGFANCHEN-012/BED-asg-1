@@ -1,16 +1,29 @@
 {
-  "name": "bed-assignment-1",
+  "name": "bed-asg-1",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "devStart": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FENGFANCHEN-012/BED-asg-1.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FENGFANCHEN-012/BED-asg-1/issues"
+  },
+  "homepage": "https://github.com/FENGFANCHEN-012/BED-asg-1#readme",
   "description": "",
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
     "mssql": "^11.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
   }
 }

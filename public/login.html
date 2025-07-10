@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login | Lions Befrienders</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-left-panel">
+      <img src="images/logo.png" alt="Lions Befrienders Logo" class="login-logo" />
+      <h2 class="login-title">Login to Your Account</h2>
+      <form id="loginForm" class="login-form">
+        <input type="email" placeholder="Email" class="login-input" required />
+        <input type="password" placeholder="Password" class="login-input" required />
+        <button type="submit" class="login-button">Sign In</button>
+      </form>
+    </div>
+    <div class="login-right-panel">
+      <h2 class="login-new-member">NEW MEMBER?</h2>
+      <p class="login-description">Sign up now and join us at Lions Befrienders!</p>
+      <!-- Sign Up Button (on main page) -->
+      <button id="openSignUpBtn" class="login-signup-btn">Sign Up</button>
+    </div>
+  </div>
+  <!-- Sign Up Modal -->
+<div id="signUpModal" class="modal hidden">
+  <div class="modal-content">
+    <h2>Sign Up Here</h2>
+    <input type="email" placeholder="Email" required>
+    <input type="password" placeholder="Password" required>
+    <button id="submitSignUp">Sign Up</button>
+    <button id="closeModal" style="margin-top: 1rem;">Close</button>
+  </div>
+</div>
+<script src="script.js" defer></script>
+</body>
+</html>
