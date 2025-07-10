@@ -1,29 +1,46 @@
-const modal = document.getElementById('signupModal');
-  modal.addEventListener('submit', async (e) => {
-    e.preventDefault();
+// script.js
 
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+document.addEventListener("DOMContentLoaded", () => {
+  // Get the signup form by its ID
+  const signupForm = document.getElementById("signupForm");
 
-    const response = await fetch('/api/users/signup', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
+  // Check if the signup form exists on the page before adding event listener
+  if (signupForm) {
+    signupForm.addEventListener("submit", async function (e) {
+      e.preventDefault(); // Prevent default form submission
+
+      // Get the email and password input elements by their IDs
+      const emailInput = document.getElementById("signupEmail");
+      const passwordInput = document.getElementById("signupPassword");
+
+      // Get the trimmed values from the input fields
+      const email = emailInput.value.trim();
+      const password = passwordInput.value.trim();
+
+      // Send the data to your backend /signup endpoint
+      try {
+        const response = await fetch("http://localhost:3000/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        });
+
+        const result = await response.json(); // Parse the JSON response from the server
+
+        if (response.ok) {
+          // If the response status is 2xx (success)
+          alert("Sign up successful!");
+          // Redirect to the index page after successful registration, matching signup.html's close button
+          window.location.href = "index.html";
+        } else {
+          // If the response status is an error (e.g., 400, 500)
+          alert("Error: " + (result.error || "Unknown error occurred.")); // Display error message from server, or a generic one
+        }
+      } catch (error) {
+        // Catch network errors or issues with the fetch request itself
+        console.error("Error during signup fetch:", error);
+        alert("An error occurred during signup. Please check your network connection and try again.");
+      }
     });
-
-    const result = await response.json();
-    alert(result.message || result.error);
-  });
-//buttons//
- const openBtn = document.getElementById('openSignUpBtn');
-  const signUpModal = document.getElementById('signUpModal');
-
-  openBtn.addEventListener('click', () => {
-    signUpModal.classList.remove('hidden');
-    signUpModal.classList.add('signup-modal'); // apply styles
-  const closeBtn = document.getElementById('closeModal');
-
-  closeBtn.addEventListener('click', () => {
-    signUpModal.classList.add('hidden');
-  });
-  });
+  }
+});

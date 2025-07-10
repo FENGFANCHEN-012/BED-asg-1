@@ -5,6 +5,7 @@ const dotenv = require("dotenv");
 const dbConfig = require("./dbConfig");
 dotenv.config();
 
+const userController = require("./controllers/userController");
 // Create Express app
 const app = express();
 const port = process.env.PORT || 3000;
@@ -17,6 +18,11 @@ app.use(express.static(path.join(__dirname, 'public'))); //
 
 
 
+
+// User Signup Route
+// (Note: For a production app, you'd typically add a validation middleware here,
+// e.g., validateUser, similar to validateStudent)
+app.post("/signup",userController.signup);
 
 // Graceful shutdown
 process.on("SIGINT", async () => {

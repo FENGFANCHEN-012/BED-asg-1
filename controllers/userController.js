@@ -1,55 +1,34 @@
-//Hash Passwords on Sign Up//
-const bcrypt = require('bcrypt');
-const { createUser } = require('../models/userModel');
+// controllers/userController.js
+const bcrypt = require("bcrypt");
+const userModel = require("../models/userModel"); // Adjust path if necessary
 
-async function signUp(req, res) {
+async function signup(req, res) {
   const { email, password } = req.body;
 
+  // Basic validation (more robust validation should be done via middleware)
   if (!email || !password) {
-    return res.status(400).json({ error: 'Email and password are required' });
+    return res.status(400).json({ error: "Email and password are required." });
   }
 
   try {
-    const saltRounds = 10;
-    const passwordHash = await bcrypt.hash(password, saltRounds);
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    await createUser(email, passwordHash);
-    res.status(201).json({ message: 'User created successfully' });
-  } catch (err) {
-    if (err.originalError?.info?.number === 2627) {
-      // Unique constraint violation
-      res.status(409).json({ error: 'Email already exists' });
-    } else {
-      console.error(err);
-      res.status(500).json({ error: 'Failed to register user' });
+    // Create user in the database via the model
+    const newUserId = await userModel.createUser(email, hashedPassword);
+
+    // Respond with success message and new user ID
+    res.status(201).json({ message: "User registered successfully.", userId: newUserId });
+  } catch (error) {
+    console.error("Signup controller error:", error);
+    // Check for specific errors, e.g., duplicate email
+    if (error.message && error.message.includes("Violation of UNIQUE KEY constraint")) {
+      return res.status(409).json({ error: "Email already registered." });
     }
+    res.status(500).json({ error: "Internal server error during registration." });
   }
 }
 
-//Add Login Function (and Compare Passwords)//
-const jwt = require('jsonwebtoken');
-const { getUserByEmail } = require('models/userModel'); 
-
-async function login(req, res) {
-  const { email, password } = req.body;
-
-  try {
-    const user = await getUserByEmail(email);
-    if (!user) return res.status(401).json({ error: 'Invalid credentials' });
-
-    const isMatch = await bcrypt.compare(password, user.password_hash);
-    if (!isMatch) return res.status(401).json({ error: 'Invalid credentials' });
-
-    // Create JWT
-    const token = jwt.sign({ userId: user.user_id }, process.env.JWT_SECRET, {
-      expiresIn: '1h',
-    });
-
-    res.status(200).json({ message: 'Login successful', token });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Login failed' });
-  }
-}
-
-module.exports = { signUp };
+module.exports = {
+  signup,
+};
