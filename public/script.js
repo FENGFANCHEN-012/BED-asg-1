@@ -1,11 +1,7 @@
-// script.js
 
-document.addEventListener("DOMContentLoaded", () => {
-  // Get the signup form by its ID
   const signupForm = document.getElementById("signupForm");
 
-  // Check if the signup form exists on the page before adding event listener
-  if (signupForm) {
+  
     signupForm.addEventListener("submit", async function (e) {
       e.preventDefault(); // Prevent default form submission
 
@@ -42,5 +38,6 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("An error occurred during signup. Please check your network connection and try again.");
       }
     });
-  }
-});
+  
+
+  

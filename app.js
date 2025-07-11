@@ -1,9 +1,11 @@
+
 const express = require("express");
 const path = require('path');
 const sql = require("mssql"); 
 const dotenv = require("dotenv");
-const dbConfig = require("./dbConfig");
 dotenv.config();
+const dbConfig = require("./dbConfig");
+
 
 const userController = require("./controllers/userController");
 // Create Express app
@@ -31,7 +33,22 @@ process.on("SIGINT", async () => {
   console.log("Database connections closed");
   process.exit(0);
 });
-
-app.listen(port, () => {
+// Start server
+app.listen(port, async () => {
   console.log(`Server running on port ${port}`);
+
+  // --- Database Connection Test ---
+  try {
+    // Attempt to connect to the database
+    const pool = await sql.connect(dbConfig);
+    console.log("Database connected successfully!");
+    // You can store the pool if you want to reuse it, or close it if this is just a test
+    // For a real application, you'd typically keep the pool open and manage connections
+    // pool.close(); // Close if this is just a one-time test
+  } catch (err) {
+    console.error("Database connection failed:", err.message);
+  }
+  // --- End Database Connection Test ---
 });
+
+
