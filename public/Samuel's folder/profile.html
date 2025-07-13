@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | Lions Befrienders</title>
+    <link rel="stylesheet" href="profile-display.css">
+    <link rel="stylesheet" href="styles.css"> <!-- Include your main styles if needed -->
+</head>
+<body>
+    <div class="profile-display-container">
+        <h2 class="profile-display-title">My Profile</h2>
+        <div id="profileDetails" class="profile-details-card">
+            <!-- Profile data will be loaded here by JavaScript -->
+            <p><strong>Name:</strong> <span id="display-name">Loading...</span></p>
+            <p><strong>Hobbies:</strong> <span id="display-hobbies">Loading...</span></p>
+            <p><strong>Age:</strong> <span id="display-age">Loading...</span></p>
+            <p><strong>Description:</strong> <span id="display-description">Loading...</span></p>
+            <div class="profile-actions">
+                <button id="editProfileBtn" class="profile-action-button edit-button">Edit Profile</button>
+                <button id="deleteProfileBtn" class="profile-action-button delete-button">Delete Profile</button>
+            </div>
+        </div>
+
+        <!-- Edit Profile Modal/Form -->
+        <div id="editProfileModal" class="edit-profile-modal hidden">
+            <div class="edit-profile-content">
+                <span class="close-button" id="closeEditModal">&times;</span>
+                <h3 class="edit-modal-title">Edit Your Profile</h3>
+                <form id="editProfileForm" class="edit-profile-form">
+                    <label for="editName" class="edit-label">Name:</label>
+                    <input type="text" id="editName" class="edit-input" required>
+                    <div id="editNameValidationMessage" class="validation-message"></div>
+
+                    <label for="editHobbies" class="edit-label">Hobbies (comma-separated):</label>
+                    <input type="text" id="editHobbies" class="edit-input" placeholder="e.g., reading, hiking, cooking">
+
+                    <label for="editAge" class="edit-label">Age:</label>
+                    <input type="number" id="editAge" class="edit-input" min="1" max="120" required>
+
+                    <label for="editDescription" class="edit-label">Description:</label>
+                    <textarea id="editDescription" class="edit-input edit-textarea" rows="4" required></textarea>
+
+                    <button type="submit" class="edit-save-button">Save Changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="profile-display.js"></script>
+</body>
+</html>

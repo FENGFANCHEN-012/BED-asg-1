@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Profile | Lions Befrienders</title>
+    <link rel="stylesheet" href="profile.css">
+    <link rel="stylesheet" href="styles.css"> </head>
+<body>
+    <div class="profile-container">
+        <div class="profile-step" id="profileCreationFormContainer">
+            <h2 class="profile-title">Create Your Profile</h2>
+            <form id="profileCreationForm" class="profile-form">
+                <label for="profileNameInput" class="profile-label">Profile Name:</label>
+                <input type="text" id="profileNameInput" placeholder="Enter your unique profile name" class="profile-input profile-name-input" required>
+                <div id="nameValidationMessage" class="validation-message"></div>
+                <div id="nameAvailabilityMessage" class="validation-message"></div>
+
+                <label for="hobbiesSelect" class="profile-label">Select Hobbies:</label>
+                <select id="hobbiesSelect" multiple class="profile-input profile-select" required>
+                    <option value="reading">Reading</option>
+                    <option value="hiking">Hiking</option>
+                    <option value="cooking">Cooking</option>
+                    <option value="gardening">Gardening</option>
+                    <option value="photography">Photography</option>
+                    <option value="painting">Painting</option>
+                    <option value="music">Music</option>
+                    <option value="sports">Sports</option>
+                    <option value="travel">Travel</option>
+                    <option value="gaming">Gaming</option>
+                </select>
+
+                <label for="ageInput" class="profile-label">Your Age:</label>
+                <input type="number" id="ageInput" placeholder="Enter your age" class="profile-input" min="1" max="120" required>
+
+                <label for="descriptionTextarea" class="profile-label">Description:</label>
+                <textarea id="descriptionTextarea" placeholder="Tell us about yourself..." class="profile-input profile-textarea" rows="4" required></textarea>
+
+                <button type="submit" class="profile-button">Create Profile</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="profileSetUp.js"></script>
+</body>
+</html>
