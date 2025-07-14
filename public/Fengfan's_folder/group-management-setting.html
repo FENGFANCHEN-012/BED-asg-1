@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Group List</title>
+  <style>
+    /* BASE STYLES - MEETING DOD REQUIREMENTS */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 24px; /* Minimum 24px as per DoD */
+      line-height: 1.5;
+      color: #333;
+      background-color: #f8f8f8;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 30px;
+    }
+
+    /* HIGH CONTRAST COLORS FOR BETTER VISIBILITY */
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      background-color: #fff;
+      border-radius: 20px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+    }
+
+    /* LARGE, CLEAR HEADER */
+    .header {
+      background-color: #1a4b8c;
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
+
+    .header h2 {
+      font-size: 36px;
+      margin-bottom: 20px;
+    }
+
+    /* SIMPLIFIED GROUP LIST LAYOUT */
+    .friend-list {
+      padding: 20px;
+    }
+
+    /* CLEAR GROUP CARDS WITH LARGE TAP TARGETS */
+    .friend {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 30px;
+      padding: 30px;
+      background-color: #e6f0ff;
+      border-radius: 15px;
+      border: 2px solid #c0d4f5;
+    }
+
+    .friend-info {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    /* LARGE PROFILE IMAGE */
+    .friend-photo {
+      width: 120px;
+      height: 120px;
+      background-color: #4a7bc8;
+      border-radius: 50%;
+      margin-right: 30px;
+      object-fit: cover;
+      border: 3px solid white;
+    }
+
+    /* CLEAR TEXT HIERARCHY */
+    .friend-details {
+      flex-grow: 1;
+    }
+
+    .group-name {
+      font-size: 28px;
+      font-weight: bold;
+      color: #1a4b8c;
+      margin-bottom: 10px;
+    }
+
+    .friend-details p {
+      margin: 15px 0;
+      font-size: 24px;
+    }
+
+    /* ACTION BUTTONS - LARGE AND CLEAR */
+    .friend-actions {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .action-button {
+      padding: 20px 30px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 24px;
+      font-weight: bold;
+      transition: all 0.2s;
+      min-width: 200px;
+      text-align: center;
+      flex-grow: 1;
+    }
+
+    /* HIGH CONTRAST BUTTON COLORS */
+    .settings-btn {
+      background-color: #4CAF50;
+      color: white;
+    }
+
+    .exit-btn {
+      background-color: #f44336;
+      color: white;
+    }
+
+    .disband-btn {
+      background-color: #ff9800;
+      color: white;
+    }
+
+    .refresh-btn {
+      background-color: white;
+      color: #1a4b8c;
+      border: 3px solid #1a4b8c;
+      font-size: 24px;
+      padding: 15px 30px;
+      margin-top: 20px;
+    }
+
+    /* HOVER STATES FOR VISUAL FEEDBACK */
+    .action-button:hover {
+      opacity: 0.9;
+      transform: translateY(-3px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    /* RESPONSIVE ADJUSTMENTS */
+    @media (max-width: 768px) {
+      body {
+        padding: 15px;
+      }
+      
+      .friend-info {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .friend-photo {
+        margin-right: 0;
+        margin-bottom: 20px;
+      }
+      
+      .friend-actions {
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .action-button {
+        width: 100%;
+      }
+    }
+
+    /* ACCESSIBILITY FOCUS STATES */
+    button:focus, .action-button:focus {
+      outline: 3px solid #ffbf47;
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h2>My Groups</h2>
+      <button class="refresh-btn" onclick="loadGroups()">
+        Refresh Groups
+      </button>
+    </div>
+
+    <div class="friend-list" id="groupsContainer">
+      <!-- Groups will be loaded here -->
+      <div style="text-align: center; padding: 40px; font-size: 24px;">
+        Loading your groups...
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const apiBaseUrl = "http://localhost:3000";
+    let userId = localStorage.getItem("user_id") || 1; // Fallback for testing
+
+    // Initialize the page
+    document.addEventListener('DOMContentLoaded', () => {
+      // Set focus to container for screen readers
+      document.querySelector('.container').setAttribute('tabindex', '-1');
+      document.querySelector('.container').focus();
+      
+      loadGroups();
+    });
+
+    // Load groups with management buttons
+    async function loadGroups() {
+      const groupsContainer = document.getElementById('groupsContainer');
+      groupsContainer.innerHTML = `
+        <div style="text-align: center; padding: 40px; font-size: 24px;">
+          Loading your groups...
+        </div>
+      `;
+
+      try {
+        const response = await fetch(`${apiBaseUrl}/group/${userId}`);
+        if (!response.ok) throw new Error('Could not load groups. Please try again later.');
+
+        const data = await response.json();
+        
+        if (!data.success || !data.data.length) {
+          groupsContainer.innerHTML = `
+            <div style="text-align: center; padding: 40px; font-size: 24px;">
+              You haven't joined any groups yet.
+            </div>
+          `;
+          return;
+        }
+
+        groupsContainer.innerHTML = '';
+
+        data.data.forEach(group => {
+          const groupDiv = document.createElement('div');
+          groupDiv.classList.add('friend');
+          groupDiv.setAttribute('aria-label', `Group: ${group.name}. ${group.member_count} members. Your role: ${group.role}`);
+          
+          const isOwner = group.role === 'owner';
+          
+          groupDiv.innerHTML = `
+            <div class="friend-info">
+              <img src="${group.photo_url || 'default-group.png'}" 
+                   alt="" 
+                   class="friend-photo"
+                   aria-hidden="true">
+              <div class="friend-details">
+                <p class="group-name">${group.name}</p>
+                <p>${group.description || 'No description available'}</p>
+                <p><strong>Members:</strong> ${group.member_count}</p>
+                <p><strong>Your Role:</strong> ${group.role}</p>
+              </div>
+            </div>
+            <div class="friend-actions">
+              <button class="action-button settings-btn" 
+                      data-id="${group.group_id}"
+                      aria-label="Settings for ${group.name}">
+                Group Settings
+              </button>
+              ${isOwner ? `
+                <button class="action-button disband-btn" 
+                        data-id="${group.group_id}"
+                        aria-label="Disband ${group.name}">
+                  Disband Group
+                </button>
+              ` : `
+                <button class="action-button exit-btn" 
+                        data-id="${group.group_id}"
+                        aria-label="Leave ${group.name}">
+                  Leave Group
+                </button>
+              `}
+            </div>
+          `;
+
+          groupsContainer.appendChild(groupDiv);
+        });
+
+        // Add event listeners with clear feedback
+        document.querySelectorAll('.settings-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const groupId = btn.getAttribute('data-id');
+            const groupName = btn.getAttribute('aria-label').replace('Settings for ', '');
+            if (confirm(`Open settings for ${groupName}?`)) {
+              openGroupSettings(groupId);
+            }
+          });
+        });
+
+        document.querySelectorAll('.exit-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const groupId = btn.getAttribute('data-id');
+            const groupName = btn.getAttribute('aria-label').replace('Leave ', '');
+            confirmExitGroup(groupId, groupName);
+          });
+        });
+
+        document.querySelectorAll('.disband-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const groupId = btn.getAttribute('data-id');
+            const groupName = btn.getAttribute('aria-label').replace('Disband ', '');
+            confirmDisbandGroup(groupId, groupName);
+          });
+        });
+
+      } catch (error) {
+        groupsContainer.innerHTML = `
+          <div style="text-align: center; padding: 40px; color: #d32f2f; font-size: 24px;">
+            ${error.message}
+          </div>
+        `;
+      }
+    }
+
+    // Group management functions with clear confirmations
+    function openGroupSettings(groupId) {
+      localStorage.setItem("current_group_id", groupId);
+      window.location.href = `group-management-setting.html?group_id=${groupId}`;
+    }
+
+    async function confirmExitGroup(groupId, groupName) {
+      if (confirm(`Are you sure you want to leave the group "${groupName}"?`)) {
+        try {
+          const response = await fetch(`${apiBaseUrl}/group/${groupId}/leave`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user_id: userId })
+          });
+          
+          if (response.ok) {
+            alert(`You have left "${groupName}" successfully.`);
+            loadGroups();
+          } else {
+            throw new Error("Could not leave group at this time.");
+          }
+        } catch (error) {
+          alert(`Error: ${error.message}`);
+        }
+      }
+    }
+
+    async function confirmDisbandGroup(groupId, groupName) {
+      if (confirm(`WARNING: This will permanently delete "${groupName}" and all its content. Are you sure?`)) {
+        try {
+          const response = await fetch(`${apiBaseUrl}/group/${groupId}`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user_id: userId })
+          });
+          
+          if (response.ok) {
+            alert(`"${groupName}" has been disbanded.`);
+            loadGroups();
+          } else {
+            throw new Error("Could not disband group at this time.");
+          }
+        } catch (error) {
+          alert(`Error: ${error.message}`);
+        }
+      }
+    }
+  </script>
+</body>
+</html>
