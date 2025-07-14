@@ -8,6 +8,9 @@ const dbConfig = require("./dbConfig");
 const profileController = require("./controllers/profileController");
 const { validateProfileName, validateCreateProfile, validateProfileId } = require("./middlewares/profileValidation"); // Import all new validation middleware
 const userController = require("./controllers/userController");
+
+const EventController = require("./controllers/event_controller"); // import Event Controller
+const groupController = require("./controllers/group_controller"); // import Group Controller
 // Create Express app-----------------------------------------------------------------------------------------------------------------------------------
 const app = express();
 const port = process.env.PORT || 3000;
@@ -31,6 +34,19 @@ app.delete("/profiles/:id", profileController.deleteProfile); // Delete profile 
 // (Note: For a production app, you'd typically add a validation middleware here,
 // e.g., validateUser, similar to validateStudent)
 app.post("/signup",userController.signup);
+
+
+
+// event
+
+app.get("/event/getEvent", EventController.fetchEvent);
+app.post("/user_event", EventController.signUpEvent); // Endpoint to sign up for an event
+app.delete("/user_event", EventController.cancelEvent);// Endpoint to cancel an event
+app.get("/user_event/status", EventController.checkUserEventStatus); // Endpoint to check user event status
+
+// group
+app.get("/group/:user_id", groupController.getUserGroups); // Endpoint to get all groups
+// Endpoint to delete a group
 
 // Graceful shutdown
 process.on("SIGINT", async () => {
