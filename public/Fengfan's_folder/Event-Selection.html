@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  
   <meta charset="UTF-8">
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Friend List</title>
-  <link rel="stylesheet" href="basic css.css">
+<link rel="stylesheet" href="basic css.css">
   <style>
   * {
   margin: 0;
@@ -84,96 +86,151 @@ body {
   </style>
 </head>
 <body>
-  <div class="container">
+   <div class="container">
     <div class="header">
       <h2>Events</h2>
+      <button id="scrollToAllEvents" style="margin-top: 20px; padding: 10px 20px; font-size: 16px;" class="delete" onclick="window.location.reload()">Load Latest Event</button>
+
     </div>
-    <div class="friend-list">
-      <div class="friend">
-        <div class="friend-info">
-          <div class="friend-photo"></div>
-          <div class="friend-details">
-            <p>Table Tennis Event</p>
-            <p>Entry Fee:10 $</p>
-          </div>
-        </div>
-        <div class="friend-actions">
-          <button class="setting" id="signUp">Sign Up</button>
-          
-        </div>
+
+    <!-- Special Events Section -->
+      <h3 style="font-size:28px; margin: 20px">Special For You</h3>
+    <div class="friend-list" id="specialEvents">
+     
+     
+    </div>
+
     
+    
+   
     </div>
   </div>
-   <script>
-  document.getElementById('signUp').addEventListener('click', function(event) {
-    event.preventDefault(); 
-   fetchEvents();
-   
-  })
+    
+    
 
+ <script>
+    const apiBaseUrl = "http://localhost:3000";
+    let eventsData = {};
 
+    // Get user preferences
+    const userHobby = localStorage.getItem("hobby")?.toLowerCase() || "";
+    const userDetail = localStorage.getItem("detail")?.toLowerCase() || "";
 
+    async function loadEvents() {
+    try {
+        const response = await fetch(`${apiBaseUrl}/event/getEvent`);
+        if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+        
+        const data = await response.json();
+        console.log("API Response:", data); 
 
-     function renderEventList(event) {
-      const container = document.getElementById('friendListContainer');
-      container.innerHTML = '';
-
-      friends.forEach(event => {
-        const groupElement = document.createElement('div');
-        groupElement.className = 'friend';
-        groupElement.innerHTML = `
-          <div class="friend-info">
-            <div class="friend-photo" style="background-color: ${event.photo}"></div>  
-            <div class="friend-details">
-              <p>${event.name}</p>
-                <p>${event.fee}</p>
-            </div>
-          </div>
-          <div class="friend-actions">
-            <button class="delete" data-id="${group.id}">Sign Up</button>
+       
+        if (Array.isArray(data)) {
+            
+            eventsData = data.reduce((obj, event) => {
+                if (event.event_id) obj[event.event_id] = event;
+                return obj;
+            }, {});
+        } else if (data && data.event_id) {
+            
+            eventsData = { [data.event_id]: data };
+        } else {
            
-          </div>
-        `;
-        container.appendChild(friendElement); // change configuration 
-      });}
-   
-
-
-
-
-     async function fetchEvents() {
-        try {
-          const response = await fetch(`${apiBaseUrl}/events`, {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          });
-          if (!response.ok) {
-            throw new Error("Failed to fetch events.");
-          }
-          const events = await response.json();
-          renderEventList(events);
-          localStorage.setItem("event_name", JSON.stringify(events.name));
-          localStorage.setItem("event_fee", JSON.stringify(events.fee));
-          localStorage.setItem("event_photo", JSON.stringify(events.photo));
-          localStorage.setItem("event_id", JSON.stringify(events.id));
-          localStorage.setItem("event_date", JSON.stringify(events.date));
-          localStorage.setItem("event_time", JSON.stringify(events.time));
-          localStorage.setItem("event_location", JSON.stringify(events.location));
-          localStorage.setItem("event_description", JSON.stringify(events.description));
-          localStorage.setItem("event_organizer", JSON.stringify(events.organizer));
-
-        } catch (error) {
-          console.error("Error fetching events:", error);
+            eventsData = {};
         }
-      }
 
-      document.addEventListener("DOMContentLoaded", () => {
-        fetchEvents();
-        window.location.href = "Event-interface.html"; 
-      }); 
-      
-  </script>
+        console.log("Processed Events Data:", eventsData); 
+
+        if (Object.keys(eventsData).length === 0) {
+            showMessage("No events found");
+            return;
+        }
+
+        renderEvents(sortEvents(eventsData));
+    } catch (error) {
+        console.error("Error:", error);
+        showMessage("Failed to load events");
+    }
+}
+    function sortEvents(eventsObj) {
+        return Object.entries(eventsObj)
+            .map(([id, event]) => ({ id, ...event }))
+            .sort((a, b) => {
+                const scoreA = getRelevanceScore(a);
+                const scoreB = getRelevanceScore(b);
+                return scoreB - scoreA;
+            });
+    }
+
+  // arraay of events
+    // Sort events based on user preferences
+    function getRelevanceScore(event) {
+        let score = 0;
+        if (event.detail?.toLowerCase() === userDetail) score += 2;
+        if (event.type?.toLowerCase() === userHobby) score += 1;
+        return score;
+    }
+
+    function renderEvents(sortedEvents) {
+        const container = document.getElementById('specialEvents');
+        container.innerHTML = '';
+        
+        sortedEvents.forEach(event => {
+            const eventElement = document.createElement('div');
+            eventElement.className = 'friend';
+            
+            eventElement.innerHTML = `
+                <div class="friend-info">
+                    <div class="friend-photo" 
+                         style="background-image: url('${event.image || ''}');
+                                background-size: cover;"></div>
+                    <div class="friend-details">
+                        <h1 style="font-size:2vw">${event.name}</h1>
+                        <p>Location: ${event.location || 'TBD'}</p>
+                        <p>Time: ${formatTime(event.time)}</p>
+                        <p>Fee: ${event.fee ? `$${event.fee}` : 'Free'}</p>
+                     
+                    </div>
+                </div>
+                <div class="friend-actions">
+                    <button class="delete" data-id="${event.id || event.event_id}">Sign Up</button>
+                </div>
+            `;
+            
+            container.appendChild(eventElement);
+        });
+
+        bindSignupButtons();
+    }
+
+    function formatTime(isoString) {
+        if (!isoString) return 'Time not specified';
+        const date = new Date(isoString);
+        return date.toLocaleString();
+    }
+
+    function bindSignupButtons() {
+        document.querySelectorAll('.delete').forEach(button => {
+            button.addEventListener('click', function() {
+                const eventId = this.getAttribute('data-id');
+                const event = eventsData[eventId];
+                
+                if (event) {
+                    localStorage.setItem('currentEvent', JSON.stringify(event));
+                    window.location.href = "Event-interface.html";
+                }
+            });
+        });
+    }
+
+    function showMessage(msg) {
+        document.getElementById('specialEvents').innerHTML = `
+            <p style="font-size:24px;text-align:center;">${msg}</p>
+        `;
+    }
+
+   
+    document.addEventListener('DOMContentLoaded', loadEvents);
+</script>
 </body>
 </html>
