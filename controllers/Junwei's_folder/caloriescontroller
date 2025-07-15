@@ -1,0 +1,146 @@
+const { sql, poolPromise } = require('../dbConfig');
+const model = require('../model/caloriesmodel');
+
+/**
+ * ✅ Get total calories for graph (with recommended calories)
+ */
+exports.getGraphData = async (req, res) => {
+  const userId = req.query.user_id;
+  if (!userId) return res.status(400).send('Missing user_id');
+
+  try {
+    const result = await model.getTodayCalories(userId);
+    const totalCalories = result?.total_calories || 0;
+
+    const pool = await poolPromise;
+
+    // ✅ Fetch user's age separately
+    const ageResult = await pool.request()
+      .input('userId', sql.Int, userId)
+      .query('SELECT age FROM users WHERE user_id = @userId');
+    const age = ageResult.recordset[0]?.age || 0;
+
+    // ✅ Fetch recommended calories using age
+    const recResult = await pool.request()
+      .input('age', sql.Int, age)
+      .query(`
+        SELECT recommended_calories 
+        FROM recommended_calories 
+        WHERE @age BETWEEN age_min AND age_max
+      `);
+
+    const recommended = recResult.recordset[0]?.recommended_calories || 0;
+
+    res.json({ totalCalories, recommended });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error fetching graph data');
+  }
+};
+
+/**
+ * ✅ Get today's calorie intake history 
+ */
+exports.getHistory = async (req, res) => {
+  const userId = req.query.user_id;
+  if (!userId) return res.status(400).send('Missing user_id');
+
+  try {
+    const pool = await poolPromise;
+    const result = await pool.request()
+      .input('userId', sql.Int, userId)
+      .query(`
+        SELECT time, food_name, total_calories
+        FROM daily_calorie_intake
+        JOIN food_items ON daily_calorie_intake.food_id = food_items.food_id
+        WHERE user_id = @userId AND date = CAST(GETDATE() AS DATE)
+        ORDER BY time
+      `);
+
+    console.log('History result:', result.recordset);  // Debug log
+
+    const formattedResult = result.recordset.map(item => ({
+      ...item,
+      time: new Date(new Date(item.time).getTime() + 8 * 60 * 60 * 1000)  // ✅ Adjust to GMT+8
+        .toTimeString()
+        .substring(0, 5)
+    }));
+
+    res.json(formattedResult);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error fetching history');
+  }
+};
+
+/**
+ *  Search food items (by name, max 5 results)
+ */
+exports.searchFood = async (req, res) => {
+  const q = req.query.q;
+  if (!q) return res.json([]);
+
+  try {
+    const pool = await poolPromise;
+    const qTrimmed = q.trim();
+
+    const result = await pool.request()
+      .input('q', sql.NVarChar, `%${qTrimmed}%`)
+      .query(`
+        SELECT TOP 5 food_id, food_name, calories_per_unit 
+        FROM food_items 
+        WHERE food_name LIKE @q
+      `);
+
+    res.json(result.recordset);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error searching food');
+  }
+};
+
+/**
+ *  Add food entry (with calorie calculation)
+ */
+exports.addFoodEntry = async (req, res) => {
+  const { user_id, meal_type, food_id, quantity, time } = req.body;
+
+  if (!user_id || !meal_type || !food_id || !quantity || !time) {
+    return res.status(400).send('Missing fields');
+  }
+
+  try {
+    const pool = await poolPromise;
+
+    const foodResult = await pool.request()
+      .input('food_id', sql.Int, food_id)
+      .query('SELECT calories_per_unit FROM food_items WHERE food_id = @food_id');
+
+    const caloriesPerUnit = foodResult.recordset[0]?.calories_per_unit;
+    if (!caloriesPerUnit) {
+      return res.status(404).send('Food not found');
+    }
+
+    const totalCalories = caloriesPerUnit * quantity;
+    const formattedTime = `${time}:00`;  // Ensure HH:mm:ss
+
+    //  Use CAST(GETDATE() AS DATE) to avoid timezone issues
+    await pool.request()
+      .input('user_id', sql.Int, user_id)
+      .input('meal_type', sql.NVarChar, meal_type)
+      .input('food_id', sql.Int, food_id)
+      .input('quantity', sql.Int, quantity)
+      .input('total_calories', sql.Int, totalCalories)
+      .input('time', sql.NVarChar(8), formattedTime)
+      .query(`
+        INSERT INTO daily_calorie_intake 
+        (user_id, date, meal_type, food_id, quantity, total_calories, time)
+        VALUES (@user_id, CAST(GETDATE() AS DATE), @meal_type, @food_id, @quantity, @total_calories, @time)
+      `);
+
+    res.send('Food entry added successfully');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error adding food entry');
+  }
+};
