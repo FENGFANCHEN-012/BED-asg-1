@@ -31,7 +31,7 @@ app.get("/profiles/:id", profileController.getProfileById); // Get profile by us
 app.post("/profiles", validateCreateProfile, profileController.createProfile); // Create profile 
 app.put("/profiles/:id", validateCreateProfile, profileController.updateProfile); // Update profile by userId
 app.delete("/profiles/:id", profileController.deleteProfile); // Delete profile by userId
-// (Note: For a production app, you'd typically add a validation middleware here,
+//------------------------------------------------------------------------------------------------------------------------------
 // e.g., validateUser, similar to validateStudent)
 app.post("/signup",userController.signup);
 
