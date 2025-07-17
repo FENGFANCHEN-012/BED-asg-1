@@ -32,6 +32,7 @@ app.post("/profiles", validateCreateProfile, profileController.createProfile); /
 app.put("/profiles/:id", validateCreateProfile, profileController.updateProfile); // Update profile by userId
 app.delete("/profiles/:id", profileController.deleteProfile); // Delete profile by userId
 //------------------------------------------------------------------------------------------------------------------------------
+
 // e.g., validateUser, similar to validateStudent)
 app.post("/signup",userController.signup);
 
