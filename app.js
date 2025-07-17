@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const sql = require("mssql");
+const cors = require("cors");
 const dotenv = require("dotenv");
 const dbConfig = require("./dbConfig");
 //Validations-----------------------------------------------------------------------------------------------------------------------------------
@@ -14,6 +15,9 @@ const groupController = require("./controllers/group_controller"); // import Gro
 // Create Express app-----------------------------------------------------------------------------------------------------------------------------------
 const app = express();
 const port = process.env.PORT || 3000;
+
+app.use(cors());
+app.use(express.json());
 
 // Middleware (Parsing request bodies)-----------------------------------------------------------------------------------------------------------------------------------
 app.use(express.json()); // Parse JSON request bodies
@@ -36,6 +40,13 @@ app.delete("/profiles/:id", profileController.deleteProfile); // Delete profile 
 // e.g., validateUser, similar to validateStudent)
 app.post("/signup",userController.signup);
 
+
+
+
+// ✅ Manage Medication
+app.get("/medications", medController.getAllMedications);
+app.get("/medications/:id", validateId, medController.getMedicationById);
+app.post("/medications", validateMedication, medController.createMedication);
 
 
 // event
