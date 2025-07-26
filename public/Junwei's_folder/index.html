@@ -17,13 +17,11 @@
       line-height: 1.6;
     }
 
-    /* Navbar link font size & weight */
     .navbar-nav .nav-link {
       font-size: 1.4rem !important;
       font-weight: 600;
     }
 
-    /* Footer Styles */
     .footer {
       background-color: #193C78;
       padding: 40px 20px;
@@ -51,33 +49,41 @@
   <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
     <div class="container">
       <a class="navbar-brand" href="#">
-        <img src="img/logo.png" alt="LB Logo" style="width: 120px; height: auto;">
+        <img src="img/logo.png" alt="Lions Befrienders Singapore Logo" class="img-fluid" style="width: 120px;">
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      
+
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav me-auto ms-4 gap-4">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="html/calories.html">Calories Tracker</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="html/weather.html">Weather Forecast</a>
+          <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="calendar.html">Calendar</a></li>
+          <li class="nav-item"><a class="nav-link" href="events.html">Events</a></li>
+          <li class="nav-item"><a class="nav-link" href="medication.html">Medication</a></li>
+          <li class="nav-item"><a class="nav-link" href="calories.html">Calories Tracker</a></li>
+          <li class="nav-item"><a class="nav-link" href="weather.html">Weather Forecast</a></li>
+          
+          <!-- Points Dropdown -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="pointsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Points
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="pointsDropdown">
+              <li><a class="dropdown-item" href="points.html">Point Redemption</a></li>
+              <li><a class="dropdown-item" href="rewards.html">Rewards</a></li>
+            </ul>
           </li>
         </ul>
 
         <!-- Profile Dropdown -->
         <div class="dropdown">
-          <button class="btn btn-light dropdown-toggle" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          <button class="btn btn-light dropdown-toggle" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-label="User profile options">
             <i class="fas fa-user fa-lg"></i>
           </button>
           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-            <li><a class="dropdown-item" href="#">Profile</a></li>
+            <li><a class="dropdown-item" href="profile.html">Profile</a></li>
             <li><a class="dropdown-item" href="#">Logout</a></li>
           </ul>
         </div>
@@ -105,8 +111,13 @@
           <h5>Quick Links</h5>
           <ul class="list-unstyled">
             <li><a href="#">Home</a></li>
-            <li><a href="html/calories.html">Calories Tracker</a></li>
-            <li><a href="html/weather.html">Weather Forecast</a></li>
+            <li><a href="calendar.html">Calendar</a></li>
+            <li><a href="events.html">Events</a></li>
+            <li><a href="medication.html">Medication</a></li>
+            <li><a href="calories.html">Calories Tracker</a></li>
+            <li><a href="weather.html">Weather Forecast</a></li>
+            <li><a href="points.html">Point Redemption</a></li>
+            <li><a href="rewards.html">Rewards</a></li>
           </ul>
         </div>
         
