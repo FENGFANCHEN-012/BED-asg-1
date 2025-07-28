@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        userId: userId
+                        userId: userId,
                         name: name,
                         hobbies: hobbiesString,
                         age: age,
