@@ -6,13 +6,13 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const dbConfig = require("./dbConfig");
 //Validations-----------------------------------------------------------------------------------------------------------------------------------
-const profileController = require("./controllers/profileController");
+const profileController = require("./controllers/Samuel's_folder/profileController");
 const { validateProfileName, validateCreateProfile, validateProfileId } = require("./middlewares/profileValidation"); // Import all new validation middleware
 const userController = require("./controllers/userController");
 
 
 // fengfan
-const profileController = require("./controllers/fengfan_folder/user_profile_controller.js")
+const UserProfileController = require("./controllers/fengfan_folder/user_profile_controller.js")
 const EventController = require("./controllers/fengfan_folder/event_controller.js"); // import Event Controller
 const groupController = require("./controllers/fengfan_folder/group_controller.js"); // import Group Controller
 const friendController = require("./controllers/fengfan_folder/friend_controller.js");
@@ -63,7 +63,7 @@ app.post("/medications", validateMedication, medController.createMedication);
 
 // Fengfan ---------------------------------------------
 // user
-app.get("/profiles/recommended/:user_id", UserprofileController.getRecommendedProfiles);
+app.get("/profiles/recommended/:user_id", UserProfileController.getRecommendedProfiles);
 app.get("/profile/:user_id",UserprofileController.getInfo)
 app.put("/profile/:user_id",UserprofileController.updateHobby)
 // event

@@ -18,8 +18,9 @@
   "homepage": "https://github.com/FENGFANCHEN-012/BED-asg-1#readme",
   "description": "",
   "dependencies": {
+    "@azure/msal-common": "^15.9.0",
     "bcrypt": "^6.0.0",
-    "dotenv": "^17.2.0",
+    "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "mssql": "^11.0.1"
