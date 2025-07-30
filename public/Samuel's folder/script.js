@@ -1,43 +1,60 @@
+// public/script.js
 
-  const signupForm = document.getElementById("signupForm");
+const loginUsernameInput = document.getElementById('loginUsername');
+const loginPasswordInput = document.getElementById('loginPassword');
+const loginButton = document.getElementById('loginButton');
+const signupButton = document.getElementById('signupButton');
+// messageBox and API_BASE_URL are now provided by translation.js
 
-  
-    signupForm.addEventListener("submit", async function (e) {
-      e.preventDefault(); // Prevent default form submission
+// The showMessage function is available globally from translation.js
 
-      // Get the email and password input elements by their IDs
-      const emailInput = document.getElementById("signupEmail");
-      const passwordInput = document.getElementById("signupPassword");
+// Handle Login
+loginButton.addEventListener('click', async () => {
+    const username = loginUsernameInput.value.trim();
+    const password = loginPasswordInput.value.trim();
 
-      // Get the trimmed values from the input fields
-      const email = emailInput.value.trim();
-      const password = passwordInput.value.trim();
+    if (!username || !password) {
+        showMessage('Please enter both username and password.', true); // Use the global showMessage
+        return;
+    }
 
-      // Send the data to your backend /signup endpoint
-      try {
-        const response = await fetch("http://localhost:3000/signup", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password }),
+    try {
+        // Use the global API_BASE_URL
+        const response = await fetch(`${API_BASE_URL}/users/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ username, password })
         });
 
-        const result = await response.json(); // Parse the JSON response from the server
+        const data = await response.json();
 
         if (response.ok) {
-          // If the response status is 2xx (success)
-          alert("Sign up successful!");
-          // Redirect to the index page after successful registration, matching signup.html's close button
-          window.location.href = "index.html";
-        } else {
-          // If the response status is an error (e.g., 400, 500)
-          alert("Error: " + (result.error || "Unknown error occurred.")); // Display error message from server, or a generic one
-        }
-      } catch (error) {
-        // Catch network errors or issues with the fetch request itself
-        console.error("Error during signup fetch:", error);
-        alert("An error occurred during signup. Please check your network connection and try again.");
-      }
-    });
-  
+            localStorage.setItem('jwtToken', data.token); // Store the token
+            showMessage('Login successful! Redirecting...', false);
+            console.log('Login successful. Token:', data.token);
+            // Example: Redirect to a dummy dashboard page
+            setTimeout(() => {
+                // Check user role and redirect accordingly
+                if (data.role === 'admin') {
+                    window.location.href = '/admin.html';
+                } else {
+                    window.location.href = '/dashboard.html';
+                }
+            }, 1000);
 
-  
+        } else {
+            showMessage(data.message || 'Login failed. Please check your credentials.', true);
+        }
+    } catch (error) {
+        console.error('Error during login:', error);
+        showMessage('An error occurred during login. Please try again.', true);
+    }
+});
+
+// Handle Signup Button Click (Redirect to a signup page)
+signupButton.addEventListener('click', () => {
+    // Redirect to a dedicated signup page
+    window.location.href = '/signup.html';
+});

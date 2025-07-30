@@ -1,5 +1,6 @@
 // controllers/profileController.js
 const profileModel = require("../models/profileModel");
+const userModel = require("../models/userModel"); // Added userModel import
 
 async function checkProfileName(req, res) {
   const { name } = req.body; // 'name' is guaranteed to be valid by middleware
@@ -17,80 +18,45 @@ async function checkProfileName(req, res) {
   }
 }
 
-async function createProfile(req, res) {
-  // IMPORTANT: In a real application, userId should come from an authenticated session/token,
-  // not directly from req.body. For this example, it's still assumed to be in body.
-  const { userId, name, hobbies, age, description } = req.body;
+// Removed createProfile as it's now handled by userController.registerUser
+
+async function getOwnProfile(req, res) {
+  // userId should come from req.user.user_id (from JWT)
+  const user_id = req.user.user_id; // Get user_id from the authenticated user (now directly from JWT payload)
 
   try {
-    // It's still good practice to re-check name uniqueness here as a safeguard
-    // against potential race conditions, even though primary validation is in middleware.
-    const existingProfile = await profileModel.getProfileByName(name.trim());
-    if (existingProfile) {
-      return res.status(409).json({ error: "This profile name is already taken. Please choose another." });
-    }
-
-    const newProfile = await profileModel.createProfile(userId, { name: name.trim(), hobbies, age, description });
-    res.status(201).json({ message: "Profile created successfully!", profile: newProfile });
-
-  } catch (error) {
-    console.error("Controller error creating profile:", error);
-    // Handle specific database errors, e.g., foreign key constraint violation if userId doesn't exist
-    if (error.message && error.message.includes("FOREIGN KEY constraint")) {
-      return res.status(400).json({ error: "Invalid user ID provided. User must exist." });
-    }
-    res.status(500).json({ error: "Internal server error during profile creation." });
-  }
-}
-
-async function getAllProfiles(req, res) {
-  try {
-    const profiles = await profileModel.getAllProfiles();
-    res.status(200).json(profiles);
-  } catch (error) {
-    console.error("Controller error getting all profiles:", error);
-    res.status(500).json({ error: "Internal server error fetching profiles." });
-  }
-}
-
-async function getProfileById(req, res) {
-  // userId is attached to req by validateProfileId middleware
-  const userId = req.params.id;
-  try {
-    const profile = await profileModel.getProfileByUserId(userId);
+    const profile = await profileModel.getProfileByUserId(user_id);
     if (!profile) {
-      return res.status(404).json({ message: "Profile not found for this user ID." });
+      return res.status(404).json({ error: "Profile not found for this user." });
     }
     res.status(200).json(profile);
   } catch (error) {
-    console.error("Controller error getting profile by ID:", error);
-    res.status(500).json({ error: "Internal server error fetching profile." });
+    console.error("Controller error retrieving own profile:", error);
+    res.status(500).json({ error: "Internal server error retrieving profile." });
   }
 }
 
-async function updateProfile(req, res) {
-  // userId is attached to req by validateProfileId middleware
-  const userId = req.params.id;
-  // profileInfo is validated by validateProfile middleware
-  const profileInfo = req.body;
+async function updateOwnProfile(req, res) {
+  // userId should come from req.user.user_id (from JWT)
+  const user_id = req.user.user_id; // Get user_id from the authenticated user (now directly from JWT payload)
+  const profileInfo = req.body; // Body contains name, hobbies, age, description
 
   try {
-    // Check if the profile exists before attempting to update
-    const existingProfile = await profileModel.getProfileByUserId(userId);
+    const existingProfile = await profileModel.getProfileByUserId(user_id);
     if (!existingProfile) {
-      return res.status(404).json({ message: "Profile not found for this user ID." });
+      return res.status(404).json({ error: "Profile not found for this user." });
     }
 
-    // Optional: If name is being updated, check for uniqueness against other profiles (excluding current user's)
+    // Check for name conflict only if name is being changed and it's not the current profile's name
     if (profileInfo.name && profileInfo.name.trim() !== existingProfile.name) {
       const nameConflict = await profileModel.getProfileByName(profileInfo.name.trim());
       // Ensure the conflicting name doesn't belong to the current user's profile
-      if (nameConflict && nameConflict.user_id !== userId) {
+      if (nameConflict && nameConflict.user_id !== user_id) {
         return res.status(409).json({ error: "The new profile name is already taken by another user." });
       }
     }
 
-    const updatedProfile = await profileModel.updateProfile(userId, profileInfo);
+    const updatedProfile = await profileModel.updateProfile(user_id, profileInfo);
     res.status(200).json({ message: "Profile updated successfully!", profile: updatedProfile });
   } catch (error) {
     console.error("Controller error updating profile:", error);
@@ -98,27 +64,10 @@ async function updateProfile(req, res) {
   }
 }
 
-async function deleteProfile(req, res) {
-  // userId is attached to req by validateProfileId middleware
-  const userId = req.params.id;
-  try {
-    const deleted = await profileModel.deleteProfile(userId);
-    if (!deleted) {
-      return res.status(404).json({ message: "Profile not found for this user ID." });
-    }
-    res.status(204).send(); // No content for successful deletion
-  } catch (error) {
-    console.error("Controller error deleting profile:", error);
-    res.status(500).json({ error: "Internal server error deleting profile." });
-  }
-}
-
+// deleteProfile function is now handled by userController.deleteUser for full user deletion
 
 module.exports = {
   checkProfileName,
-  createProfile,
-  getAllProfiles,
-  getProfileById,
-  updateProfile,
-  deleteProfile,
+  getOwnProfile, // Exported new function
+  updateOwnProfile, // Exported new function
 };

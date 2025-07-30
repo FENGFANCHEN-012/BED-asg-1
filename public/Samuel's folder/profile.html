@@ -3,50 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Profile | Lions Befrienders</title>
-    <link rel="stylesheet" href="profile-display.css">
-    <link rel="stylesheet" href="styles.css"> <!-- Include your main styles if needed -->
-</head>
+    <title data-translate-key="profile_title">User Profile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css"> </head>
 <body>
-    <div class="profile-display-container">
-        <h2 class="profile-display-title">My Profile</h2>
-        <div id="profileDetails" class="profile-details-card">
-            <!-- Profile data will be loaded here by JavaScript -->
-            <p><strong>Name:</strong> <span id="display-name">Loading...</span></p>
-            <p><strong>Hobbies:</strong> <span id="display-hobbies">Loading...</span></p>
-            <p><strong>Age:</strong> <span id="display-age">Loading...</span></p>
-            <p><strong>Description:</strong> <span id="display-description">Loading...</span></p>
-            <div class="profile-actions">
-                <button id="editProfileBtn" class="profile-action-button edit-button">Edit Profile</button>
-                <button id="deleteProfileBtn" class="profile-action-button delete-button">Delete Profile</button>
+    <div class="profile-container">
+        <h1 data-translate-key="profile_welcome">Your Profile</h1>
+        <p data-translate-key="profile_intro">View and manage your personal information.</p>
+
+        <div class="profile-display-area">
+            <div class="profile-field">
+                <strong><span data-translate-key="profile_username_label">Username:</span></strong> <span id="displayUsername"></span>
+            </div>
+            <div class="profile-field">
+                <strong><span data-translate-key="profile_email_label">Email:</span></strong> <span id="displayEmail"></span>
+            </div>
+            <div class="profile-field">
+                <strong><span data-translate-key="profile_name_label">Profile Name:</span></strong> <span id="displayName"></span>
+            </div>
+            <div class="profile-field">
+                <strong><span data-translate-key="profile_age_label">Age:</span></strong> <span id="displayAge"></span>
+            </div>
+            <div class="profile-field">
+                <strong><span data-translate-key="profile_hobbies_label">Hobbies:</span></strong> <span id="displayHobbies"></span>
+            </div>
+            <div class="profile-field">
+                <strong><span data-translate-key="profile_description_label">Description:</span></strong> <span id="displayDescription"></span>
+            </div>
+
+            <button class="edit-button" id="editProfileButton" data-translate-key="edit_profile_button">Edit Profile</button>
+        </div>
+
+        <div class="profile-edit-area" style="display: none;">
+            <div class="input-group">
+                <label for="editProfileName" data-translate-key="profile_name_label">Profile Name:</label>
+                <input type="text" id="editProfileName" required>
+            </div>
+            <div class="input-group">
+                <label for="editProfileAge" data-translate-key="profile_age_label">Age:</label>
+                <input type="number" id="editProfileAge" min="1" max="120" required>
+            </div>
+            <div class="input-group">
+                <label for="editProfileHobbies" data-translate-key="profile_hobbies_label">Hobbies (comma-separated):</label>
+                <input type="text" id="editProfileHobbies">
+            </div>
+            <div class="input-group full-width">
+                <label for="editProfileDescription" data-translate-key="profile_description_label">Description:</label>
+                <textarea id="editProfileDescription"></textarea>
+            </div>
+            <div class="button-group">
+                <button class="save-button" id="saveProfileButton" data-translate-key="save_profile_button">Save Changes</button>
+                <button class="cancel-button" id="cancelEditButton" data-translate-key="cancel_button">Cancel</button>
             </div>
         </div>
 
-        <!-- Edit Profile Modal/Form -->
-        <div id="editProfileModal" class="edit-profile-modal hidden">
-            <div class="edit-profile-content">
-                <span class="close-button" id="closeEditModal">&times;</span>
-                <h3 class="edit-modal-title">Edit Your Profile</h3>
-                <form id="editProfileForm" class="edit-profile-form">
-                    <label for="editName" class="edit-label">Name:</label>
-                    <input type="text" id="editName" class="edit-input" required>
-                    <div id="editNameValidationMessage" class="validation-message"></div>
-
-                    <label for="editHobbies" class="edit-label">Hobbies (comma-separated):</label>
-                    <input type="text" id="editHobbies" class="edit-input" placeholder="e.g., reading, hiking, cooking">
-
-                    <label for="editAge" class="edit-label">Age:</label>
-                    <input type="number" id="editAge" class="edit-input" min="1" max="120" required>
-
-                    <label for="editDescription" class="edit-label">Description:</label>
-                    <textarea id="editDescription" class="edit-input edit-textarea" rows="4" required></textarea>
-
-                    <button type="submit" class="edit-save-button">Save Changes</button>
-                </form>
-            </div>
+        <div class="button-group">
+            <button class="back-button" id="backToDashboardButton" data-translate-key="back_to_dashboard_button">Back to Dashboard</button>
+            <button class="logout-button" id="logoutButton" data-translate-key="logout_button">Logout</button>
+            <button class="settings-button" id="settingsButton" data-translate-key="settings_button">Settings</button>
         </div>
     </div>
 
-    <script src="profile-display.js"></script>
-</body>
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h3 data-translate-key="settings_title">Settings</h3>
+            <label for="languageSelect" data-translate-key="select_language">Select Language:</label>
+            <select id="languageSelect">
+                <option value="en" data-translate-key="lang_en">English</option>
+                <option value="es" data-translate-key="lang_es">Spanish</option>
+                <option value="fr" data-translate-key="lang_fr">French</option>
+                <option value="zh" data-translate-key="lang_zh">Chinese</option>
+                <option value="ms" data-translate-key="lang_ms">Malay</option>
+                <option value="ta" data-translate-key="lang_ta">Tamil</option>
+            </select>
+            <button class="translate-button" id="applyTranslationButton" data-translate-key="apply_translation">Apply Translation</button>
+        </div>
+    </div>
+
+    <div id="messageBox" class="message-box"></div>
+
+    <script src="translation.js"></script> <script src="profile.js"></script> </body>
 </html>
