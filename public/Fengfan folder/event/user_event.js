@@ -187,6 +187,10 @@ function showError(message = 'An error occurred') {
 
 document.addEventListener('DOMContentLoaded', function() {
   const userId = localStorage.getItem('userId') || 1;
+  const hobby = localStorage.getItem("hobby") 
+  if(hobby){
+
+  
   
   if (!userId) {
     console.error('User ID not found');
@@ -256,4 +260,15 @@ document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('registeredEvents').innerHTML = 
         '<p class="empty-message">Error loading events. Please try again later.</p>';
     });
-});
+}
+else{
+  showAlert("You haven't choose your hobby, choose your hobby first so we can recommend hobby for you!")
+  setTimeout(function() {
+  window.location.href='../../Fengfan folder/hobby selection/hobby-selection.html'
+}, 1000);
+ 
+}
+
+}
+
+);

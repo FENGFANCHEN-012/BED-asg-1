@@ -38,7 +38,11 @@
       color: white;
       padding: 30px;
       text-align: center;
-      font-size: 36px;
+      font-size: 40px; /* Increased header font size */
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     .event-list {
@@ -70,7 +74,7 @@
 
     .event-details p {
       margin: 0;
-      font-size: 24px;
+      font-size: 28px; /* Increased event details font size */
       line-height: 1.5;
     }
 
@@ -80,12 +84,13 @@
     }
 
     .event-actions button {
-      padding: 10px 20px;
+      padding: 12px 25px; /* Larger padding for event action buttons */
       background-color: #193c78;
       color: white;
       border: none;
       border-radius: 8px;
       cursor: pointer;
+      font-size: 18px; /* Larger font for event action buttons */
     }
 
     .event-actions button:hover {
@@ -94,25 +99,46 @@
 
     .empty-message {
       text-align: center;
-      font-size: 24px;
+      font-size: 28px; /* Increased empty message font size */
     }
 
+    .header-buttons {
+      margin-top: 20px; /* Added space between header text and buttons */
+      display: flex;
+      gap: 15px; /* Increased gap between buttons */
+    }
+
+    .header-buttons button {
+      padding: 15px 30px; /* Larger padding for header buttons */
+      background-color: #fff;
+      color: #193c78;
+      border: 3px solid #193c78; /* Thicker border for prominence */
+      border-radius: 10px; /* Slightly larger radius */
+      cursor: pointer;
+      font-size: 20px; /* Larger font for header buttons */
+    }
+
+    .header-buttons button:hover {
+      background-color: #e4f2ff;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
       <h2>Your Registered Events</h2>
+      <div class="header-buttons">
+        <button onclick="location.reload()">Refresh</button>
+        <button onclick="window.location.href='./Event-Selection.html'">Add Event</button>
+      </div>
     </div>
 
     <!-- Registered Events Section -->
     <div class="event-list" id="registeredEvents">
-  <p class="empty-message"></p>
-</div>
+      <p class="empty-message"></p>
+    </div>
   </div>
 
-  <script src="user_event.js">
-
-  </script>
+  <script src="user_event.js"></script>
 </body>
 </html>
