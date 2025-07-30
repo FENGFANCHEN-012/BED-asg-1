@@ -206,7 +206,7 @@ async function deleteGroup(groupId) {
         try {
             const request = new sql.Request(transaction);
             
-            // 使用模板字符串直接嵌入值（不推荐用于生产环境）
+            
             await request.query(`DELETE FROM GroupChats WHERE group_id = ${groupId}`);
             await request.query(`DELETE FROM GroupMembers WHERE group_id = ${groupId}`);
             await request.query(`DELETE FROM GroupAnnouncements WHERE group_id = ${groupId}`);

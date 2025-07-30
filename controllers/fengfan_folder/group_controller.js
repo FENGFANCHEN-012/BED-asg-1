@@ -1,5 +1,5 @@
 const groupModel = require("../../models/fengfan_folder/group_model");
-
+const mailboxModel = require("../../models/fengfan_folder/message_model");
 async function getUserGroups(req, res) {
     try {
         const { user_id } = req.params;
@@ -269,30 +269,53 @@ async function getGroupMemberProfiles(req, res) {
 }
 
 async function deleteGroup(req, res) {
-   try {
+    try {
         const groupId = parseInt(req.params.group_id);
+        const { reason } = req.body;
+
         if (isNaN(groupId)) {
-            return res.status(400).json({ error: "Invalid group ID" });
+            return res.status(400).json({ success: false, error: "Invalid group ID" });
+        }
+        if (!reason || typeof reason !== 'string' || reason.trim() === '') {
+            return res.status(400).json({ success: false, error: "Reason is required" });
         }
 
-        const result = await groupModel.deleteGroup(groupId);
-        
-        if (result.success) {
-            res.status(200).json({ message: "Group deleted successfully" });
-        } else {
-            res.status(500).json({ error: "Failed to delete group" });
+        // Fetch group details to get the group name
+        const groupDetails = await groupModel.getGroupDetails(groupId);
+        if (!groupDetails) {
+            return res.status(404).json({ success: false, error: "Group not found" });
         }
+
+        // Fetch group members
+        const members = await groupModel.getGroupMember(groupId);
+        if (!members || members.length === 0) {
+            // Proceed with deletion even if no members are found
+            console.warn(`No members found for group ID ${groupId}`);
+        } else {
+            // Send mailbox notifications
+            const memberIds = members.map(member => member.user_id);
+            const message = `Group "${groupDetails.name}" (ID: ${groupId}) was deleted. Reason: ${reason}`;
+            await mailboxModel.sendMessagesToUsers(memberIds, message);
+        }
+
+        // Delete the group
+        const result = await groupModel.deleteGroup(groupId);
+        if (!result.success) {
+            return res.status(500).json({ success: false, error: "Failed to delete group" });
+        }
+
+        res.status(200).json({ success: true, message: "Group deleted successfully" });
     } catch (error) {
         console.error('Error deleting group:', error);
-        
         if (error.number === 547) {
-            return res.status(400).json({ 
-                error: "Cannot delete group because it still contains related data" 
+            return res.status(400).json({
+                success: false,
+                error: "Cannot delete group because it still contains related data"
             });
         }
-        
-        res.status(500).json({ 
-            error: error.message || "Error deleting group" 
+        res.status(500).json({
+            success: false,
+            error: error.message || "Error deleting group"
         });
     }
 }

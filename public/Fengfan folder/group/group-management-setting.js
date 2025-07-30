@@ -243,7 +243,7 @@ async function renderGroupDetails(group,name) {
         
       
   const result = await response.json();
- const data = result.data;
+ const data = result.data[0];
 console.log(data)
  
   

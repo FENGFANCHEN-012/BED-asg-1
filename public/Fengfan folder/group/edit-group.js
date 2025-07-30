@@ -309,7 +309,7 @@ fileInput.addEventListener("change", async () => {
   });
 
   cancelBtn.addEventListener("click", () => {
-    localStorage.setItem("")
+   
     window.location.href = "group-management-setting.html";
   });
 });

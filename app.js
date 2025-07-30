@@ -19,7 +19,7 @@ const groupController = require("./controllers/fengfan_folder/group_controller.j
 const friendController = require("./controllers/fengfan_folder/friend_controller.js");
 const chatController = require("./controllers/fengfan_folder/chat_controller.js");
 const groupChatController = require("./controllers/fengfan_folder/group_chat_controller.js");
-
+const mailboxController = require('./controllers/fengfan_folder/message_controller.js'); 
 // Create Express app-----------------------------------------------------------------------------------------------------------------------------------
 const app = express();
 const port = process.env.PORT || 3000;
@@ -100,7 +100,8 @@ app.get('/group-chat/:groupId', groupChatController.getGroupChatHistory);
 app.post('/group-chat/send', groupChatController.sendGroupMessage);
 app.get('/group-info/:groupId', groupChatController.getGroupInfo);
 app.get('/group-members/:groupId', groupChatController.getGroupMembers);
-
+// message
+app.get('/mailbox/:user_id', mailboxController.getMailboxMessages);
 //---------------------------------------------
 
 
