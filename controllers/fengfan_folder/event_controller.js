@@ -18,7 +18,7 @@ async function getUserEvent(req, res) {
 
 async function signUpEvent(req, res) {
   try {
-    const { event_id, user_id ,status} = req.body;
+    const { event_id, user_id } = req.body;
     if (!event_id || !user_id) {
       return res.status(400).json({ error: "Event ID and User ID are required" });
     }
@@ -29,13 +29,12 @@ async function signUpEvent(req, res) {
     } else {
       res.status(500).json({ error: "Failed to sign up for the event" });
     }
+  } catch (error) {
+    console.error("Controller error:", error);
+    res.status(400).json({ error: error.message || "Error signing up for event" });
   }
-    catch (error) {
-        console.error("Controller error:", error);
-        res.status(500).json({ error: "Error signing up for event" });
-    }
 }
-// In event_controller.js
+
 async function getEventDetails(req, res) {
   try {
        const eventId =req.params.event_id;
@@ -90,40 +89,21 @@ async function fetchEvent(req, res) {
 }
 
 async function checkUserEventStatus(req, res) {
-
   try {
+    if (!req.query) {
+      return res.status(400).json({ error: "Query parameters are missing" });
+    }
     const { event_id, user_id } = req.query;
-    
+
     if (!event_id || !user_id) {
-      return res.status(400).json({ 
-        error: "Event ID and User ID are required" 
-      });
+      return res.status(400).json({ error: "Event ID and User ID are required" });
     }
 
-    const pool = await sql.connect(dbConfig);
-    const result = await pool.request()
-      .input('event_id', sql.Int, event_id)
-      .input('user_id', sql.Int, user_id)
-      .query(`
-        SELECT status 
-        FROM event_signup 
-        WHERE event_id = @event_id AND user_id = @user_id
-      `);
-
-    if (result.recordset.length > 0) {
-      res.json({ 
-        status: result.recordset[0].status 
-      });
-    } else {
-      res.json({ 
-        status: "cancelled" 
-      });
-    }
+    const status = await eventModel.checkUserEventStatus(user_id, event_id);
+    res.json({ status });
   } catch (error) {
-    console.error("Database error:", error);
-    res.status(500).json({ 
-      error: "Error checking event status" 
-    });
+    console.error("Error checking event status:", error);
+    res.status(500).json({ error: "Error checking event status" });
   }
 }
 

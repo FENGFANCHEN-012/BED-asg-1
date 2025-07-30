@@ -1,14 +1,14 @@
 const sql = require('mssql');
 const dbConfig = require('../../dbConfig');
 
-class ProfileModel {
-    // 获取推荐profiles（按兴趣匹配度排序）
-    async getRecommendedProfiles(userId) {
+
+   
+    async function getRecommendedProfiles(userId) {
         let connection;
         try {
             connection = await sql.connect(dbConfig);
             
-            // 查询当前用户的兴趣爱好
+          
             const userHobbyQuery = `
                 SELECT hobbies FROM Profiles WHERE user_id = @userId
             `;
@@ -22,7 +22,7 @@ class ProfileModel {
             
             const userHobbies = userHobbyResult.recordset[0].hobbies;
             
-            // 获取推荐profiles（排除自己）
+            
             const query = `
                 SELECT 
                     p.user_id, 
@@ -59,7 +59,7 @@ class ProfileModel {
             if (connection) await connection.close();
         }
     }
-}
+
 
 async function updateHobby(user_id,profile_id,hobby,detail,description){
      let pool;
@@ -114,7 +114,7 @@ async function getInfo(friend_id){
         try {
             connection = await sql.connect(dbConfig);
             
-            // 查询当前用户的兴趣爱好
+           
             const userHobbyQuery = `
                 SELECT hobbies FROM Profiles WHERE user_id = @userId
             `;
@@ -128,7 +128,7 @@ async function getInfo(friend_id){
             
             const userHobbies = userHobbyResult.recordset[0].hobbies;
             
-            // 获取推荐profiles（排除自己）
+         
             const query = `
                 SELECT 
                     p.user_id, 

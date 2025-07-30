@@ -191,14 +191,17 @@ const user_id = localStorage.getItem("user_id") || 1 // local
 
 
    document.addEventListener('DOMContentLoaded', function() {
+    
    loadFriends();
+   localStorage.setItem('add_group',false)
    })
 
 
 
    async function deleteFriend(friendId) {
   try {
-    if (!confirm("Are you sure?")) return;
+   const confirmed = await showConfirm("Are you sure you want to delete your friend?");
+    if (!confirmed) return; // Return if user clicks "Cancel"
     
     const userId = parseInt(localStorage.getItem("user_id")) || 1;
     const numericFriendId = parseInt(friendId);
@@ -252,7 +255,7 @@ async function loadFriends() {
           ${checkboxHtml}
           <div class="friend-photo">${friend.name.charAt(0)}</div>
           <div class="friend-details">
-            <h1 style='font-size:3vw'>${friend.nick_name}</h1>
+            <h1 style='font-size:3vw'>${friend.nick_name || ''}</h1>
             <p class="friend-name">${friend.name}</p>
             <p>Hobby: ${friend.hobbies}</p>
             <p>Details: ${friend.detail}</p>

@@ -6,13 +6,14 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const dbConfig = require("./dbConfig");
 //Validations-----------------------------------------------------------------------------------------------------------------------------------
-const profileController = require("./controllers/Samuel's_folder/profileController");
-const { validateProfileName, validateCreateProfile, validateProfileId } = require("./middlewares/profileValidation"); // Import all new validation middleware
-const userController = require("./controllers/userController");
+//const profileController = require("./controllers/Samuel's_folder/profileController");
+//const { validateProfileName, validateCreateProfile, validateProfileId } = require("./middlewares/profileValidation"); // Import all new validation middleware
+//const userController = require("./controllers/userController");
 
 
 // fengfan
-const UserProfileController = require("./controllers/fengfan_folder/user_profile_controller.js")
+
+const UserProfileController = require("./controllers/fengfan_folder/user_profile_controller")
 const EventController = require("./controllers/fengfan_folder/event_controller.js"); // import Event Controller
 const groupController = require("./controllers/fengfan_folder/group_controller.js"); // import Group Controller
 const friendController = require("./controllers/fengfan_folder/friend_controller.js");
@@ -39,24 +40,24 @@ app.use(express.static(path.join(__dirname, 'public'))); //
 
 // Routes
 // Full Profile Management Routes -----------------------------------------------------------------------------------------------------------------------
-app.get("/profiles", profileController.getAllProfiles); // Get all profiles
-app.get("/profiles/:id", profileController.getProfileById); // Get profile by userId
-app.post("/profiles", validateCreateProfile, profileController.createProfile); // Create profile 
-app.put("/profiles/:id", validateCreateProfile, profileController.updateProfile); // Update profile by userId
-app.delete("/profiles/:id", profileController.deleteProfile); // Delete profile by userId
+//app.get("/profiles", profileController.getAllProfiles); // Get all profiles
+//app.get("/profiles/:id", profileController.getProfileById); // Get profile by userId
+//app.post("/profiles", validateCreateProfile, profileController.createProfile); // Create profile 
+//app.put("/profiles/:id", validateCreateProfile, profileController.updateProfile); // Update profile by userId
+//app.delete("/profiles/:id", profileController.deleteProfile); // Delete profile by userId
 //------------------------------------------------------------------------------------------------------------------------------
 
 
 // e.g., validateUser, similar to validateStudent)
-app.post("/signup",userController.signup);
+//app.post("/signup",userController.signup);
 
 
 
 
 // ✅ Manage Medication
-app.get("/medications", medController.getAllMedications);
-app.get("/medications/:id", validateId, medController.getMedicationById);
-app.post("/medications", validateMedication, medController.createMedication);
+//app.get("/medications", medController.getAllMedications);
+//app.get("/medications/:id", validateId, medController.getMedicationById);
+//app.post("/medications", validateMedication, medController.createMedication);
 
 
 
@@ -64,8 +65,8 @@ app.post("/medications", validateMedication, medController.createMedication);
 // Fengfan ---------------------------------------------
 // user
 app.get("/profiles/recommended/:user_id", UserProfileController.getRecommendedProfiles);
-app.get("/profile/:user_id",UserprofileController.getInfo)
-app.put("/profile/:user_id",UserprofileController.updateHobby)
+app.get("/profile/:user_id",UserProfileController.getInfo)
+app.put("/profile/:user_id",UserProfileController.updateHobby)
 // event
 app.get("/user/event/:user_id", EventController.getUserEvent);
 app.get("/event/:event_id", EventController.getEventDetails);

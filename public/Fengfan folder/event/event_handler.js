@@ -63,6 +63,27 @@ function injectAlertStyles() {
       transform: translateY(2px);
       box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
+    .blue-button {
+      padding: 15px 30px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 18px;
+      color: white;
+      transition: all 0.3s;
+    }
+    .signup-btn {
+      background-color: #1E4A9B;
+    }
+    .signup-btn:hover {
+      background-color: #265BB8;
+    }
+    .cancel-btn {
+      background-color: #ff4d4d;
+    }
+    .cancel-btn:hover {
+      background-color: #e63939;
+    }
     @media (max-width: 768px) {
       .alert-box {
         width: 90%;
@@ -77,6 +98,10 @@ function injectAlertStyles() {
         font-size: 24px;
         padding: 20px 40px;
         min-width: 80%;
+      }
+      .blue-button {
+        font-size: 16px;
+        padding: 12px 25px;
       }
     }
   `;
@@ -175,17 +200,6 @@ function showConfirm(message) {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
 // Event page setup
 async function setupEventPage() {
   // Set default user if not exists
@@ -214,17 +228,21 @@ async function checkRegistrationStatus() {
     const eventId = JSON.parse(localStorage.getItem('currentEvent')).event_id;
     const userId = localStorage.getItem("userId");
     const apiBaseUrl = "http://localhost:3000";
-    
-    const response = await fetch(`${apiBaseUrl}/user_event/status?event_id=${eventId}&user_id=${userId}`);
-    
+    const url = `${apiBaseUrl}/user_event/status?event_id=${eventId}&user_id=${userId}`;
+    console.log("Fetching URL:", url); // Log the URL to verify
+    const response = await fetch(url);
     if (response.ok) {
       const data = await response.json();
       updateButtonUI(data.status === "signed_up");
+    } else {
+      console.error("Status check failed:", response.statusText);
+      updateButtonUI(false);
+      showError("Failed to check registration status. Please try again.");
     }
   } catch (error) {
     console.error("Status check error:", error);
-    // Default to sign up button if check fails
     updateButtonUI(false);
+    showError("Error connecting to the server. Please try again.");
   }
 }
 
@@ -259,16 +277,15 @@ async function handleSignUp() {
     });
 
     if (response.ok) {
- showSuccess('Sign Up Successful! 🎉');
-
-      updateButtonUI(true);
+      showSuccess('Sign Up Successful! 🎉');
+      await checkRegistrationStatus(); // Re-check status to ensure UI is updated
     } else {
       const error = await response.json();
       throw new Error(error.message || "Sign up failed");
     }
   } catch (error) {
     console.error("Sign up error:", error);
-    alert(error.message);
+    showError(error.message || "Sign up failed. Please try again.");
   }
 }
 
@@ -292,7 +309,7 @@ async function handleCancel() {
 
     if (response.ok) {
       showSuccess("Your registration has been cancelled");
-      updateButtonUI(false);
+      await checkRegistrationStatus(); // Re-check status to ensure UI is updated
     } else {
       const error = await response.json();
       throw new Error(error.message || "Cancellation failed");

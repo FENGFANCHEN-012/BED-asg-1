@@ -4,7 +4,7 @@ const dbConfig = require("../../dbConfig.js");
 
 
 // In event_model.js
-async function getUserEvent(userId) { // Only need userId parameter
+async function getUserEvent(userId) {
   let connection;
   try {
     connection = await sql.connect(dbConfig);
@@ -12,14 +12,14 @@ async function getUserEvent(userId) { // Only need userId parameter
       SELECT e.* 
       FROM event_signup es
       JOIN Event e ON es.event_id = e.event_id
-      WHERE es.user_id = @user_id
+      WHERE es.user_id = @userId
     `;
     const result = await connection.request()
-      .input("user_id", sql.Int, userId)
+      .input("userId", sql.Int, userId) // Match @userId
       .query(query);
     return result.recordset;
-  } catch(error) {
-    console.log(error);
+  } catch (error) {
+    console.error("Database error:", error);
     throw error;
   } finally {
     if (connection) {
@@ -49,13 +49,13 @@ async function getEventDetails(eventId) {
   let connection;
   try {
     connection = await sql.connect(dbConfig);
-    const query = "SELECT * FROM Event WHERE event_id = @event_id";
+    const query = "SELECT * FROM Event WHERE event_id = @eventId";
     const result = await connection.request()
-      .input("event_id", sql.Int, eventId)
+      .input("eventId", sql.Int, eventId) // Match @eventId
       .query(query);
-    return result.recordset[0]; // Return the first (and only) event
-  } catch(error) {
-    console.log(error);
+    return result.recordset[0];
+  } catch (error) {
+    console.error("Database error:", error);
     throw error;
   } finally {
     if (connection) {
@@ -72,21 +72,29 @@ async function signUpEvent(eventId, userId) {
   let connection;
   try {
     connection = await sql.connect(dbConfig);
-    const query = "INSERT INTO event_signup (event_id, user_id, status) VALUES (@event_id, @user_id, 'signed_up')";
+    
+    // Check if already signed up
+    const checkQuery = "SELECT * FROM event_signup WHERE event_id = @eventId AND user_id = @userId";
+    const checkResult = await connection.request()
+      .input("eventId", sql.Int, eventId)
+      .input("userId", sql.Int, userId)
+      .query(checkQuery);
+    
+    if (checkResult.recordset.length > 0) {
+      throw new Error("User is already signed up for this event");
+    }
+
+    const insertQuery = "INSERT INTO event_signup (event_id, user_id, status) VALUES (@eventId, @userId, 'signed_up')";
     const result = await connection.request()
-      .input("event_id", sql.Int, eventId)
-        .input("user_id", sql.Int, userId)          // change the id name
-        .input("status", sql.VarChar, "signed_up")
-      .query(query);
-    return result.rowsAffected > 0; // Return true if the insert was successful
-  } 
-  
-  catch (error) {
+      .input("eventId", sql.Int, eventId)
+      .input("userId", sql.Int, userId)
+      .query(insertQuery);
+    
+    return result.rowsAffected > 0;
+  } catch (error) {
     console.error("Database error:", error);
     throw error;
-  }
-  
-  finally {
+  } finally {
     if (connection) {
       try {
         await connection.close();
@@ -99,21 +107,18 @@ async function signUpEvent(eventId, userId) {
 
 
 // In event_model.js
-async function cancelEvent(eventId, userId) { // Same name but now does DELETE
+async function cancelEvent(eventId, userId) {
   let connection;
   try {
     connection = await sql.connect(dbConfig);
-    
     const query = `
       DELETE FROM event_signup 
-      WHERE event_id = @event_id 
-        AND user_id = @user_id
+      WHERE event_id = @eventId 
+        AND user_id = @userId
     `;
-    
     const request = connection.request();
-    request.input("event_id", sql.Int, eventId);
-    request.input("user_id", sql.Int, userId);
-    
+    request.input("eventId", sql.Int, eventId); // Match @eventId
+    request.input("userId", sql.Int, userId); // Match @userId
     const result = await request.query(query);
 
     if (result.rowsAffected[0] > 0) {
@@ -140,20 +145,21 @@ async function cancelEvent(eventId, userId) { // Same name but now does DELETE
 // Export (keep same names so controller doesn't need changes)
 
 
+// In event_model.js
 async function checkUserEventStatus(userId, eventId) {
   let connection;
   try {
     connection = await sql.connect(dbConfig);
     const query = "SELECT status FROM event_signup WHERE user_id = @userId AND event_id = @eventId";
     const result = await connection.request()
-      .input("user_id", sql.Int, userId)
-      .input("event_id", sql.Int, eventId)
+      .input("userId", sql.Int, userId) // Match @userId
+      .input("eventId", sql.Int, eventId) // Match @eventId
       .query(query);
     
     if (result.recordset.length > 0) {
-      return result.recordset[0]; // Return the status of the user for the event
+      return result.recordset[0].status; // Return "signed_up"
     } else {
-      return { status: "not_signed_up" }; // User has not signed up for the event
+      return "not_signed_up";
     }
   } catch (error) {
     console.error("Database error:", error);
