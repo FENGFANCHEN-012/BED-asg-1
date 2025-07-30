@@ -17,3 +17,17 @@ Functionality demonstration at this stage
 
 Checkpoint 3:
 Complete functional development, integration of all functions, code testing, and release
+
+
+
+External API :
+FengFan:
+## Eventbrite Integration
+
+This project integrates Eventbrite API with MSSQL to fetch and store events.
+
+### Setup
+1. Ensure MSSQL is running locally or use a cloud instance.
+2. Add to `.env`:
+   ```plaintext
+   EVENTBRITE_TOKEN=your_eventbrite_oauth_token
