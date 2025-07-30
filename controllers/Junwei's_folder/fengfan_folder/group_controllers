@@ -1,0 +1,242 @@
+const groupModel = require('../models/group_model');
+
+async function getUserGroups(req, res) {
+    try {
+        const { user_id } = req.params;
+        
+        if (!user_id || isNaN(user_id)) {
+            return res.status(400).json({
+                success: false,
+                message: "Valid user ID is required"
+            });
+        }
+
+        const groups = await groupModel.getUserGroups(user_id);
+        
+        res.status(200).json({
+            success: true,
+            data: groups
+        });
+        
+    } catch (error) {
+        console.error("Error fetching user groups:", error);
+        res.status(500).json({
+            success: false,
+            message: "Error fetching user groups",
+            error: process.env.NODE_ENV === "development" ? error.message : undefined
+        });
+    }
+}
+
+
+// Create new group
+
+async function createGroup(req, res) {
+    try {
+        const { name, owner_id, description, is_public } = req.body;
+        const newGroup = await groupModel.createGroup(name, owner_id, description, is_public);
+        res.status(201).json({
+            success: true,
+            data: newGroup
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Error creating group",
+            error: process.env.NODE_ENV === "development" ? error.message : undefined
+        });
+    }
+}
+
+// Get group details with member count
+async function getGroupDetails(req, res) {
+    try {
+        const { group_id } = req.params;
+        const group = await groupModel.getGroupDetails(group_id);
+        
+        if (!group) {
+            return res.status(404).json({
+                success: false,
+                message: "Group not found"
+            });
+        }
+        
+        res.status(200).json({
+            success: true,
+            data: group
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Error fetching group details",
+            error: process.env.NODE_ENV === "development" ? error.message : undefined
+        });
+    }
+}
+
+async function getGroupMember(req,res)
+{
+try{
+    const {group_id} = req.params;
+    const member = await groupModel.getGroupMember(group_id);
+    if (!member) {
+            return res.status(404).json({
+                success: false,
+                message: "Member not found"
+            });
+        }
+        
+        res.status(200).json({
+            success: true,
+            data: member
+        });
+}
+catch(error){
+    console.error
+}
+}
+async function  getgroupById(req,res){
+     try {
+        const { group_id } = req.params;
+        const group = await groupModel.getgroupById(group_id);
+        
+        if (!group) {
+            return res.status(404).json({
+                success: false,
+                message: "Group not found"
+            });
+        }
+        
+        res.status(200).json({
+            success: true,
+            data: group
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Error fetching group details",
+            error: process.env.NODE_ENV === "development" ? error.message : undefined
+        });
+    }
+}
+async function getMemberDetail(req, res) {
+    try {
+        const { user_id,group_id } = req.params;
+        const member = await groupModel.getMemberDetail(user_id,group_id);
+        
+        if (!member || member.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+        
+      
+        res.status(200).json({
+            success: true,
+            data: member
+        });
+    } catch(error) {
+        console.error(error);
+        res.status(500).json({
+            success: false,
+            message: "Error fetching user details"
+        });
+    }
+}
+
+async function updateGroup(req, res) {
+  const groupId = parseInt(req.params.group_id);
+  const { name, description, photo_url } = req.body;
+
+  if (!groupId || isNaN(groupId)) {
+    return res.status(400).json({ error: "Invalid groupId" });
+  }
+
+  if (!name || !description) {
+    return res.status(400).json({ error: "Name and description are required" });
+  }
+
+
+
+  try {
+    const updated = await groupModel.updateGroup(groupId, name, description, photo_url);
+    if (!updated) return res.status(500).json({ error: "Update failed" });
+
+    res.json({ success: true, message: "Group updated successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+async function getGroupMemberProfiles(req, res) {
+    const { group_id } = req.params;
+    try {
+        const members = await groupModel.getGroupMemberProfiles(group_id);
+        res.json({ success: true, data: members });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+}
+
+async function deleteGroup(req, res) {
+  const group_id = req.params.group_id;
+  const reason = req.body.reason;
+
+  if (!reason || reason.trim() === "") {
+    return res.status(400).json({ success: false, message: "Deletion reason is required." });
+  }
+
+  try {
+    
+    const result = await groupModel.deleteGroup(group_id, reason);
+    res.json(result);
+  } catch (err) {
+    console.error("Error deleting group:", err);
+    res.status(500).json({ success: false, message: "Failed to delete group." });
+  }
+}
+
+
+async function createGroup(req, res) {
+  try {
+    const { name, description, owner_id, photo_url, is_public } = req.body;
+    
+    if (!name || !owner_id) {
+      return res.status(400).json({ error: 'Group name and owner ID are required' });
+    }
+
+   
+
+    const groupId = await groupModel.createGroup({
+      name,
+      description,
+      owner_id,
+      photo_url,
+      is_public });
+
+    res.status(201).json({ 
+      success: true,
+      group_id: groupId,
+      message: 'Group created with members successfully'
+    });
+  } catch (error) {
+    console.error('Error creating group:', error);
+    res.status(500).json({ error: 'Failed to create group with members' });
+  }
+}
+
+
+module.exports = {
+  getUserGroups,
+    createGroup,
+    getGroupDetails,
+    getGroupMember,
+    getMemberDetail,
+    updateGroup,
+    getGroupMemberProfiles,
+    deleteGroup,
+    getgroupById,
+    createGroup,
+    
+};

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create New Book</title>
+     <link rel="stylesheet" href="basic css.css">
+    <style>
+     
+    </style>
+  </head>
+  <body>
+    <div class="big-background">
+      <div class="left-white">
+        <button class="blue-button">romance</button>
+        <button class="blue-button">Sci-Fi</button>
+         <button class="blue-button">Action</button>
+          <button class="blue-button">Adventure</button>
+          <button class="blue-button">horror (movie)</button>
+           <button class="blue-button"id="other">Other</button>
+      </div>
+      <div class="right-blue">
+        <h1 class="question">What kind of Movie/Series are your interested in?</h1>
+
+      </div>
+
+    </div>
+    
+<script>
+const messageDiv = document.getElementById("message");
+const apiBaseUrl = "http://localhost:3000";
+const hobbyButtons = document.getElementsByClassName("blue-button");
+
+
+Array.from(hobbyButtons).forEach(button => {
+  button.addEventListener("click", function() {
+    const hobbyName = this.textContent.trim(); 
+    localStorage.setItem("detail", hobbyName);
+    window.location.href = "hobby-description.html";
+  });
+});
+</script>
+  </body>
+</html>

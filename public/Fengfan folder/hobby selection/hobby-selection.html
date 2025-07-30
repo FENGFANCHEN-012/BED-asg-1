@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create New Book</title>
+     <link rel="stylesheet" href="basic css.css">
+    
+    <style>
+     
+    </style>
+    
+  </head>
+  <body>
+    <div class="big-background" id="big-background" >
+      <div class="right-blue" id="right-blue">
+        <h1 class="question">May i know what is your hobby?</h1>
+
+      </div>
+      <div class="left-white">
+         <form id="collecting">
+  
+      <button type="button" class="blue-button" onclick="sethobby('music')">Music</button>
+<button type="button" class="blue-button"onclick="sethobby('pets and animal')">Pet and Animal</button>
+<button type="button" class="blue-button" onclick="sethobby('gardening')" >Garden and Planting</button>
+          <div id="more-hobby">
+              <button type="button" class="blue-button" onclick="sethobby('book')" >Reading</button>
+<button type="button" class="blue-button" onclick="sethobby('sports')" >Sports</button>
+                 
+          </div>
+          </form>
+           
+          <button id="show-more">Show More</button>
+      </div>
+      
+      
+
+    </div>
+    
+   
+    <script>
+
+      function sethobby(hobbyname){
+
+        localStorage.setItem("hobby",hobbyname)
+        setTimeout(()=>{window.location.href='Hobby-selection-complete.html'},50)
+        
+      }
+      const right_blue = document.getElementById("right-blue")
+      const big_background = document.getElementById("big-background")
+      const more_hobby = document.getElementById("more-hobby")
+      const show_more = document.getElementById("show-more")
+      show_more.addEventListener("click",function(){
+        if(show_more.innerText == "Show More"){
+        show_more.innerText = "Show Less"
+            more_hobby.style.display = "block"
+            right_blue.className="right-blue-after"
+            big_background.className= "big-background-after"
+          }
+        else if(show_more.innerText=="Show Less"){
+           show_more.innerText = "Show More"
+            more_hobby.style.display = "none"
+             right_blue.className="right-blue"
+             big_background.className= "big-background"
+        }
+      })
+    </script>
+     <script src="hobby_selection.js"></script>
+  </body>
+</html>

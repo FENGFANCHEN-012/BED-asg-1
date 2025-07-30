@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create New Book</title>
+     <link rel="stylesheet" href="basic css.css">
+    <style>
+     
+    </style>
+  </head>
+  <body>
+    <div class="big-background" style="height:130vh">
+      <div class="left-white">
+        <form id="collecting">
+        <button class="blue-button">Baking</button>
+        <button class="blue-button">Chinese Cuisine Cooking</button>
+         <button class="blue-button">Malay/Indonesian Cuisine</button>
+          <button class="blue-button">Indian Cuisine</button>
+          <button class="blue-button">Fusion Cuisine</button>
+            <button class="blue-button">Western Cuisine</button>
+             <button class="blue-button">Japanese Cuisine</button>
+           <button class="blue-button"id="other">Other</button>
+      </div>
+      </form>
+      <div class="right-blue">
+        <h1 class="question">What kind of cuisine do you like to cook?</h1>
+
+      </div>
+
+    </div>
+           <script>
+const messageDiv = document.getElementById("message");
+const apiBaseUrl = "http://localhost:3000";
+const hobbyButtons = document.getElementsByClassName("blue-button");
+
+
+Array.from(hobbyButtons).forEach(button => {
+  button.addEventListener("click", function() {
+    const hobbyName = this.textContent.trim(); 
+    localStorage.setItem("detail", hobbyName);
+    window.location.href = "hobby-description.html";
+  });
+});
+</script>
+  </body>
+</html>

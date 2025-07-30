@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Recommended Friends</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      background-color: #fff;
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+    }
+
+    .header {
+      background-color: #193c78;
+      color: white;
+      padding: 20px;
+      text-align: center;
+      font-size: 28px;
+      border-radius: 12px 12px 0 0;
+      margin-bottom: 20px;
+    }
+
+    .profile-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 20px;
+      padding: 15px;
+    }
+
+    .profile-card {
+      background-color: #e4f2ff;
+      border-radius: 12px;
+      padding: 20px;
+      transition: transform 0.2s;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .profile-photo {
+      width: 80px;
+      height: 80px;
+      background-color: #7e9fe6;
+      border-radius: 50%;
+      margin-right: 15px;
+      object-fit: cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 30px;
+      font-weight: bold;
+    }
+
+    .profile-name {
+      font-size: 22px;
+      font-weight: bold;
+      color: #193c78;
+    }
+
+    .match-score {
+      background-color: #ffc107;
+      color: #212529;
+      padding: 3px 8px;
+      border-radius: 10px;
+      font-size: 14px;
+      margin-left: 10px;
+    }
+
+    .profile-details {
+      margin-top: 15px;
+    }
+
+    .detail-item {
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+
+    .detail-label {
+      font-weight: bold;
+      color: #193c78;
+    }
+
+    .hobbies-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .hobby-tag {
+      background-color: #193c78;
+      color: white;
+      padding: 4px 10px;
+      border-radius: 15px;
+      font-size: 14px;
+    }
+
+    .action-button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 10px;
+      width: 100%;
+    }
+
+    .add-friend-btn {
+      background-color: #28a745;
+      color: white;
+    }
+
+    .add-friend-btn:hover:not(:disabled) {
+      background-color: #218838;
+      transform: translateY(-2px);
+    }
+
+    .add-friend-btn:disabled {
+      background-color: #6c757d;
+      cursor: not-allowed;
+    }
+
+    .refresh-btn {
+      background-color: white;
+      color: #193c78;
+      border: 2px solid #193c78;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 15px;
+      font-size: 16px;
+      transition: all 0.3s;
+    }
+
+    .refresh-btn:hover {
+      background-color: #193c78;
+      color: white;
+    }
+
+    .loading, .error {
+      text-align: center;
+      padding: 20px;
+      font-size: 18px;
+    }
+
+    .error {
+      color: #dc3545;
+    }
+
+    @media (max-width: 768px) {
+      .profile-list {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h2>Recommended Friends</h2>
+      <button class="refresh-btn" onclick="loadRecommendedProfiles()">
+        Refresh Recommendations
+      </button>
+    </div>
+    <div class="profile-list" id="profileList">
+      <div class="loading">Loading recommended friends...</div>
+    </div>
+  </div>
+
+  <script src="recommend_friend.js">
+ 
+  </script>
+</body>
+</html>

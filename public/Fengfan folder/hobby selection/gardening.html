@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create New Book</title>
+     <link rel="stylesheet" href="basic css.css">
+    <style>
+     
+    </style>
+  </head>
+  <body>
+    <div class="big-background">
+      <div class="left-white">
+        <button class="blue-button">Home Gardening</button>
+        <button class="blue-button">Vegetable Gardening</button>
+         <button class="blue-button">Herb Gardening </button>
+          <button class="blue-button">Urban Farming</button>
+          <button class="blue-button">Orchid Growing</button>
+              <button class="blue-button">Community Gardening</button>
+              <button class="blue-button">Hydroponics</button>
+           <button  id="other">Other</button>
+      </div>
+      <div class="right-blue">
+        <h1 class="question">What kind of planting hobby are you interested in?</h1>
+
+      </div>
+
+    </div>
+    
+        <script>
+const messageDiv = document.getElementById("message");
+const apiBaseUrl = "http://localhost:3000";
+const hobbyButtons = document.getElementsByClassName("blue-button");
+
+
+Array.from(hobbyButtons).forEach(button => {
+  button.addEventListener("click", function() {
+    const hobbyName = this.textContent.trim(); 
+    localStorage.setItem("detail", hobbyName);
+    window.location.href = "Event-Selection.html";
+  });
+});
+</script>
+  </body>
+</html>
