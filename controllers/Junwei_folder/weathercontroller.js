@@ -1,4 +1,38 @@
-const { sql, poolPromise } = require('../dbConfig');
+const sql = require('mssql');
+require('dotenv').config();
+const rawConfig = {
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  server: process.env.DB_SERVER,
+  database: process.env.DB_DATABASE,
+  trustServerCertificate: true,
+  options: {
+    port: parseInt(process.env.DB_PORT),
+    connectionTimeout: 60000,
+  }
+};
+console.log('Loaded DB config:', rawConfig);
+
+// Patch the config structure for mssql
+const config = {
+  ...rawConfig,
+  options: {
+    ...rawConfig.options,
+    trustServerCertificate: rawConfig.trustServerCertificate ?? true,
+    encrypt: rawConfig.options?.encrypt ?? false,
+  }
+};
+
+const poolPromise = new sql.ConnectionPool(config)
+  .connect()
+  .then(pool => {
+    console.log('Connected to MSSQL');
+    return pool;
+  })
+  .catch(err => {
+    console.error('Database connection failed:', err);
+    throw err;
+  });
 
 /**
  * Save a new weather alert preference
@@ -53,7 +87,21 @@ exports.getUserAlerts = async (req, res) => {
         ORDER BY created_at DESC
       `);
 
-    res.status(200).json(result.recordset);
+    const formatted = result.recordset.map(alert => {
+      const storedTime = new Date(alert.created_at);
+      const correctedTime = new Date(storedTime.getTime() - 8 * 60 * 60 * 1000);
+      const formattedTime = correctedTime.toLocaleString('en-SG', {
+        year: 'numeric',
+        month: 'short',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      });
+      return { ...alert, created_at: formattedTime };
+    });
+
+    res.status(200).json(formatted);
   } catch (err) {
     console.error('Error fetching user alerts:', err);
     res.status(500).json({ error: 'Internal server error' });

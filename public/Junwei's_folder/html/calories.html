@@ -4,103 +4,36 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Calories Tracker - Lions Befrienders Singapore</title>
+
+  <!-- CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="../css/calories.css" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+
   <style>
-    body { font-family: Arial, sans-serif; font-size: 1.25rem; }
-    .navbar-nav .nav-link { font-size: 1.4rem !important; font-weight: 600; }
-    .navbar-brand img { max-width: 120px; }
-    .navbar { padding: 0.8rem 1rem; }
-    .footer { background-color: #193C78; padding: 40px 20px; }
-    .footer p, .footer a, .footer h5 { color: #ffffff; }
-    .footer a:hover { text-decoration: underline; }
-    .btn-outline-success { border-color: #000; color: #000; }
-    .btn-outline-success:hover { background-color: #000; color: #fff; }
-    .btn-outline-primary {
-      font-size: 1.3rem; padding: 10px 20px;
-      color: #193C78; border-color: #193C78;
+    .alert-box .btn-close {
+      background-color: white;
+      border-radius: 50%;
+      z-index: 1000;
     }
-    .btn-outline-primary.active {
-      background-color: #193C78 !important; color: white !important;
-      font-weight: bold;
+    .navbar-nav .nav-link {
+      font-size: 1.4rem !important;
+      font-weight: 600;
     }
-    #foodInput {
-      font-size: 1.4rem;
-      padding: 0.8rem 1rem;
-      max-width: 400px; width: 100%;
+    .footer {
+      background-color: #193C78;
+      padding: 40px 20px;
     }
-    ::placeholder { color: #444 !important; opacity: 1; }
-    label { font-size: 1.3rem; font-weight: bold; }
-    .quantity-selector { display: flex; align-items: center; gap: 15px; }
-    .quantity-btn {
-      padding: 0.4rem 2rem; font-size: 1.6rem;
-      background-color: #193C78 !important; color: white;
-      border: none; border-radius: 6px;
+    .footer p, .footer a, .footer h5 {
+      color: #ffffff;
+      font-size: 1.1rem;
     }
-    .quantity-btn:hover, .quantity-btn:focus {
-      background-color: #163369 !important; outline: none;
+    .footer a:hover {
+      text-decoration: underline;
     }
-    #quantity {
-      font-size: 2.2rem; font-weight: bold;
-      min-width: 60px; text-align: center;
+    .dropdown-menu {
+      font-size: 1.2rem;
     }
-    .submit-btn {
-      margin-top: 20px; font-size: 1.3rem;
-      padding: 12px 30px; background-color: #193C78;
-      border: none; color: white;
-    }
-    .submit-btn:hover { background-color: #163369; }
-    #foodDropdown {
-      width: 100%; max-width: 400px;
-      z-index: 1000; font-size: 1.3rem;
-      max-height: 250px; overflow-y: auto;
-    }
-    #calorieGraph, #history {
-      min-height: 150px; font-size: 1.3rem;
-    }
-    #history { max-height: 150px; overflow-y: auto; }
-    .add-meal-banner {
-      background-color: #193C78; color: white;
-      text-align: center; padding: 20px 0;
-      margin: 40px 0 30px;
-      font-size: 1.8rem; font-weight: bold;
-      border-radius: 8px;
-    }
-    .alert-overlay {
-      position: fixed; top:0;left:0;right:0;bottom:0;
-      background:rgba(0,0,0,0.85); display:flex;
-      justify-content:center; align-items:center; z-index:99999;
-    }
-    .alert-box {
-      background:#fff; padding:50px 60px; border-radius:25px;
-      box-shadow:0 15px 40px rgba(0,0,0,0.5);
-      width:70%; max-width:700px; min-width:300px;
-      text-align:center; border:4px solid #f5f5f5;
-    }
-    .alert-message {
-      font-size:32px; margin-bottom:40px;
-      color:#111; line-height:1.8;
-      font-weight:600; letter-spacing:1px;
-    }
-    .alert-button {
-      background-color:#1E4A9B; color:white;
-      border:none; padding:25px 50px;
-      font-size:28px; border-radius:15px;
-      cursor:pointer; transition:all .3s;
-      min-width:200px;
-      box-shadow:0 8px 16px rgba(0,0,0,0.2);
-      font-weight:600; letter-spacing:1px;
-    }
-    .alert-button:hover { background-color:#265BB8; transform:translateY(-3px); }
-    .alert-button:active { transform:translateY(2px); }
-    @media(max-width:768px){
-      .alert-box { width:90%; padding:40px 30px; }
-      .alert-message { font-size:28px; margin-bottom:30px; }
-      .alert-button { font-size:24px; padding:20px 40px; min-width:80%; }
-    }
-    input:focus, button:focus {
-      outline: 3px solid #193C78; outline-offset: 2px;
-    }
-    form .mb-3 { margin-bottom: 2rem !important; }
   </style>
 </head>
 <body>
@@ -108,11 +41,8 @@
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
     <div class="container">
-      <a class="navbar-brand d-flex align-items-center gap-2" href="../index.html">
-        <img src="../img/logo.png" alt="Lions Befrienders Logo">
-        <div style="line-height:1.1; font-weight:bold; color:#193C78; font-size:1.2rem;">
-          Lion<br>Befriender
-        </div>
+      <a class="navbar-brand" href="../index.html">
+        <img src="../img/logo.png" alt="Lions Befrienders Singapore Logo" class="img-fluid" style="width: 120px;">
       </a>
       <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
@@ -120,29 +50,60 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav me-auto ms-4 gap-4">
           <li class="nav-item"><a class="nav-link" href="../index.html">Home</a></li>
-          <li class="nav-item"><a class="nav-link active" href="#">Calories Tracker</a></li>
-          <li class="nav-item"><a class="nav-link" href="#">Weather Forecast</a></li>
+          <li class="nav-item"><a class="nav-link" href="../calendar.html">Calendar</a></li>
+          <li class="nav-item"><a class="nav-link" href="../events.html">Events</a></li>
+          <li class="nav-item"><a class="nav-link" href="../medication.html">Medication</a></li>
+          <li class="nav-item"><a class="nav-link active" href="calories.html">Calories Tracker</a></li>
+          <li class="nav-item"><a class="nav-link" href="weather.html">Weather Forecast</a></li>
+
+          <!-- Points Dropdown -->
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="pointsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Points
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="pointsDropdown">
+              <li><a class="dropdown-item" href="../points.html">Point Redemption</a></li>
+              <li><a class="dropdown-item" href="../rewards.html">Rewards</a></li>
+            </ul>
+          </li>
         </ul>
-        <form class="d-flex">
-          <input class="form-control me-2" type="search" placeholder="Search...">
-          <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
+
+        <!-- Profile Dropdown -->
+        <div class="dropdown">
+          <button class="btn btn-light dropdown-toggle" type="button" id="profileDropdown" data-bs-toggle="dropdown" aria-label="User profile options">
+            <i class="fas fa-user fa-lg"></i>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+            <li><a class="dropdown-item" href="../profile.html">Profile</a></li>
+            <li><a class="dropdown-item" href="#">Logout</a></li>
+          </ul>
+        </div>
       </div>
     </div>
   </nav>
 
   <!-- Content -->
   <div class="container my-5">
-    <div class="row">
-      <div class="col-md-6">
-        <h4>Today's Calorie Intake</h4>
-        <div id="calorieGraph" aria-live="polite" class="p-4 text-center border rounded">Loading...</div>
+    <div id="intake-message" class="text-center fw-bold fs-4 mb-4"></div>
+    <div class="d-flex flex-wrap justify-content-between gap-4">
+      <div class="section-box">
+        <h4 class="mb-2">Today's Calorie Intake</h4>
+        <div id="calorieGraph" class="border rounded p-3 text-center">Loading...</div>
         <p class="mt-2"><small style="color:gray">🟢 Under | 🟡 On Track | 🔴 Over</small></p>
       </div>
-      <div class="col-md-6">
-        <h4>Today's Eating History</h4>
-        <div id="history" aria-live="polite" class="border rounded p-3">Loading...</div>
+      <div class="section-box">
+        <h4 class="mb-2">Food Recommendation</h4>
+        <div id="foodRecommendation" class="border rounded p-3">Loading...</div>
       </div>
+      <div class="section-box">
+        <h4 class="mb-2">Today's Eating History</h4>
+        <div id="history" class="border rounded p-3">Loading...</div>
+      </div>
+    </div>
+
+    <!-- Read Aloud -->
+    <div class="text-center my-4">
+      <button id="readAloudBtn" class="read-aloud-btn" aria-label="Read important calorie and message info">🔊 Read Aloud</button>
     </div>
 
     <div class="add-meal-banner">🍴 Add My Meal</div>
@@ -157,39 +118,65 @@
         </div>
         <small class="text-muted">Please select one</small>
       </div>
-
-      <div class="mb-3 position-relative">
+      <div class="mb-3">
         <label for="foodInput">Food Name:</label>
         <input type="text" class="form-control" id="foodInput" placeholder="Type food name..." autocomplete="off">
       </div>
-
       <div class="mb-3">
         <label>Quantity:</label>
         <div class="quantity-selector">
-          <button type="button" class="quantity-btn" id="decreaseBtn" aria-label="Decrease quantity" disabled>➖</button>
+          <button type="button" class="quantity-btn" id="decreaseBtn" aria-label="Decrease quantity">➖</button>
           <span id="quantity">1</span>
           <button type="button" class="quantity-btn" id="increaseBtn" aria-label="Increase quantity">➕</button>
         </div>
       </div>
-
       <button type="submit" class="submit-btn">Submit</button>
     </form>
+  </div>
+
+  <!-- Change Time Overlay -->
+  <div class="alert-overlay" id="changeTimeOverlay" style="display:none">
+    <div class="alert-box change-time-overlay position-relative">
+      <button type="button" class="btn-close position-absolute top-0 end-0 m-3" aria-label="Close" onclick="hideTimeOverlay()"></button>
+      <div class="alert-message">Change Meal Time</div>
+      <div class="time-dropdown d-flex gap-2 mb-3">
+        <select id="hourSelect" aria-label="Select Hour">
+          <option disabled selected>Hour</option>
+        </select>
+        <select id="minuteSelect" aria-label="Select Minute">
+          <option disabled selected>Minute</option>
+          <option>00</option>
+          <option>15</option>
+          <option>30</option>
+          <option>45</option>
+        </select>
+      </div>
+      <div class="button-area d-flex justify-content-end gap-2">
+        <button type="button" class="btn btn-outline-secondary" onclick="hideTimeOverlay()">Cancel</button>
+        <button class="alert-button" onclick="saveTimeChange()">Save</button>
+      </div>
+    </div>
   </div>
 
   <!-- Footer -->
   <footer class="footer">
     <div class="container">
-      <div class="row text-center text-md-start mb-4">
-        <div class="col-md-4 mb-4">
+      <div class="row">
+        <div class="col-md-4">
           <h5>About Us</h5>
-          <p>Connecting Seniors, Enriching Lives. We support seniors in Singapore.</p>
+          <p>Connecting Seniors, Enriching Lives. We are dedicated to enhancing the well-being of seniors in Singapore.</p>
         </div>
-        <div class="col-md-4 mb-4">
+        <div class="col-md-4">
           <h5>Quick Links</h5>
           <ul class="list-unstyled">
             <li><a href="../index.html">Home</a></li>
-            <li><a href="#">Calories Tracker</a></li>
-            <li><a href="#">Weather Forecast</a></li>
+            <li><a href="../calendar.html">Calendar</a></li>
+            <li><a href="../events.html">Events</a></li>
+            <li><a href="../medication.html">Medication</a></li>
+            <li><a href="calories.html">Calories Tracker</a></li>
+            <li><a href="../weather.html">Weather Forecast</a></li>
+            <li><a href="../points.html">Point Redemption</a></li>
+            <li><a href="../rewards.html">Rewards</a></li>
           </ul>
         </div>
         <div class="col-md-4">
@@ -199,163 +186,44 @@
         </div>
       </div>
       <hr class="border-white">
-      <div class="text-center">&copy; 2025 Lions Befrienders Singapore. All Rights Reserved.</div>
+      <div class="text-center">
+        <p>&copy; 2025 Lions Befrienders Singapore. All Rights Reserved.</p>
+      </div>
     </div>
   </footer>
 
+  <!-- JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../js/calories.js"></script>
   <script>
-    const user_id = 3;
-    let quantity = 1;
-    let selectedFoodId = null;
-    const qtyDisplay = document.getElementById('quantity');
-    const decreaseBtn = document.getElementById('decreaseBtn');
-    const increaseBtn = document.getElementById('increaseBtn');
-    const foodInput = document.getElementById('foodInput');
-
-    function showAlert(msg, btnText = 'OK', onClose = null) {
-      const overlay = document.createElement('div');
-      overlay.className = 'alert-overlay';
-      overlay.innerHTML = `
-        <div class="alert-box" role="alert" aria-live="assertive">
-          <div class="alert-message">${msg}</div>
-          <button class="alert-button">${btnText}</button>
-        </div>`;
-      document.body.appendChild(overlay);
-      overlay.querySelector('.alert-button').onclick = () => {
-        overlay.remove();
-        onClose && onClose();
-      };
+    function hideTimeOverlay() {
+      document.getElementById('changeTimeOverlay').style.display = 'none';
     }
 
-    function showSuccess(txt) { showAlert(txt, 'OK'); }
-    function showError(txt) { showAlert(txt, 'Try Again'); }
-
-    // Quantity button logic
-    increaseBtn.onclick = () => {
-      quantity++;
-      qtyDisplay.textContent = quantity;
-      decreaseBtn.disabled = quantity <= 1;
-    };
-    decreaseBtn.onclick = () => {
-      if (quantity > 1) {
-        quantity--;
-        qtyDisplay.textContent = quantity;
-        decreaseBtn.disabled = quantity <= 1;
+    function speak(text) {
+      if (!('speechSynthesis' in window)) {
+        console.warn("Speech synthesis not supported.");
+        return;
       }
-    };
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'en-US';
+      utterance.rate = 1;
+      utterance.pitch = 1;
+      window.speechSynthesis.speak(utterance);
+    }
 
-    // Meal type selection
-    document.querySelectorAll('.btn-outline-primary').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.btn-outline-primary').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-      });
-    });
-
-    // Close dropdown on outside click
-    document.addEventListener('click', (e) => {
-      const dropdown = document.getElementById('foodDropdown');
-      if (dropdown && !dropdown.contains(e.target) && e.target !== foodInput) {
-        dropdown.remove();
-      }
-    });
-
-    // Debounced autocomplete fetch
-    let debounceTimer;
-    foodInput.addEventListener('input', () => {
-      selectedFoodId = null;
-      clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(fetchFoods, 300);
-    });
-
-    async function fetchFoods() {
-      const q = foodInput.value.trim();
-      if (q.length < 2) return;
-      try {
-        const res = await fetch(`http://localhost:3000/api/food/search?q=${encodeURIComponent(q)}`);
-        const foods = await res.json();
-        let dropdown = document.getElementById('foodDropdown');
-        if (!dropdown) {
-          dropdown = document.createElement('div');
-          dropdown.id = 'foodDropdown';
-          dropdown.className = 'list-group position-absolute';
-          foodInput.parentNode.appendChild(dropdown);
-        }
-        dropdown.innerHTML = '';
-        foods.slice(0, 10).forEach(food => {
-          const item = document.createElement('button');
-          item.type = 'button';
-          item.className = 'list-group-item list-group-item-action';
-          item.textContent = `${food.food_name} (${food.calories_per_unit} cal/unit)`;
-          item.onclick = () => {
-            foodInput.value = food.food_name;
-            selectedFoodId = food.food_id;
-            dropdown.remove();
-          };
-          dropdown.appendChild(item);
+    document.addEventListener('DOMContentLoaded', () => {
+      const readBtn = document.getElementById('readAloudBtn');
+      if (readBtn) {
+        readBtn.addEventListener('click', () => {
+          const calText = document.getElementById('calorieGraph')?.innerText || '';
+          const msgText = document.getElementById('intake-message')?.innerText || '';
+          const combined = `${calText}. ${msgText}`;
+          speak(combined);
         });
-      } catch (e) {
-        console.error(e);
-      }
-    }
-
-    async function loadCalorieGraph() {
-      try {
-        const res = await fetch(`http://localhost:3000/api/graph?user_id=${user_id}`);
-        const { totalCalories, recommended } = await res.json();
-        const div = document.getElementById('calorieGraph');
-        div.innerHTML = `<h1>${totalCalories} kcal</h1><p>Recommended: ${recommended} kcal</p>`;
-        const ratio = totalCalories/recommended;
-        div.style.backgroundColor = ratio < 0.8 ? '#d4edda' : ratio <= 1 ? '#fff3cd' : '#f8d7da';
-      } catch (e) {
-        console.error(e);
-      }
-    }
-
-    async function loadHistory() {
-      try {
-        const res = await fetch(`http://localhost:3000/api/history?user_id=${user_id}`);
-        const data = await res.json();
-        const history = document.getElementById('history');
-        history.innerHTML = '';
-        data.forEach(item => {
-          history.insertAdjacentHTML('beforeend', `
-            <p><strong>${item.time}</strong></p>
-            <p>${item.food_name} — ${item.total_calories} Cal</p><hr>`);
-        });
-      } catch (e) {
-        console.error(e);
-      }
-    }
-
-    document.getElementById('foodForm').addEventListener('submit', async e => {
-      e.preventDefault();
-      const meal = document.querySelector('.btn-outline-primary.active')?.innerText || 'Breakfast';
-      const time = new Date().toTimeString().slice(0,5);
-      if (!selectedFoodId || !foodInput.value.trim()) return showError("Please select a valid food.");
-      if (quantity < 1) return showError("Quantity must be at least 1.");
-      try {
-        const res = await fetch('http://localhost:3000/api/food/add', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ user_id, meal_type: meal, food_id: selectedFoodId, quantity, time })
-        });
-        const txt = await res.text();
-        if (!res.ok) return showError(txt);
-        showSuccess(txt);
-        loadCalorieGraph();
-        loadHistory();
-      } catch (e) {
-        console.error(e);
-        showError("Network error");
       }
     });
-
-    // Initial load
-    decreaseBtn.disabled = true;
-    loadCalorieGraph();
-    loadHistory();
   </script>
 </body>
 </html>
