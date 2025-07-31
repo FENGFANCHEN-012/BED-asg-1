@@ -5,6 +5,8 @@ const sql = require("mssql");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const dbConfig = require("./dbConfig");
+// for eventbrite API
+const { syncEvents } = require('./src/eventbrite-sync');
 //Validations-----------------------------------------------------------------------------------------------------------------------------------
 //const profileController = require("./controllers/Samuel's_folder/profileController");
 //const { validateProfileName, validateCreateProfile, validateProfileId } = require("./middlewares/profileValidation"); // Import all new validation middleware

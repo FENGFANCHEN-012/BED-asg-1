@@ -6,11 +6,9 @@ const blue_button = document.getElementsByClassName("blue-button")
 const submit = document.getElementById("submit")
 
 
-const profile_id =  1// localStorage.getItem("profile_id",profile_id)
-const user_id = 1
-other.addEventListener("click",function(){
-    window.location.href="other.html"
-})
+const profile_id = localStorage.setItem("profile_id")|| 1// localStorage.getItem("profile_id",profile_id)
+const user_id = localStorage.setItem("user_id") ||1
+
 
 
 
