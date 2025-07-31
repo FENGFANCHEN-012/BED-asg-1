@@ -7,120 +7,206 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="../css/weather.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    .navbar-nav .nav-link { font-size: 1.4rem !important; font-weight: 600; }
+    .footer { background-color: #193C78; padding: 40px 20px; }
+    .footer p, .footer a, .footer h5 { color: #ffffff; font-size: 1.1rem; }
+    .footer a:hover { text-decoration: underline; }
+    .dropdown-menu { font-size: 1.2rem; }
+  </style>
 </head>
 <body>
 
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
-    <div class="container">
-      <a class="navbar-brand" href="#"><img src="../img/logo.png" alt="LB Logo" style="width:120px;"></a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav me-auto ms-4 gap-4">
-          <li class="nav-item"><a class="nav-link" href="../index.html">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="calories.html">Calories Tracker</a></li>
-          <li class="nav-item"><a class="nav-link active" href="#">Weather Forecast</a></li>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="../index.html">
+      <img src="../img/logo.png" alt="Lions Befrienders Singapore Logo" style="width:120px;">
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto ms-4 gap-4">
+        <li class="nav-item"><a class="nav-link" href="../index.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="../calendar.html">Calendar</a></li>
+        <li class="nav-item"><a class="nav-link" href="../events.html">Events</a></li>
+        <li class="nav-item"><a class="nav-link" href="../medication.html">Medication</a></li>
+        <li class="nav-item"><a class="nav-link" href="calories.html">Calories Tracker</a></li>
+        <li class="nav-item"><a class="nav-link active" href="#">Weather Forecast</a></li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="pointsDropdown" role="button" data-bs-toggle="dropdown">Points</a>
+          <ul class="dropdown-menu" aria-labelledby="pointsDropdown">
+            <li><a class="dropdown-item" href="../points.html">Point Redemption</a></li>
+            <li><a class="dropdown-item" href="../rewards.html">Rewards</a></li>
+          </ul>
+        </li>
+      </ul>
+      <div class="dropdown">
+        <button class="btn btn-light dropdown-toggle" type="button" id="profileDropdown" data-bs-toggle="dropdown">
+          <i class="fas fa-user fa-lg"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+          <li><a class="dropdown-item" href="../profile.html">Profile</a></li>
+          <li><a class="dropdown-item" href="#">Logout</a></li>
         </ul>
-        <form class="d-flex">
-          <input class="form-control me-2" type="search" placeholder="Search">
-          <button class="btn btn-outline-success" type="submit">Search</button>
-        </form>
       </div>
-    </div>
-  </nav>
-
-  <!-- Location & Last Updated -->
-  <div class="container-fluid bg-light py-2 border-bottom">
-    <div class="container d-flex justify-content-between">
-      <div id="user-location" class="text-muted">📍 Locating...</div>
-      <div id="last-updated" class="text-muted">⏱️ Last updated: --</div>
     </div>
   </div>
+</nav>
 
-  <!-- Main -->
-  <main class="container my-5">
-    <section id="weather">
-      <h2 class="text-center mb-4">Current Weather in Singapore</h2>
-      <div class="row text-center mb-4">
-        <div class="col-md-2"><h4><i class="bi bi-thermometer-half"></i><br>Temp</h4><p id="temperature" class="weather-value">-- °C</p></div>
-        <div class="col-md-2"><h4><i class="bi bi-droplet"></i><br>Humidity</h4><p id="humidity" class="weather-value">-- %</p></div>
-        <div class="col-md-2"><h4><i class="bi bi-umbrella"></i><br>Precip</h4><p id="precipitation" class="weather-value">--</p></div>
-        <div class="col-md-2"><h4><i class="bi bi-sun"></i><br>UV</h4><p id="uv" class="weather-value">--</p></div>
-        <div class="col-md-4"><h4><i class="bi bi-wind"></i><br>PSI</h4><p id="psi" class="weather-value">--</p></div>
-      </div>
-      <div class="mt-3 p-4 bg-light rounded shadow text-center">
-        <h4>💡 Today's Tip:</h4>
-        <p id="weatherTip" class="fs-5 text-success">Have a nice day!</p>
-      </div>
-      <div class="text-center my-4">
-        <button onclick="readAloud()" class="btn btn-lg btn-custom">🔊 Read Weather Aloud</button>
-      </div>
-      <div id="rainAlert" class="alert alert-danger text-center d-none" role="alert">🌧️ Rain expected soon! Don’t forget your umbrella!</div>
+<!-- Location & Last Updated -->
+<div class="container-fluid bg-light py-2 border-bottom">
+  <div class="container d-flex justify-content-between">
+    <div id="user-location" class="text-muted">📍 Locating...</div>
+    <div id="last-updated" class="text-muted">⏱️ Last updated: --</div>
+  </div>
+</div>
 
-      <h3 class="mt-5">2-Hour Nowcast</h3>
-      <table class="table table-bordered text-center">
-        <thead><tr><th>Region</th><th>Forecast</th></tr></thead>
-        <tbody id="nowcast-table"><tr><td colspan="2">Loading...</td></tr></tbody>
-      </table>
+<!-- Main Content -->
+<main class="container my-5">
+  <section id="weather">
 
-      <h3 class="mt-5">3-Day Forecast</h3>
-      <div class="row text-center" id="forecast-cards"></div>
+    <!-- Alert Placeholder for Dynamic Alerts -->
+    <div id="weatherAlertPlaceholder"></div>
 
-      <h3 class="mt-5">Set Weather Alert</h3>
-      <form id="alertForm" class="bg-light p-4 rounded shadow">
-        <div class="mb-3">
-          <label class="form-label fw-bold">Weather Type:</label><br>
-          <div class="form-check form-check-inline">
-            <input id="weatherSunny" class="form-check-input" type="radio" name="weatherType" value="Sunny" required>
-            <label class="form-check-label" for="weatherSunny">Sunny ☀️</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input id="weatherRain" class="form-check-input" type="radio" name="weatherType" value="Rain" required>
-            <label class="form-check-label" for="weatherRain">Rain 🌧️</label>
-          </div>
-        </div>
-        <div class="mb-3">
-          <label class="form-label fw-bold">Alert Time:</label><br>
-          <div class="form-check form-check-inline">
-            <input id="time15" class="form-check-input" type="radio" name="alertTime" value="15" required>
-            <label class="form-check-label" for="time15">15 mins before</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input id="time30" class="form-check-input" type="radio" name="alertTime" value="30" required>
-            <label class="form-check-label" for="time30">30 mins before</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input id="time60" class="form-check-input" type="radio" name="alertTime" value="60" required>
-            <label class="form-check-label" for="time60">1 hour before</label>
-          </div>
-        </div>
-        <div class="text-center">
-          <button type="submit" class="btn btn-lg btn-custom">Submit Alert</button>
-        </div>
-      </form>
-    </section>
-  </main>
-
-  <!-- Footer -->
-  <footer class="footer mt-5">
-    <div class="container">
-      <div class="row text-white">
-        <div class="col-md-4"><h5>About Us</h5><p>Connecting Seniors, Enriching Lives...</p></div>
-        <div class="col-md-4"><h5>Quick Links</h5><ul class="list-unstyled">
-          <li><a href="../index.html" class="text-white">Home</a></li>
-          <li><a href="calories.html" class="text-white">Calories Tracker</a></li>
-          <li><a href="#" class="text-white">Weather Forecast</a></li>
-        </ul></div>
-        <div class="col-md-4"><h5>Contact Us</h5><p>Email: info@…</p><p>Phone: +65 …</p></div>
-      </div>
-      <hr class="border-white">
-      <div class="text-center"><p>&copy; 2025 Lions Befrienders Singapore</p></div>
+    <!-- Rain Alert (Moved above header) -->
+    <div id="rainAlert" class="alert alert-danger text-center d-none" role="alert">
+      🌧️ Rain expected soon! Don’t forget your umbrella!
     </div>
-  </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="../js/weather.js"></script>
+    <!-- Title -->
+    <h2 class="text-center mb-4">Current Weather in Singapore</h2>
+
+    <!-- Weather Cards -->
+    <div class="row text-center mb-4">
+      <div class="col-md-2"><h4><i class="bi bi-thermometer-half"></i><br>Temp</h4><p id="temperature" class="weather-value">-- °C</p></div>
+      <div class="col-md-2"><h4><i class="bi bi-droplet"></i><br>Humidity</h4><p id="humidity" class="weather-value">-- %</p></div>
+      <div class="col-md-2"><h4><i class="bi bi-umbrella"></i><br>Precip</h4><p id="precipitation" class="weather-value">--</p></div>
+      <div class="col-md-2"><h4><i class="bi bi-sun"></i><br>UV</h4><p id="uv" class="weather-value">--</p></div>
+      <div class="col-md-4"><h4><i class="bi bi-wind"></i><br>PSI</h4><p id="psi" class="weather-value">--</p></div>
+    </div>
+
+    <!-- Weather Tips -->
+    <div class="mt-3 p-4 bg-light rounded shadow text-center">
+      <h4>💡 Today's Tips:</h4>
+      <ul id="weatherTip" class="fs-5 text-success list-unstyled mb-0"></ul>
+    </div>
+
+    <!-- Read Aloud Button -->
+    <div class="text-center my-4">
+      <button onclick="readAloud()" class="btn btn-lg btn-custom">🔊 Read Weather Aloud</button>
+    </div>
+
+    <!-- Nowcast -->
+    <h3 class="mt-5">2-Hour Nowcast</h3>
+    <table class="table table-bordered text-center">
+      <thead><tr><th>Zone</th><th>Forecast</th></tr></thead>
+      <tbody id="nowcast-table">
+        <tr>
+          <td colspan="2">
+            <div class="d-flex justify-content-center align-items-center">
+              <div class="spinner-border text-primary me-2" role="status"></div>
+              <span>Fetching nowcast data...</span>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- 3-Day Forecast -->
+    <h3 class="mt-5">3-Day Forecast</h3>
+    <div class="row text-center" id="forecast-cards"></div>
+
+    <!-- Alert Form -->
+    <h3 class="mt-5">Set Weather Alert</h3>
+    <form id="alertForm" class="bg-light p-4 rounded shadow">
+      <div class="mb-3">
+        <label class="form-label fw-bold">Weather Type:</label><br>
+        <div class="form-check form-check-inline">
+          <input id="weatherSunny" class="form-check-input" type="radio" name="weatherType" value="Sunny" required>
+          <label class="form-check-label" for="weatherSunny">Sunny ☀️</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input id="weatherRain" class="form-check-input" type="radio" name="weatherType" value="Rain" required>
+          <label class="form-check-label" for="weatherRain">Rain 🌧️</label>
+        </div>
+      </div>
+      <div class="mb-3">
+        <label class="form-label fw-bold">Alert Time:</label><br>
+        <div class="form-check form-check-inline">
+          <input id="time15" class="form-check-input" type="radio" name="alertTime" value="15" required>
+          <label class="form-check-label" for="time15">15 mins before</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input id="time30" class="form-check-input" type="radio" name="alertTime" value="30" required>
+          <label class="form-check-label" for="time30">30 mins before</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input id="time60" class="form-check-input" type="radio" name="alertTime" value="60" required>
+          <label class="form-check-label" for="time60">1 hour before</label>
+        </div>
+      </div>
+      <div class="text-center">
+        <button type="submit" class="btn btn-lg btn-custom">Submit Alert</button>
+      </div>
+    </form>
+
+    <!-- Saved Alerts -->
+    <h3 class="mt-5">Your Saved Alerts</h3>
+    <table class="table table-bordered text-center">
+      <thead>
+        <tr>
+          <th>Weather</th>
+          <th>Alert Time</th>
+          <th>Created At</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="saved-alerts">
+        <tr>
+          <td colspan="4">
+            <div class="d-flex justify-content-center align-items-center">
+              <div class="spinner-border text-primary me-2" role="status"></div>
+              <span>Loading alerts...</span>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="text-center mt-3">
+      <button class="btn btn-danger btn-lg" onclick="deleteAllAlerts()">🗑️ Delete All Alerts</button>
+    </div>
+  </section>
+</main>
+
+<!-- Footer -->
+<footer class="footer mt-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4"><h5>About Us</h5><p>Connecting Seniors, Enriching Lives.</p></div>
+      <div class="col-md-4"><h5>Quick Links</h5><ul class="list-unstyled">
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="../calendar.html">Calendar</a></li>
+        <li><a href="../events.html">Events</a></li>
+        <li><a href="../medication.html">Medication</a></li>
+        <li><a href="calories.html">Calories Tracker</a></li>
+        <li><a href="#">Weather Forecast</a></li>
+        <li><a href="../points.html">Point Redemption</a></li>
+        <li><a href="../rewards.html">Rewards</a></li>
+      </ul></div>
+      <div class="col-md-4"><h5>Contact Us</h5>
+        <p>Email: info@lionsbefrienders.org.sg</p>
+        <p>Phone: +65 1234 5678</p>
+      </div>
+    </div>
+    <hr class="border-white">
+    <div class="text-center"><p>&copy; 2025 Lions Befrienders Singapore. All Rights Reserved.</p></div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../js/weather.js"></script>
 </body>
 </html>
