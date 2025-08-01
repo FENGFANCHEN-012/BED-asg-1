@@ -19,7 +19,9 @@ const profileController = require("./controllers/profileController");
 const {validateRegisterProfile, validateUpdateProfile, validateProfileId } = require("./middlewares/profileValidation");
 const userController = require("./controllers/userController");
 const { verifyJWT } = require("./middlewares/authMiddleware")
-
+//-----------------------------------------------------------------------------------------------
+const caloriesController = require('./controllers/caloriescontroller');
+const weatherController = require('./controllers/weathercontroller');
 // // Fengfan's controllers (assuming these paths are correct)
 // const UserProfileController = require("./controllers/fengfan_folder/user_profile_controller")
 // const EventController = require("./controllers/fengfan_folder/event_controller.js");
@@ -52,7 +54,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Routes
 // Full Profile Management Routes -----------------------------------------------------------------------------------------------------------------------
-//Samuel
+//Samuel-----------------------------------------------------------------------------------------------------------------
 // Routes for a logged-in user to manage their OWN profile
 app.get("/profiles/me", verifyJWT, profileController.getOwnProfile);
 app.put("/profiles/me", verifyJWT, validateUpdateProfile, profileController.updateOwnProfile);
@@ -104,64 +106,22 @@ app.post("/translate", verifyJWT, async (req, res) => {
     }
 });
 //------------------------------------------------------------------------------------------------------------------------------
+//JunWei-----------------------------------------------------------------------------------------------------
+// ======== NDJW: Calories Tracker APIs ========
+app.get('/api/graph', caloriesController.getGraphData);
+app.get('/api/history', caloriesController.getHistory);
+app.get('/api/food/search', caloriesController.searchFood);
+app.post('/api/food/add', caloriesController.addFoodEntry);
+app.delete('/api/food/delete/:id', caloriesController.deleteFoodEntry);
+app.put('/api/food/update-time/:id', caloriesController.updateMealTime);
+app.get('/api/food/recommend', caloriesController.getRecommendedFoods);
 
+// ======== NDJW: Weather Alert APIs ========
+app.post('/api/alerts', weatherController.saveAlertPreference);
+app.get('/api/alerts', weatherController.getUserAlerts);
+app.delete('/api/alerts/:id', weatherController.deleteAlert);
+app.delete('/api/alerts', weatherController.deleteAllUserAlerts);
 
-// // Fengfan's routes ---------------------------------------------
-// // user
-// app.get("/profiles/recommended/:user_id", UserProfileController.getRecommendedProfiles);
-// app.get("/profile/:user_id",UserProfileController.getInfo)
-// app.put("/profile/:user_id",UserProfileController.updateHobby)
-// // event
-// app.get("/user/event/:user_id", EventController.getUserEvent);
-// app.get("/event/:event_id", EventController.getEventDetails);
-// app.get("/getEvent", EventController.fetchEvent);
-// app.post("/user_event", EventController.signUpEvent); // Endpoint to sign up for an event
-// app.delete("/user_event", EventController.cancelEvent);// Endpoint to cancel an event
-// app.get("/user_event/status", EventController.checkUserEventStatus); // Endpoint to check user event status
-// // group
-// app.get("/group/:user_id", groupController.getUserGroups);
-// app.get("/detail/group/:group_id",groupController.getgroupById)
-// // add group member
-// app.post('/group-members', groupController.addGroupMember);
-// app.post('/group-owner', groupController.addGroupOwner);
-// app.get("/member/:group_id", groupController.getGroupMember)
-// app.get("/member/detail/:user_id", groupController.getMemberDetail);
-// app.get("/group/:group_id/members/profile", groupController.getGroupMemberProfiles);
-// app.delete("/group/:group_id",groupController.deleteGroup)
-// app.put("/group/:group_id", groupController.updateGroup);
-// app.post('/create/groups', groupController.createGroup);
-// // friend
-// app.get('/friends/:user_id', friendController.getFriend);
-// app.delete('/friends/:user_id/:friend_id', friendController.removeFriend);
-// app.get('/friends/:user_id/:friend_id', friendController.getFriendInfo);
-// app.post('/friends/:user_id/:friend_id', friendController.addFriend);
-// app.put('/friends/:user_id/:friend_id', friendController.updateFriendInfo);
-// // chat
-// app.get('/private-chat/:senderId/:receiverId', chatController.getChatHistory);
-// app.post('/private-chat', chatController.sendMessage);
-// // group chat
-// app.get('/group-chat/:groupId', groupChatController.getGroupChatHistory);
-// app.post('/group-chat/send', groupChatController.sendGroupMessage);
-// app.get('/group-info/:groupId', groupChatController.getGroupInfo);
-// app.get('/group-members/:groupId', groupChatController.getGroupMembers);
-// // message
-// app.get('/mailbox/:user_id', mailboxController.getMailboxMessages);
-//---------------------------------------------
-//JunWei's routes (uncomment if needed)
-// Calories Tracker APIs
-// app.get('/api/graph', caloriesController.getGraphData);
-// app.get('/api/history', caloriesController.getHistory);
-// app.get('/api/food/search', caloriesController.searchFood);
-// app.post('/api/food/add', caloriesController.addFoodEntry);
-// app.delete('/api/food/delete/:id', caloriesController.deleteFoodEntry);
-// app.put('/api/food/update-time/:id', caloriesController.updateMealTime);
-// app.get('/api/food/recommend', caloriesController.getRecommendedFoods);
-
-// Weather Alert APIs
-// app.post('/api/alerts', weatherController.saveAlertPreference);
-// app.get('/api/alerts', weatherController.getUserAlerts);
-// app.delete('/api/alerts/:id', weatherController.deleteAlert);
-// app.delete('/api/alerts', weatherController.deleteAllUserAlerts);
 
 
 // Graceful shutdown
@@ -189,23 +149,3 @@ app.listen(port, async () => {
   }
 });
 
-
-
-
-
-// ======== NDJW: Calories Tracker APIs ========
-const caloriesController = require('./controllers/caloriescontroller');
-app.get('/api/graph', caloriesController.getGraphData);
-app.get('/api/history', caloriesController.getHistory);
-app.get('/api/food/search', caloriesController.searchFood);
-app.post('/api/food/add', caloriesController.addFoodEntry);
-app.delete('/api/food/delete/:id', caloriesController.deleteFoodEntry);
-app.put('/api/food/update-time/:id', caloriesController.updateMealTime);
-app.get('/api/food/recommend', caloriesController.getRecommendedFoods);
-
-// ======== NDJW: Weather Alert APIs ========
-const weatherController = require('./controllers/weathercontroller');
-app.post('/api/alerts', weatherController.saveAlertPreference);
-app.get('/api/alerts', weatherController.getUserAlerts);
-app.delete('/api/alerts/:id', weatherController.deleteAlert);
-app.delete('/api/alerts', weatherController.deleteAllUserAlerts);
