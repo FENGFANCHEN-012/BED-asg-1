@@ -1,18 +1,10 @@
-require('dotenv').config();
 const sql = require('mssql');
-const { getDBConnection } = require('./config/db');
-const { fetchMyEvents } = require('./services/eventbrite');
+const { getDBConnection } = require('../config/db');
 
-async function syncMyEvents() {
+async function syncEvents(events) {
   let pool;
   try {
     pool = await getDBConnection();
-    console.log('连接到 MSSQL');
-    const events = await fetchMyEvents();
-    if (events.length === 0) {
-      console.log('没有找到事件，跳过同步');
-      return;
-    }
     const transaction = new sql.Transaction(pool);
     await transaction.begin();
     try {
@@ -35,20 +27,22 @@ async function syncMyEvents() {
               INSERT (id, name, description, start, [end], url, status)
               VALUES (source.id, source.name, source.description, source.start, source.[end], source.url, source.status);
           `);
-        console.log(`存储事件：${event.name.text} (状态：${event.status}, URL：${event.url})`);
+        console.log(`存储事件：${event.name.text} (状态：${event.status})`);
       }
       await transaction.commit();
-      console.log(`同步 ${events.length} 个事件`);
+      console.log(`同步 ${events.length} 个事件到数据库`);
     } catch (error) {
       await transaction.rollback();
       throw error;
     }
   } catch (error) {
-    console.error('同步我的事件错误：', error.message);
+    console.error('数据库同步错误：', error.message);
+    throw error;
   } finally {
     if (pool) await pool.close();
     console.log('MSSQL 连接已关闭');
   }
 }
 
-module.exports = { syncMyEvents };
+module.exports = { 
+  syncEvents };

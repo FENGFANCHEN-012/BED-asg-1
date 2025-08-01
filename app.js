@@ -6,7 +6,8 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const dbConfig = require("./dbConfig");
 // for eventbrite API
-const { syncEvents } = require('./src/eventbrite-sync');
+const eventbriteController = require('./src/controllers/eventbriteController');
+
 //Validations-----------------------------------------------------------------------------------------------------------------------------------
 //const profileController = require("./controllers/Samuel's_folder/profileController");
 //const { validateProfileName, validateCreateProfile, validateProfileId } = require("./middlewares/profileValidation"); // Import all new validation middleware
@@ -22,6 +23,8 @@ const friendController = require("./controllers/fengfan_folder/friend_controller
 const chatController = require("./controllers/fengfan_folder/chat_controller.js");
 const groupChatController = require("./controllers/fengfan_folder/group_chat_controller.js");
 const mailboxController = require('./controllers/fengfan_folder/message_controller.js'); 
+const { fetchAndSyncOrgEvents } = require("./src/services/eventbrite.js");
+
 // Create Express app-----------------------------------------------------------------------------------------------------------------------------------
 const app = express();
 const port = process.env.PORT || 3000;
@@ -70,6 +73,18 @@ app.get("/profiles/recommended/:user_id", UserProfileController.getRecommendedPr
 app.get("/profile/:user_id",UserProfileController.getInfo)
 app.put("/profile/:user_id",UserProfileController.updateHobby)
 // event
+
+
+// event brite
+app.get('/users/me/organizations',eventbriteController.fetchAndSyncOrgEvents)
+app.get('/eventbrite/fetch-org-events', eventbriteController.fetchAndSyncOrgEvents);
+app.get('/sync', fetchAndSyncOrgEvents);
+
+//app.use('/my_organ', eventbriteRoutes.fetchMyOrganization);
+//app.use('/my_organ', eventbriteRoutes.fetchMyOrganization);
+
+
+
 app.get("/user/event/:user_id", EventController.getUserEvent);
 app.get("/event/:event_id", EventController.getEventDetails);
 app.get("/getEvent", EventController.fetchEvent);
@@ -108,21 +123,21 @@ app.get('/mailbox/:user_id', mailboxController.getMailboxMessages);
 
 // NDJW ---------------------------------------------
 // Calories Tracker APIs
-const caloriesController = require('./controllers/caloriescontroller');
-app.get('/api/graph', caloriesController.getGraphData);
-app.get('/api/history', caloriesController.getHistory);
-app.get('/api/food/search', caloriesController.searchFood);
-app.post('/api/food/add', caloriesController.addFoodEntry);
-app.delete('/api/food/delete/:id', caloriesController.deleteFoodEntry);
-app.put('/api/food/update-time/:id', caloriesController.updateMealTime);
-app.get('/api/food/recommend', caloriesController.getRecommendedFoods);
+//const caloriesController = require('./controllers/caloriescontroller');
+//app.get('/api/graph', caloriesController.getGraphData);
+//app.get('/api/history', caloriesController.getHistory);
+//app.get('/api/food/search', caloriesController.searchFood);
+//app.post('/api/food/add', caloriesController.addFoodEntry);
+//app.delete('/api/food/delete/:id', caloriesController.deleteFoodEntry);
+//app.put('/api/food/update-time/:id', caloriesController.updateMealTime);
+//app.get('/api/food/recommend', caloriesController.getRecommendedFoods);
 
 // Weather Alert APIs
-const weatherController = require('./controllers/weathercontroller');
-app.post('/api/alerts', weatherController.saveAlertPreference);
-app.get('/api/alerts', weatherController.getUserAlerts);
-app.delete('/api/alerts/:id', weatherController.deleteAlert);
-app.delete('/api/alerts', weatherController.deleteAllUserAlerts);
+//const weatherController = require('./controllers/weathercontroller');
+//app.post('/api/alerts', weatherController.saveAlertPreference);
+//app.get('/api/alerts', weatherController.getUserAlerts);
+//app.delete('/api/alerts/:id', weatherController.deleteAlert);
+//app.delete('/api/alerts', weatherController.deleteAllUserAlerts);
 //---------------------------------------------------
 
 
