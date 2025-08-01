@@ -1,7 +1,3 @@
-
-
-
-
 document.addEventListener("DOMContentLoaded", function() {
   setupEventPage();
 });
@@ -41,7 +37,7 @@ function injectAlertStyles() {
       letter-spacing: 1px;
     }
     .alert-button {
-      background-color: #1E4A9B;
+      background-color: #193C78;
       color: white;
       border: none;
       padding: 25px 50px;
@@ -63,27 +59,6 @@ function injectAlertStyles() {
       transform: translateY(2px);
       box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
-    .blue-button {
-      padding: 15px 30px;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 18px;
-      color: white;
-      transition: all 0.3s;
-    }
-    .signup-btn {
-      background-color: #1E4A9B;
-    }
-    .signup-btn:hover {
-      background-color: #265BB8;
-    }
-    .cancel-btn {
-      background-color: #ff4d4d;
-    }
-    .cancel-btn:hover {
-      background-color: #e63939;
-    }
     @media (max-width: 768px) {
       .alert-box {
         width: 90%;
@@ -98,10 +73,6 @@ function injectAlertStyles() {
         font-size: 24px;
         padding: 20px 40px;
         min-width: 80%;
-      }
-      .blue-button {
-        font-size: 16px;
-        padding: 12px 25px;
       }
     }
   `;
@@ -182,7 +153,6 @@ function showConfirm(message) {
     overlay.appendChild(alertBox);
     document.body.appendChild(overlay);
     
-    // Cleanup function
     const cleanup = () => {
       document.body.removeChild(overlay);
     };
@@ -199,6 +169,21 @@ function showConfirm(message) {
   });
 }
 
+// Format date to readable string
+function formatDate(dateString) {
+  if (!dateString) return 'Not specified';
+  
+  const options = { 
+    weekday: 'long', 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  };
+  
+  return new Date(dateString).toLocaleDateString('en-US', options);
+}
 
 // Event page setup
 async function setupEventPage() {
@@ -206,18 +191,58 @@ async function setupEventPage() {
   if (!localStorage.getItem("userId")) {
     localStorage.setItem("userId", "1");
   }
-  const eventID = localStorage.getItem("event_id")
-
-  const apiBaseUrl = "http://localhost:3000";
-  const eventData = JSON.parse(localStorage.getItem('currentEvent')) || {};
   
-  // Display event details
-  document.getElementById("event_name").innerText = eventData.name || "Event Name";
-  document.getElementById("event_location").innerText = eventData.location || "Event Location";
-  document.getElementById("event_time").innerText = eventData.time || "Event Time";
-  document.getElementById("event_description").innerText = eventData.description || "Event Description";
-  document.getElementById("event_image").src = eventData.photo || "default-image.jpg";
-  document.getElementById("event_fee").innerHTML = eventData.fee || "Event Fee";
+  const eventData = JSON.parse(localStorage.getItem('currentEvent')) || {};
+  console.log('Event data:', eventData);
+
+  // Display event name or fallback message
+  const eventNameElement = document.getElementById('event_name_text');
+  if (eventData.name) {
+    eventNameElement.textContent = eventData.name;
+  } else if (eventData.url) {
+    eventNameElement.innerHTML = 'For more details please go to <a href="' + eventData.url + '" target="_blank" style="color: var(--primary-blue); text-decoration: underline;">website</a>';
+  } else {
+    eventNameElement.textContent = "Event Name Not Available";
+  }
+  
+  // Set location
+  document.getElementById('event_location').textContent = eventData.location || "Location not specified";
+  
+  // Set time
+  const eventTime = document.getElementById('event_time');
+  if (eventData.start && eventData.end) {
+    eventTime.textContent = `${formatDate(eventData.start)} - ${formatDate(eventData.end)}`;
+  } else {
+    eventTime.textContent = eventData.time || "Date and time not specified";
+  }
+  
+  // Set fee
+  document.getElementById('event_fee').textContent = eventData.fee || "Free";
+  
+  // Set description
+  document.getElementById('event_description').textContent = eventData.description || "No description available";
+  
+  // Set image
+  const eventImage = document.getElementById('event_image');
+  const noImage = document.getElementById('no_image');
+  
+  if (eventData.image) {
+    eventImage.src = eventData.image;
+    eventImage.style.display = 'block';
+    noImage.style.display = 'none';
+  } else {
+    eventImage.style.display = 'none';
+    noImage.style.display = 'block';
+  }
+
+  // Set website button if URL exists
+  const websiteBtn = document.getElementById('websiteBtn');
+  if (eventData.url) {
+    websiteBtn.href = eventData.url;
+    websiteBtn.style.display = 'flex';
+  } else {
+    websiteBtn.style.display = 'none';
+  }
 
   // Check current registration status
   await checkRegistrationStatus();
@@ -229,7 +254,7 @@ async function checkRegistrationStatus() {
     const userId = localStorage.getItem("userId");
     const apiBaseUrl = "http://localhost:3000";
     const url = `${apiBaseUrl}/user_event/status?event_id=${eventId}&user_id=${userId}`;
-    console.log("Fetching URL:", url); // Log the URL to verify
+    console.log("Fetching URL:", url);
     const response = await fetch(url);
     if (response.ok) {
       const data = await response.json();
@@ -263,7 +288,7 @@ function updateButtonUI(isRegistered) {
 async function handleSignUp() {
   try {
     const eventId = JSON.parse(localStorage.getItem('currentEvent')).event_id;
-    const userId = localStorage.getItem("userId");
+    const userId = parseInt(localStorage.getItem("user_id"));
     const apiBaseUrl = "http://localhost:3000";
     
     const response = await fetch(`${apiBaseUrl}/user_event`, {
@@ -278,7 +303,7 @@ async function handleSignUp() {
 
     if (response.ok) {
       showSuccess('Sign Up Successful! 🎉');
-      await checkRegistrationStatus(); // Re-check status to ensure UI is updated
+      await checkRegistrationStatus();
     } else {
       const error = await response.json();
       throw new Error(error.message || "Sign up failed");
@@ -309,7 +334,7 @@ async function handleCancel() {
 
     if (response.ok) {
       showSuccess("Your registration has been cancelled");
-      await checkRegistrationStatus(); // Re-check status to ensure UI is updated
+      await checkRegistrationStatus();
     } else {
       const error = await response.json();
       throw new Error(error.message || "Cancellation failed");
@@ -319,7 +344,3 @@ async function handleCancel() {
     showError(error.message);
   }
 }
-
-
-/// alert css
-// ALERT FUNCTIONS (standalone, no dependencies)

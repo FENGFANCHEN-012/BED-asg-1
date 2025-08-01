@@ -1,77 +1,77 @@
+//////// correct version
+
+
 const axios = require('axios');
 
 const EVENTBRITE_API_URL = 'https://www.eventbriteapi.com/v3';
 const TOKEN = process.env.EVENTBRITE_TOKEN;
-// frontend.js
-async function syncEvents() {
-  try {
-    const response = await fetch('http://localhost:3000/api/events/sync', {
-      method: 'GET', // 或 POST，取决于你的路由设置
-      headers: {
-        'Content-Type': 'application/json',
-        // 如果需要认证，添加 token 或其他头
-      },
-    });
-    const data = await response.json();
-    if (response.ok) {
-      console.log('事件同步成功：', data.message, data.events);
-    } else {
-      console.error('同步失败：', data.error);
-    }
-  } catch (error) {
-    console.error('前端请求错误：', error.message);
-  }
-}
 
-// 触发同步，例如通过按钮点击
-document.getElementById('syncButton').addEventListener('click', syncEvents);
+// Configure axios instance for Eventbrite API
+const eventbriteApi = axios.create({
+  baseURL: EVENTBRITE_API_URL,
+  headers: {
+    'Authorization': `Bearer ${TOKEN}`,
+    'Content-Type': 'application/json'
+  }
+});
+
+/**
+ * Fetch all organizations for the authenticated user
+ */
 async function fetchMyOrganizations() {
-  if (!TOKEN) {
-    console.error('错误：未设置 EVENTBRITE_TOKEN');
-    return [];
-  }
   try {
-    console.log('获取我的组织，令牌：', TOKEN.substring(0, 4) + '...');
-    const response = await axios.get(`${EVENTBRITE_API_URL}/users/me/organizations`, {
-      headers: { Authorization: `Bearer ${TOKEN}` },
-    });
-    const organizations = response.data.organizations || [];
-    console.log('找到我的组织数：', organizations.length);
-    return organizations;
+    const response = await eventbriteApi.get('/users/me/organizations');
+    console.log('Fetched organizations:', response.data.organizations);
+    return response.data.organizations;
   } catch (error) {
-    const status = error.response?.status;
-    const data = error.response?.data;
-    console.error('获取组织错误：', {
-      status,
-      message: error.message,
-      data: data || '无响应数据',
-    });
-    return [];
+    console.error('Failed to fetch organizations:', error.message, error.response?.data);
+    throw new Error(`Failed to fetch organizations: ${error.message}`);
   }
 }
 
-async function fetchOrganizationEvents(orgId) {
-  if (!TOKEN || !orgId) {
-    console.error('错误：未设置 EVENTBRITE_TOKEN 或组织 ID');
-    return [];
-  }
+/**
+ * Fetch events for a specific organization
+ * @param {string} orgId - Organization ID
+ * @param {object} options - Optional parameters
+ * @param {string} options.status - Event status (live, draft, etc.)
+ * @param {number} options.pageSize - Number of events per page
+ */
+async function fetchOrganizationEvents(orgId, options = {}) {
   try {
-    console.log(`获取组织 ${orgId} 的事件，令牌：`, TOKEN.substring(0, 4) + '...');
-    const response = await axios.get(`${EVENTBRITE_API_URL}/organizations/${orgId}/events`, {
-      headers: { Authorization: `Bearer ${TOKEN}` },
-    });
-    const events = response.data.events || [];
-    console.log(`找到组织 ${orgId} 的事件数：`, events.length);
+    const params = {
+      'expand': 'venue,logo,ticket_classes',
+      'page_size': options.pageSize || 50,
+      'status': options.status || 'live'
+    };
+
+    console.log(`Fetching events for orgId: ${orgId}, params:`, params);
+    const response = await eventbriteApi.get(`/organizations/${orgId}/events/`, { params });
+    console.log(`API response for orgId ${orgId}:`, response.data);
+
+    const events = response.data.events.map(event => ({
+      external_id: event.id,
+      name: event.name?.text || '',
+      location: event.venue?.address?.localized_address_display || null,
+      time: event.created || null,
+      description: event.description?.text || null,
+      image: event.logo?.url || null,
+      start: event.start?.utc || new Date().toISOString(), // Default to current time if null
+      end: event.end?.utc || new Date(Date.now() + 3600000).toISOString(), // Default to 1 hour from now
+      url: event.url || null,
+      status: event.status || 'unknown',
+      fee: event.is_free ? 'Free' : (event.ticket_classes?.[0]?.cost?.display || 'Paid'),
+      type: event.format?.name || 'General'
+    }));
+
+    console.log(`Mapped ${events.length} events:`, events);
     return events;
   } catch (error) {
-    const status = error.response?.status;
-    const data = error.response?.data;
-    console.error(`获取组织 ${orgId} 事件错误：`, {
-      status,
-      message: error.message,
-      data: data || '无响应数据',
-    });
-    return [];
+    console.error(`Failed to fetch events for organization ${orgId}:`, error.message, error.response?.data);
+    throw new Error(`Failed to fetch events: ${error.message}`);
   }
 }
 
+module.exports = {
+  fetchMyOrganizations,
+  fetchOrganizationEvents
+};

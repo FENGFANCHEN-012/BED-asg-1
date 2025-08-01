@@ -6,13 +6,18 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const dbConfig = require("./dbConfig");
 // for eventbrite API
-const eventbriteController = require('./src/controllers/eventbriteController');
+
 
 //Validations-----------------------------------------------------------------------------------------------------------------------------------
-//const profileController = require("./controllers/Samuel's_folder/profileController");
-//const { validateProfileName, validateCreateProfile, validateProfileId } = require("./middlewares/profileValidation"); // Import all new validation middleware
-//const userController = require("./controllers/userController");
+const profileController = require("./controllers/Samuel's_folder/profileController");
+const { validateProfileName, validateCreateProfile, validateProfileId } = require("./middlewares/profileValidation"); // Import all new validation middleware
+const userController = require("./controllers/userController");
 
+// fengfan middleware
+const {
+  validateSendMessage,
+  validateChatHistoryParams
+} = require('./middlewares/chat_middleware.js');
 
 // fengfan
 
@@ -23,7 +28,15 @@ const friendController = require("./controllers/fengfan_folder/friend_controller
 const chatController = require("./controllers/fengfan_folder/chat_controller.js");
 const groupChatController = require("./controllers/fengfan_folder/group_chat_controller.js");
 const mailboxController = require('./controllers/fengfan_folder/message_controller.js'); 
-const { fetchAndSyncOrgEvents } = require("./src/services/eventbrite.js");
+const { 
+  fetchCategories,
+  fetchAndSyncOrgEvents,
+  getEventsByCategory 
+} = require('./src/controllers/eventbriteController');
+
+
+const eventbriteController = require('./src/controllers/eventbriteController');
+
 
 // Create Express app-----------------------------------------------------------------------------------------------------------------------------------
 const app = express();
@@ -45,24 +58,24 @@ app.use(express.static(path.join(__dirname, 'public'))); //
 
 // Routes
 // Full Profile Management Routes -----------------------------------------------------------------------------------------------------------------------
-//app.get("/profiles", profileController.getAllProfiles); // Get all profiles
-//app.get("/profiles/:id", profileController.getProfileById); // Get profile by userId
-//app.post("/profiles", validateCreateProfile, profileController.createProfile); // Create profile 
-//app.put("/profiles/:id", validateCreateProfile, profileController.updateProfile); // Update profile by userId
-//app.delete("/profiles/:id", profileController.deleteProfile); // Delete profile by userId
+app.get("/profiles", profileController.getAllProfiles); // Get all profiles
+app.get("/profiles/:id", profileController.getProfileById); // Get profile by userId
+app.post("/profiles", validateCreateProfile, profileController.createProfile); // Create profile 
+app.put("/profiles/:id", validateCreateProfile, profileController.updateProfile); // Update profile by userId
+app.delete("/profiles/:id", profileController.deleteProfile); // Delete profile by userId
 //------------------------------------------------------------------------------------------------------------------------------
 
 
 // e.g., validateUser, similar to validateStudent)
-//app.post("/signup",userController.signup);
+app.post("/signup",userController.signup);
 
 
 
 
 // ✅ Manage Medication
-//app.get("/medications", medController.getAllMedications);
-//app.get("/medications/:id", validateId, medController.getMedicationById);
-//app.post("/medications", validateMedication, medController.createMedication);
+app.get("/medications", medController.getAllMedications);
+app.get("/medications/:id", validateId, medController.getMedicationById);
+app.post("/medications", validateMedication, medController.createMedication);
 
 
 
@@ -76,13 +89,8 @@ app.put("/profile/:user_id",UserProfileController.updateHobby)
 
 
 // event brite
-app.get('/users/me/organizations',eventbriteController.fetchAndSyncOrgEvents)
-app.get('/eventbrite/fetch-org-events', eventbriteController.fetchAndSyncOrgEvents);
-app.get('/sync', fetchAndSyncOrgEvents);
 
-//app.use('/my_organ', eventbriteRoutes.fetchMyOrganization);
-//app.use('/my_organ', eventbriteRoutes.fetchMyOrganization);
-
+app.get('/eventbrite/events', eventbriteController.fetchAndSyncOrgEvents);
 
 
 app.get("/user/event/:user_id", EventController.getUserEvent);
@@ -110,11 +118,11 @@ app.get('/friends/:user_id/:friend_id', friendController.getFriendInfo);
 app.post('/friends/:user_id/:friend_id', friendController.addFriend);
 app.put('/friends/:user_id/:friend_id', friendController.updateFriendInfo);
 // chat
-app.get('/private-chat/:senderId/:receiverId', chatController.getChatHistory);
-app.post('/private-chat', chatController.sendMessage);
+app.get('/private-chat/:senderId/:receiverId',validateChatHistoryParams, chatController.getChatHistory);
+app.post('/private-chat',validateChatHistoryParams,validateSendMessage, chatController.sendMessage);
 // group chat
 app.get('/group-chat/:groupId', groupChatController.getGroupChatHistory);
-app.post('/group-chat/send', groupChatController.sendGroupMessage);
+app.post('/group-chat/send',validateSendMessage, groupChatController.sendGroupMessage);
 app.get('/group-info/:groupId', groupChatController.getGroupInfo);
 app.get('/group-members/:groupId', groupChatController.getGroupMembers);
 // message
@@ -124,20 +132,20 @@ app.get('/mailbox/:user_id', mailboxController.getMailboxMessages);
 // NDJW ---------------------------------------------
 // Calories Tracker APIs
 //const caloriesController = require('./controllers/caloriescontroller');
-//app.get('/api/graph', caloriesController.getGraphData);
-//app.get('/api/history', caloriesController.getHistory);
-//app.get('/api/food/search', caloriesController.searchFood);
-//app.post('/api/food/add', caloriesController.addFoodEntry);
-//app.delete('/api/food/delete/:id', caloriesController.deleteFoodEntry);
-//app.put('/api/food/update-time/:id', caloriesController.updateMealTime);
-//app.get('/api/food/recommend', caloriesController.getRecommendedFoods);
+app.get('/api/graph', caloriesController.getGraphData);
+app.get('/api/history', caloriesController.getHistory);
+app.get('/api/food/search', caloriesController.searchFood);
+app.post('/api/food/add', caloriesController.addFoodEntry);
+app.delete('/api/food/delete/:id', caloriesController.deleteFoodEntry);
+app.put('/api/food/update-time/:id', caloriesController.updateMealTime);
+app.get('/api/food/recommend', caloriesController.getRecommendedFoods);
 
 // Weather Alert APIs
-//const weatherController = require('./controllers/weathercontroller');
-//app.post('/api/alerts', weatherController.saveAlertPreference);
-//app.get('/api/alerts', weatherController.getUserAlerts);
-//app.delete('/api/alerts/:id', weatherController.deleteAlert);
-//app.delete('/api/alerts', weatherController.deleteAllUserAlerts);
+const weatherController = require('./controllers/weathercontroller');
+app.post('/api/alerts', weatherController.saveAlertPreference);
+app.get('/api/alerts', weatherController.getUserAlerts);
+app.delete('/api/alerts/:id', weatherController.deleteAlert);
+app.delete('/api/alerts', weatherController.deleteAllUserAlerts);
 //---------------------------------------------------
 
 

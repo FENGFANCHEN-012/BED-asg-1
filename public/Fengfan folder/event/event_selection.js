@@ -193,13 +193,14 @@ function showError(message = 'An error occurred') {
  
  
  const apiBaseUrl = "http://localhost:3000";
-    let eventsData = {};
+let eventsData = {};
 
-    // Get user preferences
-    const userHobby = localStorage.getItem("hobby")?.toLowerCase() || "";
-    const userDetail = localStorage.getItem("detail")?.toLowerCase() || "";
+// Get user preferences
+const user_id = parseInt(localStorage.getItem("user_id")) || 1
+const userHobby = localStorage.getItem("hobby")?.toLowerCase() || "";
+const userDetail = localStorage.getItem("detail")?.toLowerCase() || "";
 
-    async function loadEvents() {
+async function loadEvents() {
     try {
         const response = await fetch(`${apiBaseUrl}/getEvent`);
         if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
@@ -207,18 +208,14 @@ function showError(message = 'An error occurred') {
         const data = await response.json();
         console.log("API Response:", data); 
 
-       
         if (Array.isArray(data)) {
-            
             eventsData = data.reduce((obj, event) => {
                 if (event.event_id) obj[event.event_id] = event;
                 return obj;
             }, {});
         } else if (data && data.event_id) {
-            
             eventsData = { [data.event_id]: data };
         } else {
-           
             eventsData = {};
         }
 
@@ -235,84 +232,97 @@ function showError(message = 'An error occurred') {
         showMessage("Failed to load events, please contact admin for help");
     }
 }
-    function sortEvents(eventsObj) {
-        return Object.entries(eventsObj)
-            .map(([id, event]) => ({ id, ...event }))
-            .sort((a, b) => {
-                const scoreA = getRelevanceScore(a);
-                const scoreB = getRelevanceScore(b);
-                return scoreB - scoreA;
-            });
-    }
 
-  // arraay of events
-    // Sort events based on user preferences
-    function getRelevanceScore(event) {
-        let score = 0;
-        if (event.detail?.toLowerCase() === userDetail) score += 2;
-        if (event.type?.toLowerCase() === userHobby) score += 2;
-        return score;
-    }
+function sortEvents(eventsObj) {
+    return Object.entries(eventsObj)
+        .map(([id, event]) => ({ id, ...event }))
+        .sort((a, b) => {
+            const scoreA = getRelevanceScore(a);
+            const scoreB = getRelevanceScore(b);
+            return scoreB - scoreA;
+        });
+}
 
-    function renderEvents(sortedEvents) {
-        const container = document.getElementById('specialEvents');
-        container.innerHTML = '';
+function getRelevanceScore(event) {
+    let score = 0;
+    if (event.detail?.toLowerCase() === userDetail) score += 2;
+    if (event.type?.toLowerCase() === userHobby) score += 2;
+    return score;
+}
+
+function renderEvents(sortedEvents) {
+    const container = document.getElementById('specialEvents');
+    container.innerHTML = '';
+    
+    sortedEvents.forEach(event => {
+        const eventElement = document.createElement('div');
+        eventElement.className = 'friend';
         
-        sortedEvents.forEach(event => {
-            const eventElement = document.createElement('div');
-            eventElement.className = 'friend';
+        // Create website button if URL exists
+        const websiteButton = event.url 
+            ? `<button class="visit-website" data-url="${event.url}">Visit Website</button>`
+            : '';
             
-            eventElement.innerHTML = `
-                <div class="friend-info">
-                    <div class="friend-photo" 
-                         style="background-image: url('${event.image || ''}');
-                                background-size: cover;"></div>
-                    <div class="friend-details">
-                        <h1 style="font-size:2vw">${event.name}</h1>
-                        <p>Location: ${event.location || 'TBD'}</p>
-                        <p>Time: ${formatTime(event.time)}</p>
-                        <p>Fee: ${event.fee ? `$${event.fee}` : 'Free'}</p>
-                     
-                    </div>
+        eventElement.innerHTML = `
+            <div class="friend-info">
+                <div class="friend-photo" 
+                     style="background-image: url('${event.image || ''}');
+                            background-size: cover;"></div>
+                <div class="friend-details">
+                    <h1 style="font-size:2vw">${event.name}</h1>
+                    <p>Location: ${event.location || 'TBD'}</p>
+                    <p>Time: ${formatTime(event.time)}</p>
+                    <p>Fee: ${event.fee ? `$${event.fee}` : 'Free'}</p>
+                    ${websiteButton}
                 </div>
-                <div class="friend-actions">
-                    <button class="delete" data-id="${event.id || event.event_id}">Sign Up</button>
-                </div>
-            `;
-            
-            container.appendChild(eventElement);
-        });
-
-        bindSignupButtons();
-    }
-
-    function formatTime(isoString) {
-        if (!isoString) return 'Time not specified';
-        const date = new Date(isoString);
-        return date.toLocaleString();
-    }
-
-    function bindSignupButtons() {
-
-      
-        document.querySelectorAll('.delete').forEach(button => {
-            button.addEventListener('click', function() {
-                const eventId = this.getAttribute('data-id');
-                const event = eventsData[eventId];
-                
-                if (event) {
-                    localStorage.setItem('currentEvent', JSON.stringify(event));
-                    window.location.href = "Event-interface.html";
-                }
-            });
-        });
-    }
-
-    function showMessage(msg) {
-        document.getElementById('specialEvents').innerHTML = `
-            <p style="font-size:24px;text-align:center;">${msg}</p>
+            </div>
+            <div class="friend-actions">
+                <button class="delete" data-id="${event.id || event.event_id}">Sign Up</button>
+            </div>
         `;
-    }
+        
+        container.appendChild(eventElement);
+    });
 
-   
-    document.addEventListener('DOMContentLoaded', loadEvents);
+    bindSignupButtons();
+    bindWebsiteButtons();
+}
+
+function formatTime(isoString) {
+    if (!isoString) return 'Time not specified';
+    const date = new Date(isoString);
+    return date.toLocaleString();
+}
+
+function bindSignupButtons() {
+    document.querySelectorAll('.delete').forEach(button => {
+        button.addEventListener('click', function() {
+            const eventId = this.getAttribute('data-id');
+            const event = eventsData[eventId];
+            
+            if (event) {
+                localStorage.setItem('currentEvent', JSON.stringify(event));
+                window.location.href = "Event-interface.html";
+            }
+        });
+    });
+}
+
+function bindWebsiteButtons() {
+    document.querySelectorAll('.visit-website').forEach(button => {
+        button.addEventListener('click', function() {
+            const url = this.getAttribute('data-url');
+            // Ensure URL has protocol
+            const fullUrl = url.startsWith('http') ? url : `https://${url}`;
+            window.open(fullUrl, '_blank');
+        });
+    });
+}
+
+function showMessage(msg) {
+    document.getElementById('specialEvents').innerHTML = `
+        <p style="font-size:24px;text-align:center;">${msg}</p>
+    `;
+}
+
+document.addEventListener('DOMContentLoaded', loadEvents);

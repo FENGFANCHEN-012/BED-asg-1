@@ -1,73 +1,316 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Event Detail Interface</title>
-  <link ref="stylesheet" href="general.css">
+  <title>Event Details</title>
+  <link rel="stylesheet" href="general.css">
   <link rel="stylesheet" href="basic css.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
-   
   <style>
+    :root {
+      --primary-blue: #193C78;
+      --secondary-blue: #265BB8;
+      --danger-red: #ff4d4d;
+      --danger-dark: #e63939;
+      --success-green: #4CAF50;
+      --success-dark: #45a049;
+      --light-gray: #f8f9fa;
+      --medium-gray: #e9ecef;
+      --dark-gray: #212529;
+    }
     
-    /* Added button status styles */
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 0;
+      color: var(--dark-gray);
+      line-height: 1.6;
+    }
+    
+    /* Container and layout styles */
+    .big-background {
+      display: flex;
+      min-height: 100vh;
+    }
+    
+    .left-white {
+      flex: 2;
+      background-color: #ffffff;
+      padding: 60px 80px;
+      display: flex;
+      justify-content: center;
+    }
+    
+    .right-blue {
+      flex: 1;
+      background-color: var(--primary-blue);
+      padding: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .event-content {
+      width: 100%;
+      max-width: 800px;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    /* Event details styling */
+    .event-header h1 {
+      font-size: 42px;
+      color: var(--primary-blue);
+      font-weight: 700;
+      margin-bottom: 20px;
+      line-height: 1.3;
+    }
+    
+    .event-detail {
+      font-size: 24px;
+      line-height: 1.6;
+      color: var(--dark-gray);
+    }
+    
+    .event-detail strong {
+      display: block;
+      font-size: 28px;
+      margin-bottom: 12px;
+      color: var(--primary-blue);
+    }
+    
+    .event-detail span {
+      font-weight: normal;
+      font-size: 24px;
+      display: block;
+      margin-top: 8px;
+    }
+    
+    .event-description {
+      font-size: 24px;
+      margin-top: 30px;
+      line-height: 1.7;
+    }
+    
+    .event-description strong {
+      font-size: 28px;
+      color: var(--primary-blue);
+      margin-bottom: 15px;
+      display: block;
+    }
+
+    /* Button styles */
+    .blue-button {
+      padding: 18px 45px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 24px;
+      color: white;
+      transition: all 0.3s ease;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      text-decoration: none;
+    }
+    
     .signup-btn {
-      background-color: #193C78; /* Original blue */
-    }
-    .cancel-btn {
-      background-color: #ff4d4d; /* Red for cancel */
+      background-color: var(--primary-blue);
     }
     
+    .signup-btn:hover {
+      background-color: var(--secondary-blue);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(25, 60, 120, 0.2);
+    }
+    
+    .cancel-btn {
+      background-color: var(--danger-red);
+    }
+    
+    .cancel-btn:hover {
+      background-color: var(--danger-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(255, 77, 77, 0.2);
+    }
+    
+    .website-btn {
+      background-color: var(--success-green);
+    }
+    
+    .website-btn:hover {
+      background-color: var(--success-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(76, 175, 80, 0.2);
+    }
+    
+    .action-buttons {
+      display: flex;
+      justify-content: flex-start;
+      gap: 30px;
+      margin-top: 50px;
+      flex-wrap: wrap;
+    }
+
+    /* Image styling */
+    .event-image {
+      width: 100%;
+      max-height: 600px;
+      object-fit: contain;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+    
+    .no-image {
+      color: white;
+      text-align: center;
+      font-size: 24px;
+    }
+    
+    .no-image i {
+      font-size: 60px;
+      margin-bottom: 20px;
+      opacity: 0.7;
+    }
+
+    /* Responsive design */
+    @media (max-width: 1200px) {
+      .left-white {
+        padding: 50px;
+      }
+      .right-blue {
+        padding: 50px;
+      }
+    }
+    
+    @media (max-width: 992px) {
+      .big-background {
+        flex-direction: column;
+      }
+      
+      .left-white, .right-blue {
+        width: 100%;
+        padding: 40px;
+      }
+      
+      .event-image {
+        max-height: 400px;
+        margin-top: 30px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .left-white, .right-blue {
+        padding: 30px;
+      }
+      
+      .event-header h1 {
+        font-size: 36px;
+      }
+      
+      .event-detail, 
+      .event-detail span,
+      .event-description {
+        font-size: 22px;
+      }
+      
+      .event-detail strong,
+      .event-description strong {
+        font-size: 26px;
+      }
+      
+      .blue-button {
+        font-size: 22px;
+        padding: 16px 35px;
+      }
+      
+      .action-buttons {
+        flex-direction: column;
+        gap: 20px;
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .left-white, .right-blue {
+        padding: 25px;
+      }
+      
+      .event-header h1 {
+        font-size: 32px;
+      }
+      
+      .event-detail, 
+      .event-detail span,
+      .event-description {
+        font-size: 20px;
+      }
+      
+      .event-detail strong,
+      .event-description strong {
+        font-size: 24px;
+      }
+      
+      .blue-button {
+        font-size: 20px;
+        padding: 14px 30px;
+      }
+    }
   </style>
 </head>
 <body>
+  <div class="big-background">
+    <div class="left-white">
+      <div class="event-content">
+        <div class="event-header">
+          <h1 id="event_name"><i class="fas fa-calendar-alt"></i> <span id="event_name_text">Event Name</span></h1>
+        </div>
 
-<div class="big-background">
-  <div class="left-white">
-    <div style="margin-left: 10%; width: 80%; display: flex; flex-direction: column; gap: 2.5vh;">
-      
-      <h1 style="font-size: 2.8vw; color: #193C78; font-weight: bold; margin-bottom: 1vh;" id="event_name">🎵 Event Name</h1>
+        <div class="event-detail">
+          <strong><i class="fas fa-map-marker-alt"></i> Where:</strong>
+          <span id="event_location">Location name</span>
+        </div>
 
-      <div style="font-size: 2.2vw; line-height: 1.3;">
-        <strong style="display:block;">📍 Where:</strong> 
-        <span id="event_location" style="font-weight: normal;">Location name</span>
+        <div class="event-detail">
+          <strong><i class="fas fa-clock"></i> When:</strong>
+          <span id="event_time">Date and time</span>
+        </div>
+
+        <div class="event-detail">
+          <strong><i class="fas fa-tag"></i> Cost:</strong>
+          <span id="event_fee">Free/$Amount</span>
+        </div>
+
+        <div class="event-description">
+          <strong><i class="fas fa-info-circle"></i> About:</strong>
+          <span id="event_description">Event description goes here</span>
+        </div>
+
+        <div class="action-buttons">
+          <button id="eventActionBtn" class="blue-button signup-btn">
+            <i class="fas fa-user-plus"></i> Sign Up
+          </button>
+          <a id="websiteBtn" class="blue-button website-btn" target="_blank" style="display: none;">
+            <i class="fas fa-external-link-alt"></i> Visit Website
+          </a>
+        </div>
       </div>
+    </div>
 
-      <div style="font-size: 2.2vw; line-height: 1.3;">
-        <strong style="display:block;">🕒 When:</strong>
-        <span id="event_time" style="font-weight: normal;">Date and time</span>
-      </div>
-
-      <div style="font-size: 2.2vw; line-height: 1.3;">
-        <strong style="display:block;">💰 Cost:</strong>
-        <span id="event_fee" style="font-weight: normal;">Free/$Amount</span>
-      </div>
-
-      <div style="font-size: 2vw; margin-top: 1.5vh; line-height: 1.3;">
-        <strong style="display:block;">📝 About:</strong>
-        <span id="event_description" style="font-weight: normal; display:block; margin-top: 0.5vh;">Event description goes here</span>
-      </div>
-      
-      <div style="display:flex; margin:2vw; justify-content:start; gap: 2vw;">
-        <button id="eventActionBtn" class="blue-button signup-btn" style="margin-top: 1.5vh; font-size: 2vw; padding: 1vh 2.5vw;">Sign Up</button>
-        
+    <div class="right-blue">
+      <img id="event_image" class="event-image" alt="Event Image" style="display: none;">
+      <div id="no_image" class="no-image" style="display: none;">
+        <i class="fas fa-image"></i>
+        <p>No Image Available</p>
       </div>
     </div>
   </div>
 
-  <div class="right-blue">
-    <img id="event_image" alt="Event Image" style="width: 100%; height: auto; border-radius: 20px; margin-top: 2vh;">
-  </div>
-</div>
-
-<script src="event_handler.js"></script>
-  
-
-
-
-
-
-
+  <script src="event_handler.js"></script>
 </body>
 </html>

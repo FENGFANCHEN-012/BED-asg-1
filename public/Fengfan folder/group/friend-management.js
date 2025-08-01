@@ -258,7 +258,7 @@ async function loadFriends() {
             <h1 style='font-size:3vw'>${friend.nick_name || ''}</h1>
             <p class="friend-name">${friend.name}</p>
             <p>Hobby: ${friend.hobbies}</p>
-            <p>Details: ${friend.detail}</p>
+            
           </div>
         </div>
         <div class="friend-actions">

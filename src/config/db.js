@@ -1,16 +1,25 @@
-const express = require('express');
-const { fetchMyEvents } = require('../services/eventbrite');
-const router = express.Router();
+const sql = require('mssql');
 
-router.get('/api/events', async (req, res) => {
-  try {
-    const events = await fetchMyEvents();
-    res.json(events);
-  } catch (error) {
-    res.status(500).json({ 
-      error: error.message 
-    });
+const dbConfig = {
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  server: process.env.DB_SERVER || 'localhost\\SQLEXPRESS',
+  database: process.env.DB_DATABASE,
+  options: {
+    encrypt: true,
+    trustServerCertificate: true
   }
-});
+};
 
-module.exports = router;
+async function getDBConnection() {
+  try {
+    const pool = new sql.ConnectionPool(dbConfig);
+    await pool.connect();
+    return pool;
+  } catch (error) {
+    console.error('Failed to connect to database:', error);
+    throw error;
+  }
+}
+
+module.exports = { getDBConnection };

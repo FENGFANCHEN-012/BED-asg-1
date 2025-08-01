@@ -1,26 +1,96 @@
-const { fetchMyOrganizations, fetchOrganizationEvents } = require('../services/eventbrite');
-const EventModel = require('../models/eventbriteModel');
+//////// correct version
+
+
+
+
+const eventbriteService = require('../services/eventbrite');
+const eventbriteModel = require('../models/eventbriteModel');
 
 async function fetchAndSyncOrgEvents(req, res) {
+  const { orgId, status, pageSize } = req.query;
+
   try {
-    console.log('开始获取并同步组织事件');
-    const organizations = await fetchMyOrganizations();
-    if (organizations.length === 0) {
-      return res.status(200).json({ message: '没有找到组织', organizations: [], events: [] });
+  
+    let organizationId = orgId;
+    if (!organizationId) {
+      const organizations = await eventbriteService.fetchMyOrganizations();
+      if (!organizations || organizations.length === 0) {
+        return res.status(404).json({ 
+          success: false,
+          message: 'No organizations found for this account'
+        });
+      }
+      organizationId = organizations[0].id;
+      console.log(`Using organization ID: ${organizationId}`);
     }
-    const orgId = organizations[0].id; // 取第一个组织 ID
-    console.log(`组织 ID: ${orgId}`);
-    const events = await fetchOrganizationEvents(orgId);
-    if (events.length === 0) {
-      return res.status(200).json({ message: `组织 ${orgId} 没有找到事件`, organizations, events });
+
+    // Step 2: Fetch events from Eventbrite
+    console.log(`Fetching events for orgId: ${organizationId}, status: ${status}, pageSize: ${pageSize}`);
+    const events = await eventbriteService.fetchOrganizationEvents(organizationId, {
+      status: status || 'live',
+      pageSize: pageSize || 50
+    });
+
+    console.log(`Fetched ${events.length} events from Eventbrite:`, events);
+
+    if (!events || events.length === 0) {
+      return res.json({ 
+        success: true,
+        message: 'No events found to sync',
+        count: 0
+      });
     }
-    await syncEvents(events); // 假设 syncEvents 已定义或在其他文件中
-    console.log(`成功同步 ${events.length} 个事件`);
-    res.status(200).json({ message: '事件同步完成', organizations, events });
+
+    // Step 3: Sync events to database
+    await eventbriteModel.syncEvents(events);
+
+    return res.json({
+      success: true,
+      message: `Successfully synced ${events.length} events from Eventbrite`,
+      count: events.length,
+      events: events
+    });
   } catch (error) {
-    console.error('获取并同步组织事件错误：', error.message);
-    res.status(500).json({ error: `同步事件失败：${error.message}` });
+    console.error('Error in fetchAndSyncOrgEvents:', error);
+    return res.status(500).json({ 
+      success: false,
+      message: 'Failed to sync events from Eventbrite',
+      error: error.message
+    });
   }
 }
 
-module.exports = { fetchAndSyncOrgEvents };
+async function getEvents(req, res) {
+  const { status, type } = req.query;
+
+  try {
+    const events = await eventbriteModel.getAllEvents();
+    
+    // Apply filtering
+    let filteredEvents = events;
+    if (status) {
+      filteredEvents = filteredEvents.filter(e => e.status === status);
+    }
+    if (type) {
+      filteredEvents = filteredEvents.filter(e => e.type === type);
+    }
+
+    return res.json({
+      success: true,
+      count: filteredEvents.length,
+      events: filteredEvents
+    });
+  } catch (error) {
+    console.error('Error getting events:', error);
+    return res.status(500).json({ 
+      success: false,
+      message: 'Failed to retrieve events',
+      error: error.message
+    });
+  }
+}
+
+module.exports = {
+  fetchAndSyncOrgEvents,
+  getEvents
+};
