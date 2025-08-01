@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-translate-key="admin_dashboard_title">Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css"> <!-- Link to external CSS file -->
+</head>
+<body>
+    <div class="admin-container">
+        <h1 data-translate-key="admin_welcome">Welcome, Admin!</h1>
+        <p data-translate-key="admin_intro">Manage user profiles below.</p>
+
+        <div class="button-group">
+            <button class="logout-button" id="logoutButton" data-translate-key="logout_button">Logout</button>
+            <button class="settings-button" id="settingsButton" data-translate-key="settings_button">Settings</button>
+        </div>
+
+        <div class="user-table-container">
+            <table class="user-table">
+                <thead>
+                    <tr>
+                        <th data-translate-key="table_header_id">ID</th>
+                        <th data-translate-key="table_header_username">Username</th>
+                        <th data-translate-key="table_header_email">Email</th>
+                        <th data-translate-key="table_header_role">Role</th>
+                        <th data-translate-key="table_header_profile_name">Profile Name</th>
+                        <th data-translate-key="table_header_age">Age</th>
+                        <th data-translate-key="table_header_actions">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="userTableBody">
+                    <!-- User data will be loaded here by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Settings Modal (Copied from dashboard.html for consistency) -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h3 data-translate-key="settings_title">Settings</h3>
+            <label for="languageSelect" data-translate-key="select_language">Select Language:</label>
+            <select id="languageSelect">
+                <option value="en" data-translate-key="lang_en">English</option>
+                <option value="es" data-translate-key="lang_es">Spanish</option>
+                <option value="fr" data-translate-key="lang_fr">French</option>
+                <option value="zh" data-translate-key="lang_zh">Chinese</option>
+                <option value="ms" data-translate-key="lang_ms">Malay</option>
+                <option value="ta" data-translate-key="lang_ta">Tamil</option>
+            </select>
+            <button class="translate-button" id="applyTranslationButton" data-translate-key="apply_translation">Apply Translation</button>
+        </div>
+    </div>
+
+    <div id="messageBox" class="message-box"></div>
+
+    <script src="translation.js"></script> <!-- Reusable translation logic -->
+    <script src="admin.js"></script> <!-- Admin-specific logic -->
+</body>
+</html>

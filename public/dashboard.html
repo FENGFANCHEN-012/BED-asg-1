@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css"> <!-- Link to external CSS file -->
+</head>
+<body>
+    <div class="content">
+        <h1 data-translate-key="welcome_message">Welcome, <span id="displayUsernamePlaceholder"></span>!</h1>
+        <p data-translate-key="login_success_message">You have successfully logged in.</p>
+
+        <div class="button-group">
+            <button class="profile-button" id="viewProfileButton" data-translate-key="view_profile_button">View Profile</button>
+            <button class="logout-button" id="logoutButton" data-translate-key="logout_button">Logout</button>
+            <button class="settings-button" id="settingsButton" data-translate-key="settings_button">Settings</button>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h3 data-translate-key="settings_title">Settings</h3>
+            <label for="languageSelect" data-translate-key="select_language">Select Language:</label>
+            <select id="languageSelect">
+                <option value="en" data-translate-key="lang_en">English</option>
+                <option value="es" data-translate-key="lang_es">Spanish</option>
+                <option value="fr" data-translate-key="lang_fr">French</option>
+                <option value="zh" data-translate-key="lang_zh">Chinese</option>
+                <option value="ms" data-translate-key="lang_ms">Malay</option>
+                <option value="ta" data-translate-key="lang_ta">Tamil</option>
+                <!-- Add more languages as needed -->
+            </select>
+            <button class="translate-button" id="applyTranslationButton" data-translate-key="apply_translation">Apply Translation</button>
+        </div>
+    </div>
+
+    <div id="messageBox" class="message-box"></div>
+
+    <script src="translation.js"></script> <!-- Include the reusable translation script FIRST -->
+    <script src="dashboard.js"></script> <!-- Specific script for dashboard -->
+</body>
+</html>
