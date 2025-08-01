@@ -1,23 +1,23 @@
 const sql = require('mssql');
 
-const dbConfig = {
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  server: process.env.DB_SERVER || 'localhost\\SQLEXPRESS',
-  database: process.env.DB_DATABASE,
+const config = {
+  user: process.env.SQL_USER,
+  password: process.env.SQL_PASSWORD,
+  server: process.env.SQL_SERVER,
+  database: process.env.SQL_DATABASE,
   options: {
     encrypt: true,
-    trustServerCertificate: true
-  }
+    trustServerCertificate: true, 
+  },
 };
 
 async function getDBConnection() {
   try {
-    const pool = new sql.ConnectionPool(dbConfig);
-    await pool.connect();
+    const pool = await sql.connect(config);
+    console.log('Connected to MSSQL');
     return pool;
   } catch (error) {
-    console.error('Failed to connect to database:', error);
+    console.error('MSSQL connection error:', error.message);
     throw error;
   }
 }

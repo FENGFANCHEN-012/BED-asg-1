@@ -11,10 +11,10 @@ async function getFriend(userId) {
   u.user_id, 
   p.name, 
   p.hobbies, 
-
- 
+  p.detail, 
+  p.profile_picture,
   uf.nick_name,  
-  
+  uf.description,
   p.description AS profile_description
 FROM UserFriends uf
 JOIN Users u ON uf.friend_id = u.user_id
@@ -33,7 +33,7 @@ WHERE uf.user_id = @userId AND uf.status = 'accepted'
         try {
             connection = await sql.connect(dbConfig);
             
-       
+            // 检查是否已经是好友
             const checkQuery = `
                 SELECT 1 FROM UserFriends 
                 WHERE (user_id = @userId AND friend_id = @friendId)
@@ -48,14 +48,14 @@ WHERE uf.user_id = @userId AND uf.status = 'accepted'
                 throw new Error('You are already friends');
             }
             
-            
+            // 建立双向好友关系（直接accepted）
             const transaction = new sql.Transaction(connection);
             await transaction.begin();
             
             try {
                 const request = new sql.Request(transaction);
                 
-           
+                // 用户→好友的关系
                 await request.input('userId', sql.Int, userId)
                     .input('friendId', sql.Int, friendId)
                     .query(`
@@ -63,7 +63,7 @@ WHERE uf.user_id = @userId AND uf.status = 'accepted'
                         VALUES (@userId, @friendId, 'accepted')
                     `);
                 
-              
+                // 好友→用户的关系（双向）
                 await request.input('userId', sql.Int, friendId)
                     .input('friendId', sql.Int, userId)
                     .query(`
@@ -90,7 +90,7 @@ async function addFriendDirectly(userId, friendId) {
     try {
         connection = await sql.connect(dbConfig);
         
-
+        // 检查是否已是好友
         const checkQuery = `
             SELECT status FROM UserFriends 
             WHERE (user_id = @userId AND friend_id = @friendId)
@@ -105,14 +105,14 @@ async function addFriendDirectly(userId, friendId) {
             return { alreadyFriends: true, status: checkResult.recordset[0].status };
         }
         
-     
+        // 建立双向好友关系
         const transaction = new sql.Transaction(connection);
         await transaction.begin();
         
         try {
             const request = new sql.Request(transaction);
             
-         
+            // 使用不同的参数名
             await request.input('userId1', sql.Int, userId)
                        .input('friendId1', sql.Int, friendId)
                        .query(`

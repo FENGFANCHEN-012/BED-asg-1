@@ -1,14 +1,33 @@
 {
+  "name": "bed-asg-1",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FENGFANCHEN-012/BED-asg-1.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/FENGFANCHEN-012/BED-asg-1/issues"
+  },
+  "homepage": "https://github.com/FENGFANCHEN-012/BED-asg-1#readme",
+  "description": "",
   "dependencies": {
-    "@google-cloud/translate": "^9.2.0",
+    "@azure/msal-common": "^15.9.0",
     "axios": "^1.11.0",
-    "axios-retry": "^4.5.0",
     "bcrypt": "^6.0.0",
-    "cors": "^2.8.5",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
-    "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
-    "mssql": "^11.0.1"
+    "mssql": "^11.0.1",
+    "mysql2": "^3.14.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
   }
 }

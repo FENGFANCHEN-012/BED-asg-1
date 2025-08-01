@@ -1,4 +1,4 @@
-// public/signin.js
+// public/script.js
 
 const loginUsernameInput = document.getElementById('loginUsername');
 const loginPasswordInput = document.getElementById('loginPassword');
@@ -32,15 +32,15 @@ loginButton.addEventListener('click', async () => {
 
         if (response.ok) {
             localStorage.setItem('jwtToken', data.token); // Store the token
-            localStorage.setItem('loggedInUsername', data.username); // Store the username
             showMessage('Login successful! Redirecting...', false);
             console.log('Login successful. Token:', data.token);
+            // Example: Redirect to a dummy dashboard page
             setTimeout(() => {
                 // Check user role and redirect accordingly
                 if (data.role === 'admin') {
-                    window.location.replace('/admin.html');
+                    window.location.href = '/admin.html';
                 } else {
-                    window.location.replace('/index.html');
+                    window.location.href = '/dashboard.html';
                 }
             }, 1000);
 
@@ -55,5 +55,6 @@ loginButton.addEventListener('click', async () => {
 
 // Handle Signup Button Click (Redirect to a signup page)
 signupButton.addEventListener('click', () => {
-    window.location.replace('/signup.html');
+    // Redirect to a dedicated signup page
+    window.location.href = '/signup.html';
 });
