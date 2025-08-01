@@ -1,104 +1,174 @@
 const logoutButton = document.getElementById('logoutButton');
-  
-  // Function to fetch messages from the backend
-        async function fetchMessages() {
-            try {
-                // Hardcoded user_id for demo; replace with authenticated user ID
-                const userId = localStorage.getItem("user_id")
-                const response = await fetch(`http://localhost:3000/mailbox/${userId}`);
-                if (!response.ok) {
-                    throw new Error('Failed to fetch messages');
-                }
-                const messages = await response.json();
-                return messages;
-            } catch (error) {
-                console.error('Error fetching messages:', error);
-                return [];
-            }
-        }
+const viewProfileButton = document.getElementById('viewProfileButton');
+const mailboxButton = document.querySelector('.mailbox-button');
+const notificationSpan = document.getElementById('notification');
+const mailboxContent = document.getElementById('mailboxContent');
+const messageList = document.getElementById('messageList');
 
-        // Function to update notification and message list
-        async function updateMailbox() {
-            const notification = document.getElementById('notification');
-            const messageList = document.getElementById('messageList');
-            const messages = await fetchMessages();
-
-            // Update notification count
-            const messageCount = messages.length;
-            notification.textContent = messageCount;
-            if (messageCount > 0) {
-                notification.classList.add('active');
-            } else {
-                notification.classList.remove('active');
-            }
-
-            // Populate message list
-            messageList.innerHTML = '';
-            if (messageCount === 0) {
-                messageList.innerHTML = '<p>No new messages.</p>';
-            } else {
-                messages.forEach(message => {
-                    const messageElement = document.createElement('div');
-                    messageElement.classList.add('message');
-                    messageElement.innerHTML = `
-                        <p class="date">Received: ${message.receive_date}</p>
-                        <p>${message.message}</p>
-                    `;
-                    messageList.appendChild(messageElement);
-                });
-            }
-        }
-
-        // Function to toggle mailbox visibility
-        function toggleMailbox() {
-            const mailboxContent = document.getElementById('mailboxContent');
-            mailboxContent.classList.toggle('active');
-        }
-
-        // Initialize mailbox on page load
-        window.onload = updateMailbox;
-
-
-// --- Logout Logic ---
-logoutButton.addEventListener('click', async () => {
+// --- Authorization Check on Load ---
+document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('jwtToken');
-    if (token) {
-        try {
-            const response = await fetch(`${API_BASE_URL}/users/logout`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
-            });
+    // If no token, or token is expired/invalid, redirect to sign-in page
+    if (!token) {
+        showMessage('Please sign in to access the home page.', true);
+        window.location.replace('/signin.html');
+        return;
+    }
 
-            if (response.ok) {
-                console.log('Logged out successfully.');
-                showMessage('Logged out successfully!', false); // Show message first
-                setTimeout(() => { // Then redirect after a short delay
-                    localStorage.removeItem('jwtToken'); // Always remove token from client
-                    localStorage.removeItem('loggedInUsername'); // Remove username on logout
-                    window.location.replace('/'); // Use replace for immediate redirection
-                }, 1000); // Wait 1 second for message to be seen
-            } else {
-                const errorData = await response.json();
-                console.error('Server logout failed:', errorData.message);
-                showMessage(errorData.message || 'Logout failed on server.', true);
-                // No setTimeout for error, redirect immediately if server logout failed
-                localStorage.removeItem('jwtToken'); // Still remove token
-                localStorage.removeItem('loggedInUsername'); // Remove username on logout
-                window.location.replace('/'); // Redirect even on server error
-            }
-        } catch (error) {
-            console.error('Network error during logout:', error);
-            showMessage('Network error during logout.', true);
-            localStorage.removeItem('jwtToken'); // Still remove token
-            localStorage.removeItem('loggedInUsername'); // Remove username on logout
-            window.location.replace('/'); // Redirect on network error
+    try {
+        const decodedToken = JSON.parse(atob(token.split('.')[1]));
+        if (decodedToken.exp * 1000 < Date.now()) {
+            showMessage('Session expired. Please sign in again.', true);
+            localStorage.removeItem('jwtToken');
+            localStorage.removeItem('loggedInUsername');
+            window.location.replace('/signin.html');
+            return;
         }
-    } else {
+    } catch (error) {
+        console.error('Error decoding token or token invalid:', error);
+        showMessage('Invalid session. Please sign in again.', true);
         localStorage.removeItem('jwtToken');
-        localStorage.removeItem('loggedInUsername'); // Remove username if no token found
-        window.location.replace('/'); // Use replace for immediate redirection
+        localStorage.removeItem('loggedInUsername');
+        window.location.replace('/signin.html');
+        return;
+    }
+
+    // If token is valid, fetch mailbox messages (placeholder for now)
+    fetchMailboxMessages();
+});
+
+// --- Logout Logic (Copied from dashboard.js for consistency) ---
+if (logoutButton) {
+    logoutButton.addEventListener('click', async () => {
+        const token = localStorage.getItem('jwtToken');
+        if (token) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/users/logout`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    console.log('Logged out successfully.');
+                    showMessage('Logged out successfully!', false);
+                    setTimeout(() => {
+                        localStorage.removeItem('jwtToken');
+                        localStorage.removeItem('loggedInUsername');
+                        window.location.replace('/signin.html');
+                    }, 1000);
+                } else {
+                    const errorData = await response.json();
+                    console.error('Server logout failed:', errorData.message);
+                    showMessage(errorData.message || 'Logout failed on server.', true);
+                    localStorage.removeItem('jwtToken');
+                    localStorage.removeItem('loggedInUsername');
+                    window.location.replace('/signin.html');
+                }
+            } catch (error) {
+                console.error('Network error during logout:', error);
+                showMessage('Network error during logout.', true);
+                localStorage.removeItem('jwtToken');
+                localStorage.removeItem('loggedInUsername');
+                window.location.replace('/signin.html');
+            }
+        } else {
+            localStorage.removeItem('jwtToken');
+            localStorage.removeItem('loggedInUsername');
+            window.location.replace('/signin.html');
+        }
+    });
+}
+
+// --- View Profile Button Logic ---
+if (viewProfileButton) {
+    viewProfileButton.addEventListener('click', () => {
+        window.location.href = '/profile.html';
+    });
+}
+
+// --- Mailbox Functionality ---
+// This function is called by the onclick attribute in index.html
+function toggleMailbox() {
+    mailboxContent.classList.toggle('active');
+    // Optionally, clear notification when mailbox is opened
+    if (mailboxContent.classList.contains('active')) {
+        notificationSpan.textContent = '0';
+        notificationSpan.classList.remove('active');
+        // In a real app, you'd mark messages as read on the server here
+    }
+}
+
+// Close mailbox if user clicks outside of it
+window.addEventListener('click', (event) => {
+    if (!mailboxButton.contains(event.target) && !mailboxContent.contains(event.target) && mailboxContent.classList.contains('active')) {
+        mailboxContent.classList.remove('active');
     }
 });
+
+
+// Placeholder function to fetch messages (requires backend API)
+async function fetchMailboxMessages() {
+    const token = localStorage.getItem('jwtToken');
+    if (!token) {
+        console.warn('No token found for fetching mailbox messages.');
+        return;
+    }
+
+    try {
+        // This endpoint needs to be implemented on the backend.
+        // It should return an array of message objects: [{ message: "...", receive_date: "..." }]
+        const response = await fetch(`${API_BASE_URL}/mailbox/me`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (response.ok) {
+            const messages = await response.json();
+            renderMailboxMessages(messages);
+            updateNotificationCount(messages.length); // Assuming all are unread for now
+        } else {
+            const errorData = await response.json();
+            console.error('Failed to fetch mailbox messages:', errorData);
+            showMessage('Failed to load messages.', true);
+        }
+    } catch (error) {
+        console.error('Network error fetching mailbox messages:', error);
+        showMessage('Network error: Could not load messages.', true);
+    }
+}
+
+function renderMailboxMessages(messages) {
+    messageList.innerHTML = ''; // Clear existing messages
+    if (messages.length === 0) {
+        messageList.innerHTML = '<p>No new messages.</p>';
+        return;
+    }
+    messages.forEach(msg => {
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message');
+        const date = new Date(msg.receive_date).toLocaleString(); // Format date nicely
+        messageDiv.innerHTML = `<p>${msg.message}</p><p class="date">${date}</p>`;
+        messageList.appendChild(messageDiv);
+    });
+}
+
+function updateNotificationCount(count) {
+    if (notificationSpan) {
+        notificationSpan.textContent = count;
+        if (count > 0) {
+            notificationSpan.classList.add('active');
+        } else {
+            notificationSpan.classList.remove('active');
+        }
+    }
+}
+
+// Make toggleMailbox globally accessible since it's used in onclick
+window.toggleMailbox = toggleMailbox;
+
+

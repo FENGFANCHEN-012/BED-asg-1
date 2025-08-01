@@ -14,7 +14,7 @@ async function fetchUserProfiles() {
     const token = localStorage.getItem('jwtToken');
     if (!token) {
         showMessage('Unauthorized: Please log in.', true);
-        window.location.replace('/'); // Use replace for immediate redirection
+        window.location.replace('/signin.html'); // Changed to signin.html
         return;
     }
 
@@ -29,7 +29,7 @@ async function fetchUserProfiles() {
         if (response.status === 403) { // Forbidden
             showMessage('Access Denied: You do not have admin privileges.', true);
             setTimeout(() => {
-                window.location.replace('/dashboard.html'); // Use replace for immediate redirection
+                window.location.replace('/dashboard.html');
             }, 1500);
             return;
         }
@@ -85,7 +85,7 @@ async function deleteUser(userId) {
     const token = localStorage.getItem('jwtToken');
     if (!token) {
         showMessage('Unauthorized: Please log in.', true);
-        window.location.replace('/');
+        window.location.replace('/signin.html'); // Changed to signin.html
         return;
     }
 
@@ -127,18 +127,18 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 showMessage('Access Denied: You are not authorized to view this page.', true);
                 setTimeout(() => {
-                    window.location.replace('/dashboard.html'); // Use replace for immediate redirection
+                    window.location.replace('/dashboard.html');
                 }, 1500);
             }
         } catch (error) {
             console.error('Error decoding token:', error);
             showMessage('Invalid token. Please log in again.', true);
             localStorage.removeItem('jwtToken');
-            window.location.replace('/'); // Use replace for immediate redirection
+            window.location.replace('/signin.html'); // Changed to signin.html
         }
     } else {
         showMessage('Unauthorized: Please log in.', true);
-        window.location.replace('/'); // Use replace for immediate redirection
+        window.location.replace('/signin.html'); // Changed to signin.html
     }
 
     // Logout Logic
@@ -155,10 +155,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 if (response.ok) {
-                    showMessage('Logged out successfully.', false); // Show message first
+                    console.log('Logged out successfully.');
+                    showMessage('Logged out successfully!', false); // Show message first
                     setTimeout(() => { // Then redirect after a short delay
                         localStorage.removeItem('jwtToken'); // Always remove token from client
-                        window.location.replace('/'); // Use replace for immediate redirection
+                        window.location.replace('/signin.html'); // Changed to signin.html
                     }, 1000); // Wait 1 second for message to be seen
                 } else {
                     const errorData = await response.json();
@@ -166,17 +167,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     showMessage(errorData.message || 'Logout failed on server.', true);
                     // No setTimeout for error, redirect immediately if server logout failed
                     localStorage.removeItem('jwtToken'); // Still remove token
-                    window.location.replace('/'); // Redirect even on server error
+                    window.location.replace('/signin.html'); // Changed to signin.html
                 }
             } catch (error) {
                 console.error('Network error during logout:', error);
                 showMessage('Network error during logout.', true);
                 localStorage.removeItem('jwtToken'); // Still remove token
-                window.location.replace('/'); // Redirect on network error
+                window.location.replace('/signin.html'); // Changed to signin.html
             }
         } else {
-            localStorage.removeItem('jwtToken'); // If no token, just remove and redirect
-            window.location.replace('/'); // Use replace for immediate redirection
+            localStorage.removeItem('jwtToken');
+            window.location.replace('/signin.html'); // Changed to signin.html
         }
     });
 
@@ -199,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Language Selection and Apply Button
     languageSelect.addEventListener('change', () => {
-        localStorage.setItem('selectedSelectedLanguage', languageSelect.value);
+        localStorage.setItem('selectedLanguage', languageSelect.value);
     });
 
     applyTranslationButton.addEventListener('click', () => {

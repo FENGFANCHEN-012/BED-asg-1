@@ -44,7 +44,10 @@ app.use(express.json()); // Parse JSON request bodies
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded request bodies
 // --- Add other general middleware here (e.g., logging, security headers) ---
 app.use(express.static(path.join(__dirname, 'public'))); //
-
+// Redirect root URL to signin.html
+app.get("/", (req, res) => {
+    res.redirect("/signin.html");
+});
 
 
 
