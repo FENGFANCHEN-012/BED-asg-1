@@ -1,3 +1,8 @@
+// public/script.js
+
+// Ensure showMessage and API_BASE_URL are available from translation.js
+// This script will run on index.html (the home page)
+
 const logoutButton = document.getElementById('logoutButton');
 const viewProfileButton = document.getElementById('viewProfileButton');
 const mailboxButton = document.querySelector('.mailbox-button');
@@ -5,10 +10,18 @@ const notificationSpan = document.getElementById('notification');
 const mailboxContent = document.getElementById('mailboxContent');
 const messageList = document.getElementById('messageList');
 
+// Settings Modal elements (moved from dashboard.js)
+const settingsButton = document.getElementById('settingsButton');
+const settingsModal = document.getElementById('settingsModal');
+const closeButton = document.querySelector('.modal .close-button'); // Select specifically within modal
+const languageSelect = document.getElementById('languageSelect');
+const applyTranslationButton = document.getElementById('applyTranslationButton');
+
+
 // --- Authorization Check on Load ---
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('jwtToken');
-    // If no token, or token is expired/invalid, redirect to sign-in page
+    // If no token, or token is expired/invalid, redirect to sign-in page immediately
     if (!token) {
         showMessage('Please sign in to access the home page.', true);
         window.location.replace('/signin.html');
@@ -54,30 +67,28 @@ if (logoutButton) {
                 if (response.ok) {
                     console.log('Logged out successfully.');
                     showMessage('Logged out successfully!', false);
-                    setTimeout(() => {
-                        localStorage.removeItem('jwtToken');
-                        localStorage.removeItem('loggedInUsername');
-                        window.location.replace('/signin.html');
-                    }, 1000);
+                    localStorage.removeItem('jwtToken'); // Always remove token from client
+                    localStorage.removeItem('loggedInUsername'); // Remove username on logout
+                    window.location.replace('/signin.html'); // Redirect immediately
                 } else {
                     const errorData = await response.json();
                     console.error('Server logout failed:', errorData.message);
                     showMessage(errorData.message || 'Logout failed on server.', true);
-                    localStorage.removeItem('jwtToken');
-                    localStorage.removeItem('loggedInUsername');
-                    window.location.replace('/signin.html');
+                    localStorage.removeItem('jwtToken'); // Still remove token
+                    localStorage.removeItem('loggedInUsername'); // Remove username on logout
+                    window.location.replace('/signin.html'); // Redirect immediately
                 }
             } catch (error) {
                 console.error('Network error during logout:', error);
                 showMessage('Network error during logout.', true);
                 localStorage.removeItem('jwtToken');
                 localStorage.removeItem('loggedInUsername');
-                window.location.replace('/signin.html');
+                window.location.replace('/signin.html'); // Redirect immediately
             }
         } else {
             localStorage.removeItem('jwtToken');
             localStorage.removeItem('loggedInUsername');
-            window.location.replace('/signin.html');
+            window.location.replace('/signin.html'); // Redirect immediately
         }
     });
 }
@@ -172,3 +183,40 @@ function updateNotificationCount(count) {
 window.toggleMailbox = toggleMailbox;
 
 
+// --- Settings Modal Logic (Moved from dashboard.js) ---
+if (settingsButton) {
+    settingsButton.addEventListener('click', () => {
+        settingsModal.style.display = 'flex'; // Show the modal
+        // Set the dropdown to the currently stored language on opening
+        const storedLanguage = localStorage.getItem('selectedLanguage') || 'en';
+        languageSelect.value = storedLanguage;
+    });
+}
+
+if (closeButton) {
+    closeButton.addEventListener('click', () => {
+        settingsModal.style.display = 'none'; // Hide the modal
+    });
+}
+
+// Close modal if user clicks outside of it
+window.addEventListener('click', (event) => {
+    if (event.target == settingsModal) {
+        settingsModal.style.display = 'none';
+    }
+});
+
+// --- Language Selection and Apply Button (Moved from dashboard.js) ---
+if (languageSelect) {
+    languageSelect.addEventListener('change', () => {
+        localStorage.setItem('selectedLanguage', languageSelect.value);
+    });
+}
+
+if (applyTranslationButton) {
+    applyTranslationButton.addEventListener('click', () => {
+        const targetLanguage = languageSelect.value;
+        applyTranslation(targetLanguage); // Call the reusable function from translation.js
+        settingsModal.style.display = 'none'; // Close modal after applying
+    });
+}

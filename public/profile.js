@@ -1,7 +1,5 @@
 // public/profile.js
 
-const displayUsername = document.getElementById('displayUsername');
-const displayEmail = document.getElementById('displayEmail');
 const displayName = document.getElementById('displayName');
 const displayAge = document.getElementById('displayAge');
 const displayHobbies = document.getElementById('displayHobbies');
@@ -18,7 +16,7 @@ const editProfileDescriptionInput = document.getElementById('editProfileDescript
 const editProfileButton = document.getElementById('editProfileButton');
 const saveProfileButton = document.getElementById('saveProfileButton');
 const cancelEditButton = document.getElementById('cancelEditButton');
-const backToDashboardButton = document.getElementById('backToDashboardButton');
+const backToDashboardButton = document.getElementById('backToDashboardButton'); // Still exists for now, will redirect to index
 const logoutButton = document.getElementById('logoutButton');
 
 // Settings Modal elements (reused from dashboard.js)
@@ -35,8 +33,6 @@ let currentProfileData = {}; // To store the fetched profile data
 
 // Function to display profile data
 function displayProfile(profile) {
-    displayUsername.textContent = profile.username || 'N/A';
-    displayEmail.textContent = profile.email || 'N/A';
     displayName.textContent = profile.name || 'N/A';
     displayAge.textContent = profile.age || 'N/A';
     displayHobbies.textContent = profile.hobbies || 'N/A';
@@ -81,7 +77,7 @@ async function fetchOwnProfile() {
         if (response.status === 403) { // Forbidden
             showMessage('Access Denied: You are not authorized to view this page.', true);
             setTimeout(() => {
-                window.location.replace('/dashboard.html'); // Redirect to dashboard if not allowed
+                window.location.replace('/index.html'); // Redirect to home page if not allowed
             }, 1500);
             return;
         }
@@ -202,10 +198,10 @@ document.addEventListener('DOMContentLoaded', () => {
     cancelEditButton.addEventListener('click', exitEditMode);
 
     backToDashboardButton.addEventListener('click', () => {
-        window.location.href = '/dashboard.html';
+        window.location.href = '/index.html'; // Redirect to home page
     });
 
-    // Logout Logic (Copied from dashboard.js for consistency)
+    // Logout Logic (Copied from home.js for consistency)
     logoutButton.addEventListener('click', async () => {
         const token = localStorage.getItem('jwtToken');
         if (token) {
@@ -248,7 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Settings Modal Logic (reused from dashboard.js)
+    // Settings Modal Logic (reused from home.js)
     settingsButton.addEventListener('click', () => {
         settingsModal.style.display = 'flex';
         const storedLanguage = localStorage.getItem('selectedLanguage') || 'en';

@@ -40,7 +40,7 @@ loginButton.addEventListener('click', async () => {
                 if (data.role === 'admin') {
                     window.location.replace('/admin.html');
                 } else {
-                    window.location.replace('/dashboard.html');
+                    window.location.replace('/index.html');
                 }
             }, 1000);
 

@@ -29,7 +29,7 @@ async function fetchUserProfiles() {
         if (response.status === 403) { // Forbidden
             showMessage('Access Denied: You do not have admin privileges.', true);
             setTimeout(() => {
-                window.location.replace('/dashboard.html');
+                window.location.replace('/index.html'); // Redirect non-admins to home page
             }, 1500);
             return;
         }
@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 showMessage('Access Denied: You are not authorized to view this page.', true);
                 setTimeout(() => {
-                    window.location.replace('/dashboard.html');
+                    window.location.replace('/index.html'); // Redirect non-admins to home page
                 }, 1500);
             }
         } catch (error) {
