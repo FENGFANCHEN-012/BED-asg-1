@@ -188,3 +188,24 @@ app.listen(port, async () => {
     console.error("Database connection failed:", err.message);
   }
 });
+
+
+
+
+
+// ======== NDJW: Calories Tracker APIs ========
+const caloriesController = require('./controllers/caloriescontroller');
+app.get('/api/graph', caloriesController.getGraphData);
+app.get('/api/history', caloriesController.getHistory);
+app.get('/api/food/search', caloriesController.searchFood);
+app.post('/api/food/add', caloriesController.addFoodEntry);
+app.delete('/api/food/delete/:id', caloriesController.deleteFoodEntry);
+app.put('/api/food/update-time/:id', caloriesController.updateMealTime);
+app.get('/api/food/recommend', caloriesController.getRecommendedFoods);
+
+// ======== NDJW: Weather Alert APIs ========
+const weatherController = require('./controllers/weathercontroller');
+app.post('/api/alerts', weatherController.saveAlertPreference);
+app.get('/api/alerts', weatherController.getUserAlerts);
+app.delete('/api/alerts/:id', weatherController.deleteAlert);
+app.delete('/api/alerts', weatherController.deleteAllUserAlerts);
