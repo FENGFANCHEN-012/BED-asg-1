@@ -2,36 +2,16 @@ require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const sql = require("mssql");
-const cors = require("cors"); // Ensure cors is imported
 const dbConfig = require("./dbConfig");
-<<<<<<< HEAD
-// for eventbrite API
-=======
->>>>>>> 68f720931a8e9cd80f8ae25b261251da32e00a13
 
 // for eventbrite API (if used)
 // const { syncEvents } = require('./src/eventbrite-sync');
 
-<<<<<<< HEAD
-//Validations-----------------------------------------------------------------------------------------------------------------------------------
-const profileController = require("./controllers/Samuel's_folder/profileController");
-const { validateProfileName, validateCreateProfile, validateProfileId } = require("./middlewares/profileValidation"); // Import all new validation middleware
-const userController = require("./controllers/userController");
-
-// fengfan middleware
-const {
-  validateSendMessage,
-  validateChatHistoryParams
-} = require('./middlewares/chat_middleware.js');
-
-// fengfan
-=======
 // Import Google Cloud Translation API
 const { TranslationServiceClient } = require('@google-cloud/translate').v3beta1;
 const translationClient = new TranslationServiceClient();
 const projectId = process.env.GOOGLE_CLOUD_PROJECT_ID;
 const location = 'global';
->>>>>>> 68f720931a8e9cd80f8ae25b261251da32e00a13
 
 // Controllers and Middlewares
 const profileController = require("./controllers/profileController");
@@ -46,34 +26,16 @@ const groupController = require("./controllers/fengfan_folder/group_controller.j
 const friendController = require("./controllers/fengfan_folder/friend_controller.js");
 const chatController = require("./controllers/fengfan_folder/chat_controller.js");
 const groupChatController = require("./controllers/fengfan_folder/group_chat_controller.js");
-<<<<<<< HEAD
-const mailboxController = require('./controllers/fengfan_folder/message_controller.js'); 
-const { 
-  fetchCategories,
-  fetchAndSyncOrgEvents,
-  getEventsByCategory 
-} = require('./src/controllers/eventbriteController');
-
-
-const eventbriteController = require('./src/controllers/eventbriteController');
-
-
-// Create Express app-----------------------------------------------------------------------------------------------------------------------------------
-=======
 const mailboxController = require('./controllers/fengfan_folder/message_controller.js');
 
 // JunWei's controllers (assuming these paths are correct and they are uncommented if used)
 // const weatherController = require('./controllers/weathercontroller');
 // const caloriesController = require('./controllers/caloriescontroller');
 
->>>>>>> 68f720931a8e9cd80f8ae25b261251da32e00a13
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Middleware (Parsing request bodies and CORS) - Cleaned up duplicates
-app.use(express.json({ limit: '100mb' })); // Combined with limit
-app.use(express.urlencoded({ limit: '100mb', extended: true })); // Combined with limit
-app.use(cors()); // Enable CORS for all routes
+
 
 // Redirect root URL to signin.html FIRST, before serving static files
 app.get("/", (req, res) => {
@@ -86,13 +48,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Routes
 // Full Profile Management Routes -----------------------------------------------------------------------------------------------------------------------
-<<<<<<< HEAD
-app.get("/profiles", profileController.getAllProfiles); // Get all profiles
-app.get("/profiles/:id", profileController.getProfileById); // Get profile by userId
-app.post("/profiles", validateCreateProfile, profileController.createProfile); // Create profile 
-app.put("/profiles/:id", validateCreateProfile, profileController.updateProfile); // Update profile by userId
-app.delete("/profiles/:id", profileController.deleteProfile); // Delete profile by userId
-//------------------------------------------------------------------------------------------------------------------------------
+
 
 
 // e.g., validateUser, similar to validateStudent)
@@ -110,7 +66,7 @@ app.post("/medications", validateMedication, medController.createMedication);
 
 
 // Fengfan ---------------------------------------------
-=======
+
 //Samuel
 // Routes for a logged-in user to manage their OWN profile
 app.get("/profiles/me", verifyJWT, profileController.getOwnProfile);
@@ -165,81 +121,6 @@ app.post("/translate", verifyJWT, async (req, res) => {
 //------------------------------------------------------------------------------------------------------------------------------
 
 
-// Fengfan's routes ---------------------------------------------
->>>>>>> 68f720931a8e9cd80f8ae25b261251da32e00a13
-// user
-app.get("/profiles/recommended/:user_id", UserProfileController.getRecommendedProfiles);
-app.get("/profile/:user_id",UserProfileController.getInfo)
-app.put("/profile/:user_id",UserProfileController.updateHobby)
-// event
-
-
-// event brite
-
-app.get('/eventbrite/events', eventbriteController.fetchAndSyncOrgEvents);
-
-
-app.get("/user/event/:user_id", EventController.getUserEvent);
-app.get("/event/:event_id", EventController.getEventDetails);
-app.get("/getEvent", EventController.fetchEvent);
-app.post("/user_event", EventController.signUpEvent); // Endpoint to sign up for an event
-app.delete("/user_event", EventController.cancelEvent);// Endpoint to cancel an event
-app.get("/user_event/status", EventController.checkUserEventStatus); // Endpoint to check user event status
-// group
-app.get("/group/:user_id", groupController.getUserGroups);
-app.get("/detail/group/:group_id",groupController.getgroupById)
-// add group member
-app.post('/group-members', groupController.addGroupMember);
-app.post('/group-owner', groupController.addGroupOwner);
-app.get("/member/:group_id", groupController.getGroupMember)
-app.get("/member/detail/:user_id", groupController.getMemberDetail);
-app.get("/group/:group_id/members/profile", groupController.getGroupMemberProfiles);
-app.delete("/group/:group_id",groupController.deleteGroup)
-app.put("/group/:group_id", groupController.updateGroup);
-app.post('/create/groups', groupController.createGroup);
-// friend
-app.get('/friends/:user_id', friendController.getFriend);
-app.delete('/friends/:user_id/:friend_id', friendController.removeFriend);
-app.get('/friends/:user_id/:friend_id', friendController.getFriendInfo);
-app.post('/friends/:user_id/:friend_id', friendController.addFriend);
-app.put('/friends/:user_id/:friend_id', friendController.updateFriendInfo);
-// chat
-app.get('/private-chat/:senderId/:receiverId',validateChatHistoryParams, chatController.getChatHistory);
-app.post('/private-chat',validateChatHistoryParams,validateSendMessage, chatController.sendMessage);
-// group chat
-app.get('/group-chat/:groupId', groupChatController.getGroupChatHistory);
-app.post('/group-chat/send',validateSendMessage, groupChatController.sendGroupMessage);
-app.get('/group-info/:groupId', groupChatController.getGroupInfo);
-app.get('/group-members/:groupId', groupChatController.getGroupMembers);
-// message
-app.get('/mailbox/:user_id', mailboxController.getMailboxMessages);
-//---------------------------------------------
-//JunWei's routes (uncomment if needed)
-// Calories Tracker APIs
-<<<<<<< HEAD
-//const caloriesController = require('./controllers/caloriescontroller');
-app.get('/api/graph', caloriesController.getGraphData);
-app.get('/api/history', caloriesController.getHistory);
-app.get('/api/food/search', caloriesController.searchFood);
-app.post('/api/food/add', caloriesController.addFoodEntry);
-app.delete('/api/food/delete/:id', caloriesController.deleteFoodEntry);
-app.put('/api/food/update-time/:id', caloriesController.updateMealTime);
-app.get('/api/food/recommend', caloriesController.getRecommendedFoods);
-=======
-// app.get('/api/graph', caloriesController.getGraphData);
-// app.get('/api/history', caloriesController.getHistory);
-// app.get('/api/food/search', caloriesController.searchFood);
-// app.post('/api/food/add', caloriesController.addFoodEntry);
-// app.delete('/api/food/delete/:id', caloriesController.deleteFoodEntry);
-// app.put('/api/food/update-time/:id', caloriesController.updateMealTime);
-// app.get('/api/food/recommend', caloriesController.getRecommendedFoods);
->>>>>>> 68f720931a8e9cd80f8ae25b261251da32e00a13
-
-// Weather Alert APIs
-// app.post('/api/alerts', weatherController.saveAlertPreference);
-// app.get('/api/alerts', weatherController.getUserAlerts);
-// app.delete('/api/alerts/:id', weatherController.deleteAlert);
-// app.delete('/api/alerts', weatherController.deleteAllUserAlerts);
 
 
 // Graceful shutdown
