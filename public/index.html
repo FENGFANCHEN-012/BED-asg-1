@@ -255,13 +255,13 @@
             <i class="fas fa-user fa-lg"></i>
           </button>
           <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-            <li><a class="dropdown-item" href="profile.html">Profile</a></li>
-            <li><a class="dropdown-item" href="#">Logout</a></li>
+            <li><button class="dropdown-item" id="viewProfileButton" data-translate-key="view_profile_button">Profile</button></li>
+            <li><button class="dropdown-item" id="logoutButton" data-translate-key="logout_button">Logout</button></li>
           </ul>
         </div>
 
 
-         <button class="mailbox-button" onclick="toggleMailbox()">
+          <button class="mailbox-button" onclick="toggleMailbox()">
             Message
 
             <span id="notification" class="notification">0</span>
@@ -279,6 +279,7 @@
   <main class="container my-5">
     <h2 class="text-center mb-4">Welcome to Lions Befrienders Singapore</h2>
     <p class="text-center text-muted">Content Coming Soon...</p>
+
     <!-- Interest Section -->
     <div class="interest-section">
       <img src="./img/looking-for-old-friends-@3X-1024x512.jpg" alt="Seniors with shallow light background">
@@ -286,14 +287,13 @@
         <a href="./Fengfan folder/group/recommend_friend.html">Add Friends with Similar Interests!</a>
       </div>
     </div>
+
     <!-- Event Registration Section -->
     <div class="event-section">
       <img src="https://images.unsplash.com/photo-1501139083538-0139583c060f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80" alt="Light event background">
       <div class="event-text">
         <a href="./Fengfan folder/event/Event-Selection.html">Register for an Event!</a>
-        
       </div>
-     
     </div>
   </main>
 
@@ -313,8 +313,13 @@
             <li><a href="#">Home</a></li>
             <li><a href="calendar.html">Calendar</a></li>
             <li><a href="events.html">Friend</a></li>
+<<<<<<< HEAD
              <li><a href="../public/Fengfan folder/event/users_event.html">Event</a></li>
                 <li><a href="../public/Fengfan folder/group/Group-management.html">Group</a></li>
+=======
+              <li><a href="events.html">Event</a></li>
+                <li><a href="">Group</a></li>
+>>>>>>> 68f720931a8e9cd80f8ae25b261251da32e00a13
             <li><a href="medication.html">Medication</a></li>
             <li><a href="calories.html">Calories Tracker</a></li>
             <li><a href="weather.html">Weather Forecast</a></li>
@@ -336,9 +341,30 @@
     </div>
   </footer>
 
+  <!-- Settings Modal (Moved from dashboard.html) -->
+  <div id="settingsModal" class="modal">
+      <div class="modal-content">
+          <span class="close-button">&times;</span>
+          <h3 data-translate-key="settings_title">Settings</h3>
+          <label for="languageSelect" data-translate-key="select_language">Select Language:</label>
+          <select id="languageSelect">
+              <option value="en" data-translate-key="lang_en">English</option>
+              <option value="es" data-translate-key="lang_es">Spanish</option>
+              <option value="fr" data-translate-key="lang_fr">French</option>
+              <option value="zh" data-translate-key="lang_zh">Chinese</option>
+              <option value="ms" data-translate-key="lang_ms">Malay</option>
+              <option value="ta" data-translate-key="lang_ta">Tamil</option>
+              <!-- Add more languages as needed -->
+          </select>
+          <button class="translate-button" id="applyTranslationButton" data-translate-key="apply_translation">Apply Translation</button>
+      </div>
+  </div>
+
+  <div id="messageBox" class="message-box"></div>
+
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="index.js"></script>
+  <script src="translation.js"></script> <!-- Include translation.js FIRST -->
+  <script src="script.js"></script> <!-- Changed to script.js -->
 </body>
-
 </html>
