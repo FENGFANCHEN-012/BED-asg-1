@@ -1,3 +1,5 @@
+const logoutButton = document.getElementById('logoutButton');
+  
   // Function to fetch messages from the backend
         async function fetchMessages() {
             try {
@@ -55,3 +57,48 @@
 
         // Initialize mailbox on page load
         window.onload = updateMailbox;
+
+
+// --- Logout Logic ---
+logoutButton.addEventListener('click', async () => {
+    const token = localStorage.getItem('jwtToken');
+    if (token) {
+        try {
+            const response = await fetch(`${API_BASE_URL}/users/logout`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.ok) {
+                console.log('Logged out successfully.');
+                showMessage('Logged out successfully!', false); // Show message first
+                setTimeout(() => { // Then redirect after a short delay
+                    localStorage.removeItem('jwtToken'); // Always remove token from client
+                    localStorage.removeItem('loggedInUsername'); // Remove username on logout
+                    window.location.replace('/'); // Use replace for immediate redirection
+                }, 1000); // Wait 1 second for message to be seen
+            } else {
+                const errorData = await response.json();
+                console.error('Server logout failed:', errorData.message);
+                showMessage(errorData.message || 'Logout failed on server.', true);
+                // No setTimeout for error, redirect immediately if server logout failed
+                localStorage.removeItem('jwtToken'); // Still remove token
+                localStorage.removeItem('loggedInUsername'); // Remove username on logout
+                window.location.replace('/'); // Redirect even on server error
+            }
+        } catch (error) {
+            console.error('Network error during logout:', error);
+            showMessage('Network error during logout.', true);
+            localStorage.removeItem('jwtToken'); // Still remove token
+            localStorage.removeItem('loggedInUsername'); // Remove username on logout
+            window.location.replace('/'); // Redirect on network error
+        }
+    } else {
+        localStorage.removeItem('jwtToken');
+        localStorage.removeItem('loggedInUsername'); // Remove username if no token found
+        window.location.replace('/'); // Use replace for immediate redirection
+    }
+});
