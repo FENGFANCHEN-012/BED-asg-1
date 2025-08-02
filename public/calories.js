@@ -1,4 +1,23 @@
-const user_id = 3;
+const API_BASE = "/api";
+
+// === Extract user_id from JWT ===
+const token = localStorage.getItem("jwtToken");
+let user_id = null;
+
+try {
+  if (!token) throw new Error("Missing token");
+  const decoded = JSON.parse(atob(token.split('.')[1]));
+  if (decoded.exp * 1000 < Date.now()) throw new Error("Token expired");
+  user_id = decoded.user_id;
+  if (!user_id) throw new Error("Missing user_id in token");
+} catch (err) {
+  console.error("Auth error:", err);
+  localStorage.removeItem("jwtToken");
+  localStorage.removeItem("loggedInUsername");
+  window.location.replace('/');
+}
+
+// === Main Logic ===
 let quantity = 1;
 let selectedFoodId = null;
 const qtyDisplay = document.getElementById('quantity');
@@ -57,7 +76,7 @@ async function fetchFoods() {
   if (q.length < 2) return;
 
   try {
-    const res = await fetch(`http://localhost:3000/api/food/search?q=${encodeURIComponent(q)}`);
+    const res = await fetch(`${API_BASE}/food/search?q=${encodeURIComponent(q)}`);
     const foods = await res.json();
     let dropdown = document.getElementById('foodDropdown');
     if (!dropdown) {
@@ -86,7 +105,7 @@ async function fetchFoods() {
 
 async function loadCalorieGraph() {
   try {
-    const res = await fetch(`http://localhost:3000/api/graph?user_id=${user_id}`);
+    const res = await fetch(`${API_BASE}/graph?user_id=${user_id}`);
     const { totalCalories, recommended } = await res.json();
     const div = document.getElementById('calorieGraph');
     div.innerHTML = `<h1>${totalCalories} kcal</h1><p>Recommended: ${recommended} kcal</p>`;
@@ -107,7 +126,7 @@ async function loadCalorieGraph() {
 
 async function loadHistory() {
   try {
-    const res = await fetch(`http://localhost:3000/api/history?user_id=${user_id}`);
+    const res = await fetch(`${API_BASE}/history?user_id=${user_id}`);
     const data = await res.json();
     const history = document.getElementById('history');
     history.innerHTML = '';
@@ -131,8 +150,6 @@ async function loadHistory() {
         <hr>`;
       history.appendChild(entry);
     });
-
-    // Scroll to top after history is loaded
     window.scrollTo(0, 0);
   } catch (e) {
     console.error(e);
@@ -141,7 +158,7 @@ async function loadHistory() {
 
 async function deleteMeal(id) {
   try {
-    const res = await fetch(`http://localhost:3000/api/food/delete/${id}`, { method: 'DELETE' });
+    const res = await fetch(`${API_BASE}/food/delete/${id}`, { method: 'DELETE' });
     const msg = await res.text();
     if (!res.ok) return showError(msg);
     showSuccess("Meal deleted");
@@ -178,7 +195,7 @@ function changeTime(id) {
     const time = `${hour}:${minute}`;
 
     try {
-      const res = await fetch(`http://localhost:3000/api/food/update-time/${id}`, {
+      const res = await fetch(`${API_BASE}/food/update-time/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ time })
@@ -199,7 +216,7 @@ async function loadFoodRecommendations(remainingCalories) {
   const recDiv = document.getElementById('foodRecommendation');
   recDiv.innerHTML = 'Loading recommendations...';
   try {
-    const res = await fetch(`http://localhost:3000/api/food/recommend?max=${remainingCalories}`);
+    const res = await fetch(`${API_BASE}/food/recommend?max=${remainingCalories}`);
     const data = await res.json();
     if (!data.length) return recDiv.innerHTML = 'No suitable food items found.';
     recDiv.innerHTML = '<ul>' + data.map(item => `<li>${item.food_name} (${item.calories_per_unit} cal/unit)</li>`).join('') + '</ul>';
@@ -219,7 +236,7 @@ document.getElementById('foodForm').addEventListener('submit', async e => {
   if (quantity < 1) return showError("Quantity must be at least 1.");
 
   try {
-    const res = await fetch('http://localhost:3000/api/food/add', {
+    const res = await fetch(`${API_BASE}/food/add`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ user_id, meal_type: meal, food_id: selectedFoodId, quantity, time })
@@ -229,14 +246,14 @@ document.getElementById('foodForm').addEventListener('submit', async e => {
 
     showSuccess(txt);
 
-    // Reset form to defaults
+    // Reset form
     quantity = 1;
     qtyDisplay.textContent = quantity;
     decreaseBtn.disabled = true;
     foodInput.value = '';
     selectedFoodId = null;
     document.querySelectorAll('.btn-outline-primary').forEach(b => b.classList.remove('active'));
-    document.querySelector('.btn-outline-primary')?.click(); // Re-select default
+    document.querySelector('.btn-outline-primary')?.click();
 
     loadCalorieGraph();
     loadHistory();
@@ -246,7 +263,6 @@ document.getElementById('foodForm').addEventListener('submit', async e => {
   }
 });
 
-// Force scroll to top on reload
 window.onbeforeunload = function () {
   window.scrollTo(0, 0);
 };

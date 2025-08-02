@@ -2,7 +2,24 @@
 // CONFIGURATION
 // ========================
 const API_BASE = "http://localhost:3000/api";
-const user_id = 3; // Replace with dynamic user ID
+
+// Retrieve user ID from token
+let user_id = null;
+const token = localStorage.getItem('jwtToken');
+if (token) {
+  try {
+    const decoded = JSON.parse(atob(token.split('.')[1]));
+    user_id = decoded.user_id;
+  } catch (e) {
+    console.error('Invalid token:', e);
+    showError("Session expired. Please log in again.");
+    window.location.href = "/";
+  }
+}
+if (!user_id) {
+  showError("Unauthorized. Please log in.");
+  window.location.href = "/";
+}
 
 // ========================
 // Inject Custom Alert Styles
@@ -38,9 +55,6 @@ function injectAlertStyles() {
 }
 injectAlertStyles();
 
-// ========================
-// Alert / Success / Error Helpers
-// ========================
 function showAlert(message, buttonText = 'OK', onClose = null) {
   const overlay = document.createElement('div');
   overlay.className = 'alert-overlay';
@@ -74,7 +88,7 @@ const rainAlert = document.getElementById("rainAlert");
 const alertPlaceholder = document.getElementById("weatherAlertPlaceholder");
 
 // ========================
-// Text-to-Speech for accessibility
+// Text-to-Speech
 // ========================
 function readAloud() {
   const tips = Array.from(tipElem.querySelectorAll("li")).map(el => el.textContent).join(". ");
@@ -97,7 +111,7 @@ function showLastUpdated() {
 }
 
 // ========================
-// Reverse Geocoding for User Location
+// Reverse Geocoding
 // ========================
 async function reverseGeocode(lat, lon) {
   try {
@@ -121,7 +135,7 @@ navigator.geolocation.getCurrentPosition(
 );
 
 // ========================
-// Main fetch & display logic
+// Fetch Weather Data
 // ========================
 async function fetchWeatherData() {
   try {
@@ -148,14 +162,6 @@ async function fetchWeatherData() {
     precipElem.innerText = general.forecast || "N/A";
 
     if (humidity >= 85) rainAlert.classList.remove("d-none");
-
-    const forecastText = (general.forecast || "").toLowerCase();
-    if (forecastText.includes("warm") || forecastText.includes("hot")) {
-      const hotAlert = document.createElement("div");
-      hotAlert.className = "alert alert-warning text-center mb-3";
-      hotAlert.innerText = "☀️ Tomorrow might be hot — charge your mini fan and stay chill!";
-      alertPlaceholder.appendChild(hotAlert);
-    }
 
     const tips = [];
     if (humidity >= 85) tips.push("High humidity today — rain is likely. Bring an umbrella!");
@@ -196,7 +202,7 @@ async function fetchWeatherData() {
 }
 
 // ========================
-// Alert Form Submission & Management
+// Alert Form Submission
 // ========================
 document.getElementById("alertForm").addEventListener("submit", async e => {
   e.preventDefault();
@@ -283,7 +289,7 @@ async function deleteAllAlerts() {
 }
 
 // ========================
-// INITIALIZE
+// INIT
 // ========================
 fetchWeatherData();
 loadUserAlerts();

@@ -1,4 +1,3 @@
-// controllers/caloriescontroller.js
 const caloriesModel = require('../models/caloriesmodel.js'); // Updated import
 
 /**
@@ -18,9 +17,7 @@ async function getGraphData(req, res) {
 
     const age = await caloriesModel.getUserAge(userId);
     if (!age) {
-        // Handle case where user age is not found, perhaps default or return an error
-        console.warn(`User age not found for userId: ${userId}. Cannot provide recommended calories.`);
-        return res.status(404).json({ error: 'User profile not found, cannot determine recommended calories.' });
+      return res.status(404).json({ error: 'User profile not found, cannot determine recommended calories.' });
     }
 
     const recommended = await caloriesModel.getRecommendedCaloriesByAge(age);
@@ -49,9 +46,9 @@ async function getHistory(req, res) {
     const formattedResult = result.map(item => {
       let formattedTime = '00:00';
       if (item.time instanceof Date) {
-        formattedTime = item.time.toISOString().substring(11, 16); // 'HH:mm'
+        formattedTime = item.time.toISOString().substring(11, 16);
       } else if (typeof item.time === 'string' && item.time.length >= 5) {
-        formattedTime = item.time.substring(0, 5); // 'HH:mm'
+        formattedTime = item.time.substring(0, 5);
       }
       return { ...item, time: formattedTime };
     });
@@ -71,7 +68,7 @@ async function searchFood(req, res) {
   const q = req.query.q;
 
   if (!q || q.trim() === '') {
-    return res.status(200).json([]); // Return empty array if query is empty
+    return res.status(200).json([]);
   }
 
   try {
@@ -90,10 +87,10 @@ async function searchFood(req, res) {
 async function addFoodEntry(req, res) {
   const { user_id, meal_type, food_id, quantity, time } = req.body;
 
-  // Basic validation
   if (!user_id || !meal_type || !food_id || quantity === undefined || time === undefined) {
     return res.status(400).json({ error: 'Missing required fields: user_id, meal_type, food_id, quantity, time.' });
   }
+
   if (typeof user_id !== 'number' || user_id <= 0) {
     return res.status(400).json({ error: 'Invalid user_id. Must be a positive number.' });
   }
@@ -106,7 +103,7 @@ async function addFoodEntry(req, res) {
   if (typeof quantity !== 'number' || quantity <= 0) {
     return res.status(400).json({ error: 'Invalid quantity. Must be a positive number.' });
   }
-  if (typeof time !== 'string' || !/^\d{2}:\d{2}(:\d{2})?$/.test(time)) { // HH:mm or HH:mm:ss
+  if (typeof time !== 'string' || !/^\d{2}:\d{2}(:\d{2})?$/.test(time)) {
     return res.status(400).json({ error: 'Invalid time format. Must be HH:mm or HH:mm:ss.' });
   }
 
@@ -116,8 +113,8 @@ async function addFoodEntry(req, res) {
       return res.status(404).json({ error: 'Food item not found.' });
     }
 
-    const totalCalories = caloriesPerUnit * quantity;
-    const formattedTime = time.length === 5 ? `${time}:00` : time; // Ensure HH:mm:ss format
+    const total_calories = caloriesPerUnit * quantity;
+    const formattedTime = time.length === 5 ? `${time}:00` : time;
 
     const entryData = { user_id, meal_type, food_id, quantity, total_calories, time: formattedTime };
     const success = await caloriesModel.addFoodEntry(entryData);
@@ -134,7 +131,7 @@ async function addFoodEntry(req, res) {
 }
 
 /**
- * Delete entry by ID.
+ * Delete food entry by ID.
  * Route param: /api/food/delete/:id
  */
 async function deleteFoodEntry(req, res) {
@@ -169,12 +166,12 @@ async function updateMealTime(req, res) {
   if (isNaN(entryId) || entryId <= 0) {
     return res.status(400).json({ error: 'Missing or invalid entry ID.' });
   }
-  if (typeof time !== 'string' || !/^\d{2}:\d{2}(:\d{2})?$/.test(time)) { // HH:mm or HH:mm:ss
+  if (typeof time !== 'string' || !/^\d{2}:\d{2}(:\d{2})?$/.test(time)) {
     return res.status(400).json({ error: 'Invalid time format. Must be HH:mm or HH:mm:ss.' });
   }
 
   try {
-    const formattedTime = time.length === 5 ? `${time}:00` : time; // Ensure HH:mm:ss format
+    const formattedTime = time.length === 5 ? `${time}:00` : time;
     const success = await caloriesModel.updateEntryTime(entryId, formattedTime);
 
     if (success) {
