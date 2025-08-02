@@ -252,3 +252,42 @@ if (earnPointsBtn) {
         secureNavigate('/earn_points.html');
     });
 }
+
+// jungwei and zq scripts for secure navigation added in script.js
+
+const calendarBtn    = document.getElementById('calendarBtn');
+const medicationBtn  = document.getElementById('medicationBtn');
+const caloriesBtn    = document.getElementById('caloriesBtn');
+const weatherBtn     = document.getElementById('weatherBtn');
+
+if (calendarBtn) {
+    calendarBtn.addEventListener('click', () => {
+        secureNavigate('/calendar.html');
+    });
+}
+
+if (medicationBtn) {
+    medicationBtn.addEventListener('click', () => {
+        secureNavigate('/medform.html');
+    });
+}
+
+if (caloriesBtn) {
+    caloriesBtn.addEventListener('click', () => {
+        secureNavigate('/calories.html');
+    });
+}
+
+if (weatherBtn) {
+    weatherBtn.addEventListener('click', () => {
+        secureNavigate('/weather.html');
+    });
+}
+
+const homeBtn = document.getElementById('homeBtn');
+
+if (homeBtn) {
+    homeBtn.addEventListener('click', () => {
+        secureNavigate('/index.html');
+    });
+}

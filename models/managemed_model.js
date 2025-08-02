@@ -1,5 +1,5 @@
 const sql = require("mssql");
-const dbConfig = require("./db_config");
+const dbConfig = require("../dbConfig");
 
 async function getAllMedications() {
   const conn = await sql.connect(dbConfig);

@@ -1,4 +1,5 @@
-const model = require("./managemed_model");
+const model = require("../models/managemed_model");
+
 
 async function getAllMedications(req, res) {
   try {

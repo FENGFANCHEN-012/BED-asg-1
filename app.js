@@ -33,8 +33,8 @@ const videoCtrl   = require('./controllers/videoTaskController');
 
 //-----------------------------------------------------------------------------------------------
 //Zq controller
-const medController = require("./managemed_Controller");
-const { validateMedication, validateId } = require("./managemed_middleware");
+const medController = require("./controllers/managemed_Controller");
+const { validateMedication, validateId } = require("./middlewares/managemed_middleware");
 //-----------------------------------------------------------------------------------------------
 
 
@@ -149,9 +149,6 @@ app.post('/cart/checkout', cartCtrl.checkout);
 app.get ( '/history', historyCtrl.getHistory );
 app.post( '/history', historyCtrl.logHistory );
 //------------------------------------------------------------------------------------------------------------------------------
-
-
-//-----------------------------------------------------------------------------------------------
 //zq 
 
 // history
@@ -163,7 +160,6 @@ app.post("/medications/:id/mark", medController.markAsTaken);
 app.get("/medications", medController.getAllMedications);
 app.get("/medications/:id", validateId, medController.getMedicationById);
 app.post("/medications", validateMedication, medController.createMedication);
-
 app.delete("/medications/:id", medController.deleteMedicationById);
 app.put("/medications/:id", medController.updateMedicationById);
 //-----------------------------------------------------------------------------------------------
