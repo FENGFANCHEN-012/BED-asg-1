@@ -31,6 +31,12 @@ const cartCtrl    = require('./controllers/cartController');
 const historyCtrl = require('./controllers/historyController');
 const videoCtrl   = require('./controllers/videoTaskController');
 
+//-----------------------------------------------------------------------------------------------
+//Zq controller
+const medController = require("./managemed_Controller");
+const { validateMedication, validateId } = require("./managemed_middleware");
+//-----------------------------------------------------------------------------------------------
+
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -143,6 +149,25 @@ app.post('/cart/checkout', cartCtrl.checkout);
 app.get ( '/history', historyCtrl.getHistory );
 app.post( '/history', historyCtrl.logHistory );
 //------------------------------------------------------------------------------------------------------------------------------
+
+
+//-----------------------------------------------------------------------------------------------
+//zq 
+
+// history
+app.get("/medications/history", medController.getMedicationHistory);
+app.post("/medications/:id/taken", medController.logMedicationTaken);
+app.post("/medications/:id/mark", medController.markAsTaken);
+
+// Medication routes
+app.get("/medications", medController.getAllMedications);
+app.get("/medications/:id", validateId, medController.getMedicationById);
+app.post("/medications", validateMedication, medController.createMedication);
+
+app.delete("/medications/:id", medController.deleteMedicationById);
+app.put("/medications/:id", medController.updateMedicationById);
+//-----------------------------------------------------------------------------------------------
+
 
 // Graceful shutdown
 process.on("SIGINT", async () => {
