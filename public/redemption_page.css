@@ -1,0 +1,156 @@
+/* Ryan Ling */
+
+.navbar-nav .nav-link {
+  font-size: 1.2rem !important;
+  font-weight: 600;
+}
+.dropdown-menu {
+  font-size: 1.2rem;
+}
+.mailbox-button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px;
+  position: relative;
+  margin-left: 1.2vw;
+}
+.mailbox-button:hover {
+  background-color: #0056b3;
+}
+.notification {
+  display: none;
+  background-color: #ff0000;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  font-size: 12px;
+}
+.notification.active {
+  display: block;
+}
+.mailbox-content {
+  display: none;
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  position: absolute;
+  top: 50px;
+  right: 0;
+  width: 500px;
+  max-height: 400px;
+  overflow-y: auto;
+  z-index: 10;
+}
+.mailbox-content.active {
+  display: block;
+}
+.message {
+  border-bottom: 1px solid #ddd;
+  padding: 10px 0;
+  margin: 0;
+}
+.message:last-child {
+  border-bottom: none;
+}
+.message p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+.message .date {
+  color: #666;
+  font-size: 12px;
+}
+
+/* Cart panel on left */
+.cart-panel {
+  background-color: #1565c0;
+  border: 2px solid #1976d2;
+  border-radius: 8px;
+  color: white;
+  height: 70vh;
+  overflow-y: auto;
+  font-size: 1rem;
+}
+.cart-panel .total-section {
+  margin-top: auto;
+}
+#cart-list {
+  flex: 1 1 auto;
+  overflow-y: auto;
+}
+
+/* “Chosen Rewards” title */
+.cart-panel h5 {
+  font-size: 2.6rem;
+}
+
+/* Cart item lines (“voucher names” in the cart) */
+.cart-panel ul li {
+  font-size: 1.8rem;
+  line-height: 1.7;
+  color: #ffffff;
+}
+
+/* Remove button for cart items */
+.cart-panel ul li button {
+  font-size: 0.8rem;
+  padding: 2px 6px;
+  color: #ffcccb;
+}
+.cart-panel ul li button:hover {
+  color: #ff6f6f;
+}
+
+/* Match the total-cost number size/weight */
+.cart-panel #total-cost {
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+/* Total price label (“Total Cost:”) */
+.cart-panel .d-flex.justify-content-between strong {
+  font-size: 1.4rem;
+}
+
+/* Billing & shipping cards */
+.card.mb-4 {
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Delivery option styling */
+.delivery-option {
+  border: 1px solid #1976d2;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.delivery-option:hover {
+  background-color: #e3f2fd;
+}
+.delivery-option input:checked ~ label {
+  background-color: #e3f2fd;
+}
+
+/* Confirm button disabled state */
+#confirmBtn:disabled {
+  background-color: #ccc;
+  border-color: #bbb;
+  cursor: not-allowed;
+}
+
+/* Voucher card titles on the left (in view_rewards you used 1.25rem) */
+.voucher-card .card-title {
+  font-size: 1.25rem;
+}

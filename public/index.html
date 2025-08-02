@@ -11,14 +11,9 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
   
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      font-size: 1.2rem;
-      line-height: 1.6;
-    }
 
     .navbar-nav .nav-link {
-      font-size: 1.3rem !important;
+      font-size: 1.2rem !important;
       font-weight: 600;
     }
 
@@ -207,10 +202,10 @@
 <body>
 
   <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
     <div class="container">
       <a class="navbar-brand" href="#">
-        <img src="./img/logo.png" alt="Lions Befrienders Singapore Logo" class="img-fluid" style="width: 120px;">
+        <img src="./images/logo.png" alt="Lions Befrienders Singapore Logo" class="img-fluid" style="width: 120px;">
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -219,7 +214,7 @@
 
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav me-auto ms-4 gap-4">
-          <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
+          <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
           <li class="nav-item"><a class="nav-link" href="calendar.html">Calendar</a></li>
 
         <li class="nav-item footer-dropdown">
@@ -243,8 +238,9 @@
               Points
             </a>
             <ul class="dropdown-menu" aria-labelledby="pointsDropdown">
-              <li><a class="dropdown-item" href="points.html">Point Redemption</a></li>
-              <li><a class="dropdown-item" href="rewards.html">Rewards</a></li>
+                <li><button class="dropdown-item" id="pointRedemptionBtn">Point Redemption</button></li>
+                <li><button class="dropdown-item" id="rewardsBtn">Rewards</button></li>
+                <li><button class="dropdown-item" id="earnPointsBtn">Earn Points</button></li>
             </ul>
           </li>
         </ul>

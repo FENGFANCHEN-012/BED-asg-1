@@ -15,25 +15,22 @@ const projectId = process.env.GOOGLE_CLOUD_PROJECT_ID;
 const location = 'global';
 
 // Controllers and Middlewares
+// Samuels Controllers
 const profileController = require("./controllers/profileController");
 const {validateRegisterProfile, validateUpdateProfile, validateProfileId } = require("./middlewares/profileValidation");
 const userController = require("./controllers/userController");
 const { verifyJWT } = require("./middlewares/authMiddleware")
 //-----------------------------------------------------------------------------------------------
+// Junweis Controllers
 const caloriesController = require('./controllers/caloriescontroller');
 const weatherController = require('./controllers/weathercontroller');
-// // Fengfan's controllers (assuming these paths are correct)
-// const UserProfileController = require("./controllers/fengfan_folder/user_profile_controller")
-// const EventController = require("./controllers/fengfan_folder/event_controller.js");
-// const groupController = require("./controllers/fengfan_folder/group_controller.js");
-// const friendController = require("./controllers/fengfan_folder/friend_controller.js");
-// const chatController = require("./controllers/fengfan_folder/chat_controller.js");
-// const groupChatController = require("./controllers/fengfan_folder/group_chat_controller.js");
-// const mailboxController = require('./controllers/fengfan_folder/message_controller.js');
+//-----------------------------------------------------------------------------------------------
+// Ryans Controllers
+const ptsCtrl     = require('./controllers/pointsController');
+const cartCtrl    = require('./controllers/cartController');
+const historyCtrl = require('./controllers/historyController');
+const videoCtrl   = require('./controllers/videoTaskController');
 
-// JunWei's controllers (assuming these paths are correct and they are uncommented if used)
-// const weatherController = require('./controllers/weathercontroller');
-// const caloriesController = require('./controllers/caloriescontroller');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -122,7 +119,30 @@ app.get('/api/alerts', weatherController.getUserAlerts);
 app.delete('/api/alerts/:id', weatherController.deleteAlert);
 app.delete('/api/alerts', weatherController.deleteAllUserAlerts);
 
+//------------------------------------------------------------------------------------------------------------------------------
+// Ryan-----------------------------------------------------------------------------------------------------
+// 1) Video‑points endpoints
+app.get ( '/video-tasks',          videoCtrl.listTasks );
+app.get ( '/video-tasks/:task_id', videoCtrl.getTask );
+app.post( '/video-watches',        videoCtrl.completeTask );
 
+// 2) Points endpoints
+app.get ( '/points', ptsCtrl.getPoints );
+app.put ( '/points', ptsCtrl.addPoints );
+
+// 3) Cart & redemption
+app.get    ( '/cart',          cartCtrl.viewCart );
+app.post   ( '/cart',          cartCtrl.addToCart );
+app.put    ( '/cart/:cart_id', cartCtrl.editCart );
+app.delete ( '/cart/:cart_id', cartCtrl.removeFromCart );
+
+// 4) Checkout
+app.post('/cart/checkout', cartCtrl.checkout);
+
+// 5) History
+app.get ( '/history', historyCtrl.getHistory );
+app.post( '/history', historyCtrl.logHistory );
+//------------------------------------------------------------------------------------------------------------------------------
 
 // Graceful shutdown
 process.on("SIGINT", async () => {

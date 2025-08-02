@@ -220,3 +220,35 @@ if (applyTranslationButton) {
         settingsModal.style.display = 'none'; // Close modal after applying
     });
 }
+
+
+// --- Points Dropdown Button Logic ---
+const pointRedemptionBtn = document.getElementById('pointRedemptionBtn');
+const rewardsBtn = document.getElementById('rewardsBtn');
+const earnPointsBtn = document.getElementById('earnPointsBtn');
+
+// Utility for secure navigation based on token presence
+function secureNavigate(targetHref) {
+    const token = localStorage.getItem('jwtToken');
+    if (!token) {
+        window.location.href = '/signin.html';
+    } else {
+        window.location.href = targetHref;
+    }
+}
+
+if (pointRedemptionBtn) {
+    pointRedemptionBtn.addEventListener('click', () => {
+        secureNavigate('/redemption.html');
+    });
+}
+if (rewardsBtn) {
+    rewardsBtn.addEventListener('click', () => {
+        secureNavigate('/view_rewards.html');
+    });
+}
+if (earnPointsBtn) {
+    earnPointsBtn.addEventListener('click', () => {
+        secureNavigate('/earn_points.html');
+    });
+}
